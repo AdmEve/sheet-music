@@ -75,14 +75,24 @@ jobs:
   pages:
     name: Publish web version (GitHub Pages)
     needs: build
-    # Only on the default branch, and only once Pages is enabled:
+    # Only on the default branch. Skips itself until Pages is switched on:
     # Settings → Pages → Source: GitHub Actions.
     if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     runs-on: ubuntu-latest
-    continue-on-error: true
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh api "repos/${{ github.repository }}/pages" --silent 2>/dev/null; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "GitHub Pages is not enabled for this repository; skipping the website."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
       - id: deploy
+        if: steps.check.outputs.enabled == 'true'
         uses: actions/deploy-pages@v4
