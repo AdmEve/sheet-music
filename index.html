@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#2f4a7a" />
+    <meta name="description" content="Turn piano and cello recordings into sheet music, offline." />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <title>Sheet Music</title>
+  </head>
+  <body>
+    <header class="topbar">
+      <h1>Sheet Music</h1>
+      <nav class="tabs" role="tablist">
+        <button role="tab" data-tab="new" class="active">New</button>
+        <button role="tab" data-tab="library">Library</button>
+      </nav>
+    </header>
+
+    <main>
+      <!-- New transcription -->
+      <section id="tab-new" class="tab">
+        <div class="card" id="picker">
+          <label class="drop" id="drop">
+            <input type="file" id="file" accept="audio/*,video/*,.mp3,.m4a,.wav,.ogg,.flac,.aac,.mp4" hidden />
+            <span class="drop-icon" aria-hidden="true">♫</span>
+            <span id="file-label">Choose a recording</span>
+            <small>MP3, M4A, WAV, OGG, FLAC… Piano and cello work best.</small>
+          </label>
+
+          <details class="more">
+            <summary>Options</summary>
+            <div class="grid">
+              <label>Start at (seconds)<input type="number" id="from" min="0" step="1" placeholder="0" /></label>
+              <label>Stop at (seconds)<input type="number" id="to" min="0" step="1" placeholder="end" /></label>
+              <label class="wide"
+                >Note sensitivity
+                <input type="range" id="sensitivity" min="0" max="1" step="0.05" value="0.6" />
+                <span class="range-labels"><span>Only clear notes</span><span>Catch quiet notes</span></span>
+              </label>
+            </div>
+          </details>
+
+          <button id="go" class="primary" disabled>Make sheet music</button>
+          <p class="hint">Everything runs on this device. Nothing is uploaded.</p>
+        </div>
+
+        <div class="card hidden" id="progress">
+          <p id="stage">Reading audio…</p>
+          <div class="bar"><div id="bar-fill"></div></div>
+          <p class="hint" id="stage-hint"></p>
+          <button id="cancel" class="ghost">Cancel</button>
+        </div>
+      </section>
+
+      <!-- Library -->
+      <section id="tab-library" class="tab hidden">
+        <ul id="library" class="library"></ul>
+        <p id="library-empty" class="hint">Pieces you transcribe are kept here, on this device.</p>
+      </section>
+
+      <!-- Result -->
+      <section id="result" class="hidden">
+        <div class="toolbar">
+          <button id="back" class="ghost" title="Back">‹ Back</button>
+          <input id="title" class="title-input" aria-label="Title" />
+          <button id="play" class="ghost" title="Play the transcription">▶ Play</button>
+        </div>
+
+        <div class="toolbar wrap">
+          <button id="zoom-out" class="ghost" aria-label="Smaller">A−</button>
+          <button id="zoom-in" class="ghost" aria-label="Bigger">A+</button>
+          <button id="settings-toggle" class="ghost">⚙ Adjust</button>
+          <span class="spacer"></span>
+          <button id="save-pdf">PDF</button>
+          <button id="save-xml">MusicXML</button>
+          <button id="save-midi">MIDI</button>
+          <button id="share" class="ghost" title="Share">Share</button>
+        </div>
+
+        <div id="settings" class="card settings hidden">
+          <div class="grid">
+            <label
+              >Instruments
+              <select id="s-mode">
+                <option value="piano+cello">Piano + Cello</option>
+                <option value="piano+cello+other">Piano + Cello + Other</option>
+                <option value="piano">Piano only</option>
+                <option value="cello">Cello only</option>
+              </select>
+            </label>
+            <label
+              >Time signature
+              <select id="s-meter">
+                <option value="auto">Automatic</option>
+                <option value="2/4">2/4</option>
+                <option value="3/4">3/4</option>
+                <option value="4/4">4/4</option>
+                <option value="2/2">2/2 (cut time)</option>
+                <option value="3/8">3/8</option>
+                <option value="6/8">6/8</option>
+                <option value="9/8">9/8</option>
+                <option value="12/8">12/8</option>
+              </select>
+            </label>
+            <label
+              >Tempo (beats per minute)
+              <input type="number" id="s-bpm" min="20" max="300" placeholder="Automatic" />
+            </label>
+            <label
+              >Key
+              <select id="s-key"></select>
+            </label>
+            <label
+              >Rhythm detail
+              <select id="s-detail">
+                <option value="simple">Simple (eighth notes)</option>
+                <option value="normal">Normal (16th notes)</option>
+                <option value="detailed">Detailed (16ths + triplets)</option>
+              </select>
+            </label>
+            <label class="check"><input type="checkbox" id="s-follow" checked /> Follow tempo changes</label>
+            <label class="wide"
+              >Cello vs piano
+              <input type="range" id="s-bias" min="-0.8" max="0.8" step="0.1" value="0" />
+              <span class="range-labels"><span>More notes to piano</span><span>More notes to cello</span></span>
+            </label>
+            <label class="wide" id="s-sens-wrap"
+              >Note sensitivity
+              <input type="range" id="s-sens" min="0" max="1" step="0.05" value="0.6" />
+              <span class="range-labels"><span>Only clear notes</span><span>Catch quiet notes</span></span>
+            </label>
+          </div>
+          <p class="hint" id="detected"></p>
+        </div>
+
+        <p class="status" id="status" role="status"></p>
+        <div id="score" class="score"></div>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

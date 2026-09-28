@@ -1,0 +1,86 @@
+name: Build app
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Test, build web + Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+      - name: Package web version
+        run: cd dist && zip -qr ../SheetMusic-web.zip .
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build Android APK
+        env:
+          VERSION_CODE: ${{ github.run_number }}
+        run: |
+          npx cap sync android
+          cd android
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleRelease
+          cp app/build/outputs/apk/release/app-release.apk ../SheetMusic.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SheetMusic-android-apk
+          path: SheetMusic.apk
+
+      - name: Publish "latest" release (download link for your phone)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete android-latest --yes --cleanup-tag || true
+          gh release create android-latest SheetMusic.apk SheetMusic-web.zip \
+            --target "$GITHUB_SHA" \
+            --title "Sheet Music – latest build (${GITHUB_REF_NAME}, #${{ github.run_number }})" \
+            --notes "Install on Android: open this page on your phone, tap **SheetMusic.apk**, then open the downloaded file and allow installing from this source. New builds install over the old one and keep your library.
+
+          Web version (works offline): **SheetMusic-web.zip**, or the GitHub Pages site if it is enabled.
+
+          Built from commit ${GITHUB_SHA::7}."
+
+  pages:
+    name: Publish web version (GitHub Pages)
+    needs: build
+    runs-on: ubuntu-latest
+    # Only works once Pages is enabled: Settings → Pages → Source: GitHub Actions.
+    continue-on-error: true
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v4

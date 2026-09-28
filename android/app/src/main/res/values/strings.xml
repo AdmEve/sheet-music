@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Sheet Music</string>
+    <string name="title_activity_main">Sheet Music</string>
+    <string name="package_name">com.admeve.sheetmusic</string>
+    <string name="custom_url_scheme">com.admeve.sheetmusic</string>
+</resources>
