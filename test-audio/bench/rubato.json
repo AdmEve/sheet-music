@@ -1,0 +1,1062 @@
+{
+"name": "rubato",
+"bpm": 66,
+"meter": {
+"beats": 4,
+"beatType": 4
+},
+"key": {
+"fifths": -3,
+"mode": "major"
+},
+"notes": [
+{
+"instrument": "piano",
+"pitch": 39,
+"start": 0.0,
+"end": 0.45454545454545453,
+"startQ": 0.0,
+"durQ": 0.5
+},
+{
+"instrument": "cello",
+"pitch": 55,
+"start": 0.0,
+"end": 2.6162529642879497,
+"startQ": 0,
+"durQ": 3
+},
+{
+"instrument": "piano",
+"pitch": 70,
+"start": 0.0,
+"end": 1.7782674813035397,
+"startQ": 0,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 75,
+"start": 0.0,
+"end": 1.7782674813035397,
+"startQ": 0,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 79,
+"start": 0.0,
+"end": 1.7782674813035397,
+"startQ": 0,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 46,
+"start": 0.45454545454545453,
+"end": 0.9090909090909091,
+"startQ": 0.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 55,
+"start": 0.9090909090909091,
+"end": 1.3436791951972245,
+"startQ": 1.0,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 46,
+"start": 1.3436791951972245,
+"end": 1.7782674813035397,
+"startQ": 1.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 39,
+"start": 1.7782674813035397,
+"end": 2.1972602227957445,
+"startQ": 2.0,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 70,
+"start": 1.7782674813035397,
+"end": 3.434615649206762,
+"startQ": 2,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 75,
+"start": 1.7782674813035397,
+"end": 3.434615649206762,
+"startQ": 2,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 79,
+"start": 1.7782674813035397,
+"end": 3.434615649206762,
+"startQ": 2,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 46,
+"start": 2.1972602227957445,
+"end": 2.6162529642879497,
+"startQ": 2.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 55,
+"start": 2.6162529642879497,
+"end": 3.0254343067473557,
+"startQ": 3.0,
+"durQ": 0.5
+},
+{
+"instrument": "cello",
+"pitch": 58,
+"start": 2.6162529642879497,
+"end": 3.434615649206762,
+"startQ": 3,
+"durQ": 1
+},
+{
+"instrument": "piano",
+"pitch": 46,
+"start": 3.0254343067473557,
+"end": 3.434615649206762,
+"startQ": 3.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 44,
+"start": 3.434615649206762,
+"end": 3.840459805050918,
+"startQ": 4.0,
+"durQ": 0.5
+},
+{
+"instrument": "cello",
+"pitch": 60,
+"start": 3.434615649206762,
+"end": 5.064666645813886,
+"startQ": 4,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 72,
+"start": 3.434615649206762,
+"end": 5.064666645813886,
+"startQ": 4,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 75,
+"start": 3.434615649206762,
+"end": 5.064666645813886,
+"startQ": 4,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 80,
+"start": 3.434615649206762,
+"end": 5.064666645813886,
+"startQ": 4,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 51,
+"start": 3.840459805050918,
+"end": 4.246303960895074,
+"startQ": 4.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 59,
+"start": 4.246303960895074,
+"end": 4.65548530335448,
+"startQ": 5.0,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 51,
+"start": 4.65548530335448,
+"end": 5.064666645813886,
+"startQ": 5.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 44,
+"start": 5.064666645813886,
+"end": 5.483659387306091,
+"startQ": 6.0,
+"durQ": 0.5
+},
+{
+"instrument": "cello",
+"pitch": 51,
+"start": 5.064666645813886,
+"end": 6.771828701010926,
+"startQ": 6,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 72,
+"start": 5.064666645813886,
+"end": 6.771828701010926,
+"startQ": 6,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 75,
+"start": 5.064666645813886,
+"end": 6.771828701010926,
+"startQ": 6,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 80,
+"start": 5.064666645813886,
+"end": 6.771828701010926,
+"startQ": 6,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 51,
+"start": 5.483659387306091,
+"end": 5.902652128798295,
+"startQ": 6.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 59,
+"start": 5.902652128798295,
+"end": 6.337240414904611,
+"startQ": 7.0,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 51,
+"start": 6.337240414904611,
+"end": 6.771828701010926,
+"startQ": 7.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 46,
+"start": 6.771828701010926,
+"end": 7.22637415555638,
+"startQ": 8.0,
+"durQ": 0.5
+},
+{
+"instrument": "cello",
+"pitch": 50,
+"start": 6.771828701010926,
+"end": 8.157343403761457,
+"startQ": 8,
+"durQ": 1.5
+},
+{
+"instrument": "piano",
+"pitch": 70,
+"start": 6.771828701010926,
+"end": 8.63376719742108,
+"startQ": 8,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 74,
+"start": 6.771828701010926,
+"end": 8.63376719742108,
+"startQ": 8,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 77,
+"start": 6.771828701010926,
+"end": 8.63376719742108,
+"startQ": 8,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 53,
+"start": 7.22637415555638,
+"end": 7.680919610101835,
+"startQ": 8.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 62,
+"start": 7.680919610101835,
+"end": 8.157343403761457,
+"startQ": 9.0,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 53,
+"start": 8.157343403761457,
+"end": 8.63376719742108,
+"startQ": 9.5,
+"durQ": 0.5
+},
+{
+"instrument": "cello",
+"pitch": 60,
+"start": 8.157343403761457,
+"end": 8.63376719742108,
+"startQ": 9.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 46,
+"start": 8.63376719742108,
+"end": 9.130458288615124,
+"startQ": 10.0,
+"durQ": 0.5
+},
+{
+"instrument": "cello",
+"pitch": 58,
+"start": 8.63376719742108,
+"end": 10.649594188752722,
+"startQ": 10.0,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 70,
+"start": 8.63376719742108,
+"end": 10.649594188752722,
+"startQ": 10,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 74,
+"start": 8.63376719742108,
+"end": 10.649594188752722,
+"startQ": 10,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 77,
+"start": 8.63376719742108,
+"end": 10.649594188752722,
+"startQ": 10,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 53,
+"start": 9.130458288615124,
+"end": 9.62714937980917,
+"startQ": 10.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 62,
+"start": 9.62714937980917,
+"end": 10.138371784280947,
+"startQ": 11.0,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 53,
+"start": 10.138371784280947,
+"end": 10.649594188752722,
+"startQ": 11.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 39,
+"start": 10.649594188752722,
+"end": 11.166123114372557,
+"startQ": 12.0,
+"durQ": 0.5
+},
+{
+"instrument": "cello",
+"pitch": 55,
+"start": 10.649594188752722,
+"end": 14.65132661864328,
+"startQ": 12.0,
+"durQ": 4
+},
+{
+"instrument": "piano",
+"pitch": 70,
+"start": 10.649594188752722,
+"end": 12.705096848935945,
+"startQ": 12,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 75,
+"start": 10.649594188752722,
+"end": 12.705096848935945,
+"startQ": 12,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 79,
+"start": 10.649594188752722,
+"end": 12.705096848935945,
+"startQ": 12,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 46,
+"start": 11.166123114372557,
+"end": 11.682652039992393,
+"startQ": 12.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 55,
+"start": 11.682652039992393,
+"end": 12.19387444446417,
+"startQ": 13.0,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 46,
+"start": 12.19387444446417,
+"end": 12.705096848935945,
+"startQ": 13.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 39,
+"start": 12.705096848935945,
+"end": 13.20178794012999,
+"startQ": 14.0,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 70,
+"start": 12.705096848935945,
+"end": 14.65132661864328,
+"startQ": 14,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 75,
+"start": 12.705096848935945,
+"end": 14.65132661864328,
+"startQ": 14,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 79,
+"start": 12.705096848935945,
+"end": 14.65132661864328,
+"startQ": 14,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 46,
+"start": 13.20178794012999,
+"end": 13.698479031324036,
+"startQ": 14.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 55,
+"start": 13.698479031324036,
+"end": 14.174902824983658,
+"startQ": 15.0,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 46,
+"start": 14.174902824983658,
+"end": 14.65132661864328,
+"startQ": 15.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 36,
+"start": 14.65132661864328,
+"end": 15.105872073188735,
+"startQ": 16.0,
+"durQ": 0.5
+},
+{
+"instrument": "cello",
+"pitch": 60,
+"start": 14.65132661864328,
+"end": 16.42959409994682,
+"startQ": 16.0,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 72,
+"start": 14.65132661864328,
+"end": 16.42959409994682,
+"startQ": 16,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 75,
+"start": 14.65132661864328,
+"end": 16.42959409994682,
+"startQ": 16,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 79,
+"start": 14.65132661864328,
+"end": 16.42959409994682,
+"startQ": 16,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 43,
+"start": 15.105872073188735,
+"end": 15.560417527734188,
+"startQ": 16.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 52,
+"start": 15.560417527734188,
+"end": 15.995005813840503,
+"startQ": 17.0,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 43,
+"start": 15.995005813840503,
+"end": 16.42959409994682,
+"startQ": 17.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 36,
+"start": 16.42959409994682,
+"end": 16.848586841439023,
+"startQ": 18.0,
+"durQ": 0.5
+},
+{
+"instrument": "cello",
+"pitch": 50,
+"start": 16.42959409994682,
+"end": 17.26757958293123,
+"startQ": 18.0,
+"durQ": 1
+},
+{
+"instrument": "piano",
+"pitch": 72,
+"start": 16.42959409994682,
+"end": 18.085942267850044,
+"startQ": 18,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 75,
+"start": 16.42959409994682,
+"end": 18.085942267850044,
+"startQ": 18,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 79,
+"start": 16.42959409994682,
+"end": 18.085942267850044,
+"startQ": 18,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 43,
+"start": 16.848586841439023,
+"end": 17.26757958293123,
+"startQ": 18.5,
+"durQ": 0.5
+},
+{
+"instrument": "cello",
+"pitch": 51,
+"start": 17.26757958293123,
+"end": 18.085942267850044,
+"startQ": 19.0,
+"durQ": 1
+},
+{
+"instrument": "piano",
+"pitch": 52,
+"start": 17.26757958293123,
+"end": 17.676760925390635,
+"startQ": 19.0,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 43,
+"start": 17.676760925390635,
+"end": 18.085942267850044,
+"startQ": 19.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 41,
+"start": 18.085942267850044,
+"end": 18.4917864236942,
+"startQ": 20.0,
+"durQ": 0.5
+},
+{
+"instrument": "cello",
+"pitch": 53,
+"start": 18.085942267850044,
+"end": 19.71599326445717,
+"startQ": 20.0,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 72,
+"start": 18.085942267850044,
+"end": 19.71599326445717,
+"startQ": 20,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 77,
+"start": 18.085942267850044,
+"end": 19.71599326445717,
+"startQ": 20,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 80,
+"start": 18.085942267850044,
+"end": 19.71599326445717,
+"startQ": 20,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 48,
+"start": 18.4917864236942,
+"end": 18.897630579538355,
+"startQ": 20.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 56,
+"start": 18.897630579538355,
+"end": 19.30681192199776,
+"startQ": 21.0,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 48,
+"start": 19.30681192199776,
+"end": 19.71599326445717,
+"startQ": 21.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 41,
+"start": 19.71599326445717,
+"end": 20.134986005949372,
+"startQ": 22.0,
+"durQ": 0.5
+},
+{
+"instrument": "cello",
+"pitch": 51,
+"start": 19.71599326445717,
+"end": 20.55397874744158,
+"startQ": 22.0,
+"durQ": 1
+},
+{
+"instrument": "piano",
+"pitch": 72,
+"start": 19.71599326445717,
+"end": 21.42315531965421,
+"startQ": 22,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 77,
+"start": 19.71599326445717,
+"end": 21.42315531965421,
+"startQ": 22,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 80,
+"start": 19.71599326445717,
+"end": 21.42315531965421,
+"startQ": 22,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 48,
+"start": 20.134986005949372,
+"end": 20.55397874744158,
+"startQ": 22.5,
+"durQ": 0.5
+},
+{
+"instrument": "cello",
+"pitch": 50,
+"start": 20.55397874744158,
+"end": 21.42315531965421,
+"startQ": 23.0,
+"durQ": 1
+},
+{
+"instrument": "piano",
+"pitch": 56,
+"start": 20.55397874744158,
+"end": 20.988567033547895,
+"startQ": 23.0,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 48,
+"start": 20.988567033547895,
+"end": 21.42315531965421,
+"startQ": 23.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 46,
+"start": 21.42315531965421,
+"end": 21.877700774199663,
+"startQ": 24.0,
+"durQ": 0.5
+},
+{
+"instrument": "cello",
+"pitch": 60,
+"start": 21.42315531965421,
+"end": 22.80867002240474,
+"startQ": 24.0,
+"durQ": 1.5
+},
+{
+"instrument": "piano",
+"pitch": 70,
+"start": 21.42315531965421,
+"end": 23.285093816064364,
+"startQ": 24,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 74,
+"start": 21.42315531965421,
+"end": 23.285093816064364,
+"startQ": 24,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 80,
+"start": 21.42315531965421,
+"end": 23.285093816064364,
+"startQ": 24,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 53,
+"start": 21.877700774199663,
+"end": 22.33224622874512,
+"startQ": 24.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 62,
+"start": 22.33224622874512,
+"end": 22.80867002240474,
+"startQ": 25.0,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 53,
+"start": 22.80867002240474,
+"end": 23.285093816064364,
+"startQ": 25.5,
+"durQ": 0.5
+},
+{
+"instrument": "cello",
+"pitch": 58,
+"start": 22.80867002240474,
+"end": 23.285093816064364,
+"startQ": 25.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 46,
+"start": 23.285093816064364,
+"end": 23.78178490725841,
+"startQ": 26.0,
+"durQ": 0.5
+},
+{
+"instrument": "cello",
+"pitch": 60,
+"start": 23.285093816064364,
+"end": 24.278475998452453,
+"startQ": 26.0,
+"durQ": 1
+},
+{
+"instrument": "piano",
+"pitch": 70,
+"start": 23.285093816064364,
+"end": 25.300920807396007,
+"startQ": 26,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 74,
+"start": 23.285093816064364,
+"end": 25.300920807396007,
+"startQ": 26,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 80,
+"start": 23.285093816064364,
+"end": 25.300920807396007,
+"startQ": 26,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 53,
+"start": 23.78178490725841,
+"end": 24.278475998452453,
+"startQ": 26.5,
+"durQ": 0.5
+},
+{
+"instrument": "cello",
+"pitch": 50,
+"start": 24.278475998452453,
+"end": 25.300920807396007,
+"startQ": 27.0,
+"durQ": 1
+},
+{
+"instrument": "piano",
+"pitch": 62,
+"start": 24.278475998452453,
+"end": 24.78969840292423,
+"startQ": 27.0,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 53,
+"start": 24.78969840292423,
+"end": 25.300920807396007,
+"startQ": 27.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 39,
+"start": 25.300920807396007,
+"end": 25.81744973301584,
+"startQ": 28.0,
+"durQ": 0.5
+},
+{
+"instrument": "cello",
+"pitch": 51,
+"start": 25.300920807396007,
+"end": 29.302653237286563,
+"startQ": 28.0,
+"durQ": 4
+},
+{
+"instrument": "piano",
+"pitch": 70,
+"start": 25.300920807396007,
+"end": 27.35642346757923,
+"startQ": 28,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 75,
+"start": 25.300920807396007,
+"end": 27.35642346757923,
+"startQ": 28,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 79,
+"start": 25.300920807396007,
+"end": 27.35642346757923,
+"startQ": 28,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 46,
+"start": 25.81744973301584,
+"end": 26.333978658635676,
+"startQ": 28.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 55,
+"start": 26.333978658635676,
+"end": 26.845201063107453,
+"startQ": 29.0,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 46,
+"start": 26.845201063107453,
+"end": 27.35642346757923,
+"startQ": 29.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 39,
+"start": 27.35642346757923,
+"end": 27.853114558773274,
+"startQ": 30.0,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 70,
+"start": 27.35642346757923,
+"end": 29.302653237286563,
+"startQ": 30,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 75,
+"start": 27.35642346757923,
+"end": 29.302653237286563,
+"startQ": 30,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 79,
+"start": 27.35642346757923,
+"end": 29.302653237286563,
+"startQ": 30,
+"durQ": 2
+},
+{
+"instrument": "piano",
+"pitch": 46,
+"start": 27.853114558773274,
+"end": 28.34980564996732,
+"startQ": 30.5,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 55,
+"start": 28.34980564996732,
+"end": 28.82622944362694,
+"startQ": 31.0,
+"durQ": 0.5
+},
+{
+"instrument": "piano",
+"pitch": 46,
+"start": 28.82622944362694,
+"end": 29.302653237286563,
+"startQ": 31.5,
+"durQ": 0.5
+}
+]
+}

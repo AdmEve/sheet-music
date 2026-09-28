@@ -9,7 +9,7 @@ export interface Posteriors {
   contours: Float32Array;
 }
 
-export type Instrument = 'piano' | 'cello' | 'other';
+export type Instrument = 'piano' | 'cello';
 
 /** A note detected in the audio, with timing in seconds and timbre features used to guess the instrument. */
 export interface RawNote {
@@ -24,6 +24,17 @@ export interface RawNote {
   sustain: number;
   /** Onset sharpness (0..1). Hammered piano notes are high, bowed notes lower. */
   attack: number;
+  /**
+   * How sure the piano-specialist model is that a piano key was struck at this pitch
+   * when the note began (0..1). Missing when the piano model was not run.
+   */
+  hammer?: number;
+  /** Times the piano model re-triggered inside the note (bowed notes do, struck ones don't). */
+  refire?: number;
+  /** Seconds from the start to the loudest point, measured from the audio. */
+  attackTime?: number;
+  /** Loudness change after the peak in dB per second (struck notes fade). */
+  decay?: number;
 }
 
 export interface LabeledNote extends RawNote {
@@ -34,6 +45,8 @@ export interface LabeledNote extends RawNote {
 export interface Analysis {
   duration: number;
   notes: RawNote[];
+  /** Notes found by the piano-specialist model (when it was run). */
+  pianoNotes?: { start: number; end: number; pitch: number; conf: number }[];
   /** Onset strength envelope used for tempo and beat detection, sampled at `envRate` Hz. */
   onsetEnv: Float32Array;
   envRate: number;

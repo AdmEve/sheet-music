@@ -238,6 +238,10 @@ input[type='checkbox'] {
 .toolbar.wrap {
   flex-wrap: wrap;
 }
+.view-select {
+  width: auto;
+  font-weight: 600;
+}
 .toolbar .spacer {
   flex: 1;
 }

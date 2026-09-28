@@ -225,8 +225,9 @@ export function detectMeter(
           nOff++;
         }
       }
-      // Contrast between downbeats and other beats; slight preference for 4/4.
-      const score = on / Math.max(1, nOn) - off / Math.max(1, nOff) + (m === 4 ? 0.02 : 0);
+      // Contrast between downbeats and other beats; slight preference for 4/4 (and for
+      // 6/8 over 12/8, which is the same music written with bars twice as long).
+      const score = on / Math.max(1, nOn) - off / Math.max(1, nOff) + (m === 4 && candidates.includes(3) ? 0.02 : 0) + (m === 2 && candidates.includes(4) && !candidates.includes(3) ? 0.05 : 0);
       if (score > bestScore) {
         bestScore = score;
         best = { beatsPerBar: m, phase: ph };
@@ -234,4 +235,183 @@ export function detectMeter(
     }
   }
   return best;
+}
+
+// ---------------------------------------------------------------- metre inference
+
+export interface MetreResult {
+  /** Beat times (seconds) at the chosen beat level. */
+  beats: number[];
+  beatsPerBar: number;
+  /** Beats divide into three (6/8, 9/8, 12/8) rather than two. */
+  compound: boolean;
+  /** Index (in `beats`) of a downbeat. */
+  phase: number;
+}
+
+interface Cluster {
+  t: number;
+  w: number;
+}
+
+/** Onset clusters with a metrical weight: long, low and loud notes mark strong beats. */
+function onsetClusters(notes: RawNote[]): Cluster[] {
+  const sorted = [...notes].sort((a, b) => a.start - b.start);
+  const out: Cluster[] = [];
+  for (const n of sorted) {
+    const dur = Math.min(2, n.end - n.start);
+    const w = (0.3 + n.amp) * (1 + Math.log2(1 + dur / 0.25)) * (n.pitch < 55 ? 1.5 : 1);
+    const last = out[out.length - 1];
+    if (last && n.start - last.t < 0.04) last.w += w;
+    else out.push({ t: n.start, w });
+  }
+  return out;
+}
+
+/** Splits every interval of a pulse into k equal parts. */
+function subdivide(pulse: number[], k: number): number[] {
+  if (k === 1) return pulse;
+  const out: number[] = [];
+  for (let i = 0; i + 1 < pulse.length; i++) for (let j = 0; j < k; j++) out.push(pulse[i] + ((pulse[i + 1] - pulse[i]) * j) / k);
+  out.push(pulse[pulse.length - 1]);
+  return out;
+}
+
+function nearestIndex(grid: number[], t: number): number {
+  let lo = 0;
+  let hi = grid.length - 1;
+  while (hi - lo > 1) {
+    const mid = (lo + hi) >> 1;
+    if (grid[mid] <= t) lo = mid;
+    else hi = mid;
+  }
+  return Math.abs(grid[hi] - t) < Math.abs(grid[lo] - t) ? hi : lo;
+}
+
+/**
+ * Moves each tracked beat onto the strongest nearby (struck) onset, so the grid sits
+ * exactly on the notes and follows rubato. Beats with no onset nearby stay put.
+ */
+function alignPulse(pulse: number[], clusters: Cluster[]): number[] {
+  const p = medianStep(pulse);
+  const out = [...pulse];
+  let j = 0;
+  for (let i = 0; i < out.length; i++) {
+    while (j < clusters.length && clusters[j].t < out[i] - 0.2 * p) j++;
+    let best = -1;
+    let bestV = 0;
+    for (let q = j; q < clusters.length && clusters[q].t <= out[i] + 0.2 * p; q++) {
+      const d = (clusters[q].t - out[i]) / (0.1 * p);
+      const v = clusters[q].w * Math.exp(-0.5 * d * d);
+      if (v > bestV) {
+        bestV = v;
+        best = q;
+      }
+    }
+    if (best >= 0) {
+      const t = clusters[best].t;
+      const prev = i > 0 ? out[i - 1] : -Infinity;
+      if (t - prev > 0.6 * p) out[i] = t;
+    }
+  }
+  return out;
+}
+
+function medianStep(grid: number[]): number {
+  const d = grid.slice(1).map((b, i) => b - grid[i]).sort((a, b) => a - b);
+  return d.length ? d[Math.floor(d.length / 2)] : 0.5;
+}
+
+/**
+ * Works out the beat level, whether beats divide in two or three, and the bar length.
+ * It finds the finest regular pulse the notes sit on (the "tatum", usually the eighth
+ * note), then tries grouping it in 1, 2, 3, 4 or 6 and keeps the grouping where the
+ * accented notes (long, low, loud) fall on the beats at a plausible tempo.
+ */
+export function inferMetre(
+  pulse: number[],
+  notes: RawNote[],
+  fixed: { beatsPerBar?: number; compound?: boolean; pulseIsBeat?: boolean } = {},
+): MetreResult {
+  const clusters = onsetClusters(notes);
+  if (clusters.length < 4) {
+    const d = detectMeter(pulse, notes, fixed.beatsPerBar ? [fixed.beatsPerBar] : [3, 4]);
+    return { beats: pulse, beatsPerBar: d.beatsPerBar, compound: !!fixed.compound, phase: d.phase };
+  }
+  // 1. Tatum: the subdivision of the tracked pulse that the onsets fit best, judged by
+  //    how many onsets sit on the grid beyond what chance would give. Struck (piano)
+  //    notes time far more precisely than bowed ones, so they are used when available.
+  const p = medianStep(pulse);
+  const labeled = notes as (RawNote & { instrument?: string })[];
+  const struck = labeled.filter((n) => n.instrument === 'piano');
+  const timing = onsetClusters(struck.length >= 8 ? struck : notes);
+  pulse = alignPulse(pulse, timing);
+  const tol = 0.035;
+  let k = 1;
+  let bestFit = -Infinity;
+  for (const kk of [1, 2, 3, 4]) {
+    const spacing = p / kk;
+    // Nothing in this music is written faster than ~16th notes at a brisk tempo.
+    if (kk > 1 && spacing < 0.09) break;
+    const grid = subdivide(pulse, kk);
+    // Tolerance scales with the grid, so coarse and fine grids compete fairly.
+    const tolK = Math.min(tol, 0.2 * spacing);
+    const chance = (2 * tolK) / spacing;
+    let hit = 0;
+    let wsum = 0;
+    for (const c of timing) {
+      if (Math.abs(grid[nearestIndex(grid, c.t)] - c.t) <= tolK) hit += c.w;
+      wsum += c.w;
+    }
+    const excess = (hit / wsum - chance) / (1 - chance);
+    // Finer grids must clearly earn their place.
+    if (kk === 1 || excess > bestFit + 0.1) {
+      bestFit = Math.max(bestFit, excess);
+      k = kk;
+    }
+  }
+  const tatum = subdivide(pulse, k);
+
+  // 2. Accent on every tatum.
+  const acc = new Float64Array(tatum.length);
+  const tStep = medianStep(tatum);
+  for (const c of clusters) {
+    const i = nearestIndex(tatum, c.t);
+    if (Math.abs(tatum[i] - c.t) < 0.45 * tStep) acc[i] += c.w;
+  }
+  const meanAcc = acc.reduce((a, b) => a + b, 0) / acc.length || 1;
+
+  // 3. Candidate beat levels.
+  type Cand = { g: number; phi: number; score: number; beats: number[]; compound: boolean };
+  let best: Cand | null = null;
+  const groupings = fixed.pulseIsBeat ? [k] : [1, 2, 3, 4, 6, 8, 12];
+  for (const g of groupings) {
+    const compound = g % 3 === 0;
+    if (fixed.compound !== undefined && !fixed.pulseIsBeat && compound !== fixed.compound) continue;
+    for (let phi = 0; phi < g; phi++) {
+      const beats: number[] = [];
+      let sum = 0;
+      let n = 0;
+      for (let i = phi; i < tatum.length; i += g) {
+        beats.push(tatum[i]);
+        sum += acc[i];
+        n++;
+      }
+      if (beats.length < 4) continue;
+      const bpm = 60 / medianStep(beats);
+      if (bpm < 30 || bpm > 220) continue;
+      const contrast = sum / n / meanAcc;
+      const center = compound ? 60 : 88;
+      const prior = Math.log2(bpm / center) / 0.6;
+      // Simple metres are more common in this repertoire; compound needs clear evidence.
+      const score = Math.log(contrast + 1e-3) - 0.5 * prior * prior - (compound ? 0.15 : 0);
+      if (!best || score > best.score) best = { g, phi, score, beats, compound: fixed.compound ?? compound };
+    }
+  }
+  const chosen = best ?? { g: 1, phi: 0, score: 0, beats: pulse, compound: !!fixed.compound };
+
+  // 4. Bar length and downbeat.
+  const cands = fixed.beatsPerBar ? [fixed.beatsPerBar] : chosen.compound ? [2, 4] : [3, 4];
+  const d = detectMeter(chosen.beats, notes, cands);
+  return { beats: chosen.beats, beatsPerBar: d.beatsPerBar, compound: chosen.compound, phase: d.phase };
 }

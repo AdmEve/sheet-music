@@ -10,3 +10,9 @@ const dest = join(root, 'public/model');
 mkdirSync(dest, { recursive: true });
 cpSync(src, dest, { recursive: true });
 console.log('Copied Basic Pitch model to public/model');
+
+// Piano specialist (Magenta Onsets and Frames, float16, see scripts/convert-piano-model.py).
+const pianoDest = join(root, 'public/piano-model');
+mkdirSync(pianoDest, { recursive: true });
+cpSync(join(root, 'models/piano'), pianoDest, { recursive: true });
+console.log('Copied piano model to public/piano-model');

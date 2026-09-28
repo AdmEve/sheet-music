@@ -64,3 +64,12 @@ export async function loadNodeModel(): Promise<tf.GraphModel> {
     }),
   });
 }
+
+/** Loads the bundled piano model weights (models/piano) in Node. */
+export function loadPianoWeightsNode(): tf.NamedTensorMap {
+  const dir = join(__dirname, '../models/piano');
+  const manifest = JSON.parse(readFileSync(join(dir, 'weights_manifest.json'), 'utf8'));
+  const bufs = manifest[0].paths.map((p: string) => readFileSync(join(dir, p)));
+  const all = Buffer.concat(bufs);
+  return tf.io.decodeWeights(all.buffer.slice(all.byteOffset, all.byteOffset + all.byteLength), manifest[0].weights);
+}

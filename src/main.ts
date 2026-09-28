@@ -5,10 +5,10 @@ import { isPlaying, play, stop } from './app/player';
 import { renderPages } from './app/render';
 import { deleteProject, fromStored, getProject, listProjects, saveProject, toStored, type Project } from './app/store';
 import { runInWorker, type RunHandle } from './app/model';
-import { analyse, noteOptionsForSensitivity } from './engine/notes';
-import { DEFAULT_SETTINGS, makeScore, type Result, type Settings } from './engine/pipeline';
+import { analyseAll, DEFAULT_SETTINGS, makeScore, type Result, type Settings } from './engine/pipeline';
+import type { PianoRoll } from './engine/pianomodel';
 import type { Detail, Meter } from './engine/score';
-import type { InstrumentMode } from './engine/assign';
+import { toMusicXML, type ScoreView } from './engine/musicxml';
 import type { Analysis, Posteriors } from './engine/types';
 
 const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -22,13 +22,16 @@ interface Current {
   created: number;
   analysis: Analysis;
   settings: Settings;
-  /** Raw network output, kept in memory so "sensitivity" can be changed without re-running the AI. */
+  /** Raw network output + audio, kept in memory so "sensitivity" can be changed without re-running the AI. */
   posteriors?: Posteriors;
+  roll?: PianoRoll;
+  audio?: Float32Array;
 }
 
 let current: Current | null = null;
 let result: Result | null = null;
 let zoom = Number(localStorageGet('zoom') ?? 40);
+let view: ScoreView = (['score', 'cello', 'piano'] as const).find((v) => v === localStorageGet('view')) ?? 'score';
 let pickedFile: File | null = null;
 let cancelled = false;
 let running: RunHandle | null = null;
@@ -122,14 +125,14 @@ $('go').addEventListener('click', async () => {
         Number.isFinite(left) ? `About ${formatDuration(left)} left` : `Piece length: ${formatDuration(audio.duration)}`,
       );
     });
-    const post = await running.promise.catch((e) => {
+    const { post, roll } = await running.promise.catch((e) => {
       throw cancelled ? new Cancelled() : e;
     });
     running = null;
     if (cancelled) throw new Cancelled();
     setProgress('Writing the score…', 0.97);
     const sensitivity = Number($<HTMLInputElement>('sensitivity').value);
-    const analysis = analyse(post, noteOptionsForSensitivity(sensitivity));
+    const analysis = analyseAll(post, roll, audio.samples, sensitivity);
     const title = file.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ');
     const settings: Settings = structuredClone({
       ...DEFAULT_SETTINGS,
@@ -144,6 +147,8 @@ $('go').addEventListener('click', async () => {
       analysis,
       settings,
       posteriors: post,
+      roll,
+      audio: audio.samples,
     };
     await persist();
     await openResult();
@@ -198,7 +203,6 @@ function keyLabel(fifths: number, mode: string) {
 }
 
 function settingsToForm(s: Settings) {
-  $<HTMLSelectElement>('s-mode').value = s.instruments.mode;
   $<HTMLSelectElement>('s-meter').value = s.score.meter ? `${s.score.meter.beats}/${s.score.meter.beatType}` : 'auto';
   $<HTMLInputElement>('s-bpm').value = s.score.bpm ? String(s.score.bpm) : '';
   $<HTMLSelectElement>('s-key').value = s.score.key ? `${s.score.key.fifths},${s.score.key.mode}` : 'auto';
@@ -219,7 +223,6 @@ function formToSettings(prev: Settings): Settings {
     sensitivity: Number($<HTMLInputElement>('s-sens').value),
     instruments: {
       ...prev.instruments,
-      mode: $<HTMLSelectElement>('s-mode').value as InstrumentMode,
       celloBias: Number($<HTMLInputElement>('s-bias').value),
     },
     score: {
@@ -258,7 +261,7 @@ async function rescore() {
       `Detected: ${keyLabel(s.key.fifths, s.key.mode)}, ${s.meter.beats}/${s.meter.beatType}, ♩≈${s.bpm}, ` +
       `${s.measures.length} bars. ${counts.join(' · ')}`;
     const width = $('score').clientWidth || window.innerWidth - 32;
-    const pages = await renderPages(result.musicxml, { width, zoom });
+    const pages = await renderPages(viewXml(), { width, zoom });
     if (token !== renderToken) return;
     $('score').innerHTML = pages.join('');
     $('status').textContent = '';
@@ -274,7 +277,8 @@ async function onSettingsChanged() {
   const next = formToSettings(current.settings);
   const sensChanged = next.sensitivity !== current.settings.sensitivity;
   current.settings = next;
-  if (sensChanged && current.posteriors) current.analysis = analyse(current.posteriors, noteOptionsForSensitivity(next.sensitivity));
+  if (sensChanged && current.posteriors)
+    current.analysis = analyseAll(current.posteriors, current.roll ?? null, current.audio ?? null, next.sensitivity);
   window.clearTimeout(settingsTimer);
   settingsTimer = window.setTimeout(() => {
     stopPlayback();
@@ -282,7 +286,19 @@ async function onSettingsChanged() {
     void persist();
   }, 250);
 }
-for (const id of ['s-mode', 's-meter', 's-bpm', 's-key', 's-detail', 's-follow', 's-bias', 's-sens', 'title'])
+/** MusicXML of what is on screen (full score or one player's part). */
+function viewXml(): string {
+  return view === 'score' ? result!.musicxml : toMusicXML(result!.score, view);
+}
+
+$<HTMLSelectElement>('view').value = view;
+$('view').addEventListener('change', () => {
+  view = $<HTMLSelectElement>('view').value as ScoreView;
+  localStorageSet('view', view);
+  void rescore();
+});
+
+for (const id of ['s-meter', 's-bpm', 's-key', 's-detail', 's-follow', 's-bias', 's-sens', 'title'])
   $(id).addEventListener('change', onSettingsChanged);
 
 $('settings-toggle').addEventListener('click', () => $('settings').classList.toggle('hidden'));
@@ -317,8 +333,9 @@ $('play').addEventListener('click', () => {
 
 // ------------------------------------------------------------------ export
 
-function baseName() {
-  return safeName(current?.settings.score.title ?? 'Sheet music');
+function baseName(withView = false) {
+  const t = safeName(current?.settings.score.title ?? 'Sheet music');
+  return withView && view !== 'score' ? `${t} - ${view === 'cello' ? 'Cello' : 'Piano'} part` : t;
 }
 
 async function withStatus(label: string, fn: () => Promise<string | void>) {
@@ -334,16 +351,16 @@ async function withStatus(label: string, fn: () => Promise<string | void>) {
 
 async function pdfBlob(): Promise<Blob> {
   const { makePdf } = await import('./app/pdf');
-  return makePdf(result!.musicxml, current!.settings.score.title);
+  return makePdf(viewXml(), current!.settings.score.title);
 }
 const xmlBlob = () => new Blob([result!.musicxml], { type: 'application/vnd.recordare.musicxml+xml' });
 const midiBlob = () => new Blob([result!.midi as BlobPart], { type: 'audio/midi' });
 
-$('save-pdf').addEventListener('click', () => result && withStatus('Making PDF…', async () => saveFile(`${baseName()}.pdf`, await pdfBlob())));
+$('save-pdf').addEventListener('click', () => result && withStatus('Making PDF…', async () => saveFile(`${baseName(true)}.pdf`, await pdfBlob())));
 $('save-xml').addEventListener('click', () => result && withStatus('Saving…', () => saveFile(`${baseName()}.musicxml`, xmlBlob())));
 $('save-midi').addEventListener('click', () => result && withStatus('Saving…', () => saveFile(`${baseName()}.mid`, midiBlob())));
 $('share').addEventListener('click', () =>
-  result && withStatus('Preparing…', async () => shareFile(`${baseName()}.pdf`, await pdfBlob())),
+  result && withStatus('Preparing…', async () => shareFile(`${baseName(true)}.pdf`, await pdfBlob())),
 );
 
 // ------------------------------------------------------------------ library
@@ -404,6 +421,10 @@ if (!isNative() && 'serviceWorker' in navigator && import.meta.env.PROD) {
     setTimeout(() => {
       void fetch('model/model.json');
       void fetch('model/group1-shard1of1.bin');
+      void fetch('piano-model/weights_manifest.json')
+        .then((r) => r.json())
+        .then((m: { paths: string[] }[]) => m.flatMap((g) => g.paths).forEach((f) => void fetch(`piano-model/${f}`)))
+        .catch(() => {});
       new Worker(new URL('./app/model.worker.ts', import.meta.url), { type: 'module' }).terminate();
       void import('./app/render');
       void import('verovio/wasm');

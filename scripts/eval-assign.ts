@@ -1,13 +1,13 @@
 // Scores instrument-labelled notes against ground truth JSON (from make_test_audio.py).
-// Usage: npx vite-node scripts/eval-assign.ts analysis.json truth.json [mode]
+// Usage: npx vite-node scripts/eval-assign.ts analysis.json truth.json
 import { readFileSync } from 'node:fs';
-import { assignInstruments, bowedScore, DEFAULT_ASSIGN, type InstrumentMode } from '../src/engine/assign';
+import { assignInstruments, bowedScore, DEFAULT_ASSIGN } from '../src/engine/assign';
 import type { LabeledNote } from '../src/engine/types';
 
-const [an, truth, mode] = process.argv.slice(2);
+const [an, truth] = process.argv.slice(2);
 const a = JSON.parse(readFileSync(an, 'utf8'));
 const gt: { instrument: string; pitch: number; start: number; end: number }[] = JSON.parse(readFileSync(truth, 'utf8')).notes;
-const out: LabeledNote[] = assignInstruments(a.notes, { ...DEFAULT_ASSIGN, mode: (mode as InstrumentMode) ?? 'piano+cello' });
+const out: LabeledNote[] = assignInstruments(a.notes, DEFAULT_ASSIGN, a.pianoNotes);
 for (const ins of ['piano', 'cello']) {
   const g = gt.filter((x) => x.instrument === ins);
   const d = out.filter((x) => x.instrument === ins);

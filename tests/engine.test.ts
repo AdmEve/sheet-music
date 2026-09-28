@@ -151,3 +151,49 @@ describe('score', () => {
     }
   });
 });
+
+describe('duet specifics', () => {
+  it('writes a cello part and a piano part with a small cello cue staff', async () => {
+    const { toMusicXML } = await import('../src/engine/musicxml');
+    const { analysis } = synthetic();
+    const s = buildScore(analysis, assignInstruments(analysis.notes), DEFAULT_SCORE_OPTIONS);
+    const cello = toMusicXML(s, 'cello');
+    expect(cello).toContain('<part-name>Cello</part-name>');
+    expect(cello).not.toContain('<part-name>Piano</part-name>');
+    const piano = toMusicXML(s, 'piano');
+    expect(piano).toContain('<staff-size>70</staff-size>');
+    expect(piano).toContain('<part-name>Piano</part-name>');
+    expect(toMusicXML(s)).not.toContain('<staff-size>');
+  });
+
+  it('takes piano notes from the piano model but drops its re-fires inside cello notes', () => {
+    const { analysis } = synthetic();
+    const raw = analysis.notes.map((n) => ({ ...n, hammer: 0.8, refire: n.vibrato > 0.3 ? 4 : 0, attackTime: n.vibrato > 0.3 ? 0.25 : 0.03, decay: n.vibrato > 0.3 ? 0 : -20 }));
+    const piano = analysis.notes.filter((n) => n.vibrato === 0).map((n) => ({ start: n.start, end: n.end, pitch: n.pitch, conf: 0.9 }));
+    // The piano model also "hears" the cello: at its start and again during it (vibrato).
+    const cello = analysis.notes.filter((n) => n.vibrato > 0.3);
+    for (const c of cello) piano.push({ start: c.start, end: c.start + 0.3, pitch: c.pitch, conf: 0.7 }, { start: c.start + 0.6, end: c.start + 0.9, pitch: c.pitch, conf: 0.6 });
+    const out = assignInstruments(raw, undefined, piano);
+    const truePiano = new Set(analysis.notes.filter((n) => n.vibrato === 0).map((n) => `${n.pitch}@${n.start.toFixed(3)}`));
+    const extra = out.filter((n) => n.instrument === 'piano' && !truePiano.has(`${n.pitch}@${n.start.toFixed(3)}`));
+    expect(extra.map((n) => `${n.pitch}@${n.start.toFixed(2)}`)).toEqual([]);
+    expect(out.filter((n) => n.instrument === 'cello').length).toBe(cello.length);
+    expect(out.filter((n) => n.instrument === 'piano').length).toBe(analysis.notes.length - cello.length);
+  });
+
+  it('recognises 6/8 from notes grouped in threes', async () => {
+    const { inferMetre } = await import('../src/engine/rhythm');
+    const eighth = 60 / 168;
+    const pulse = Array.from({ length: 70 }, (_, i) => i * eighth * 2); // tracker locked on pairs of eighths
+    const notes: RawNote[] = [];
+    for (let i = 0; i < 96; i++) {
+      const strong = i % 3 === 0;
+      notes.push({ start: i * eighth, end: i * eighth + (strong ? 3 * eighth : eighth * 0.9), pitch: strong ? 41 + ((i / 3) % 2) * 7 : 60 + (i % 3), amp: strong ? 0.8 : 0.4, vibrato: 0, sustain: 0.7, attack: 0.8 });
+    }
+    const labeled = notes.map((n) => ({ ...n, instrument: 'piano' as const }));
+    const r = inferMetre(pulse, labeled);
+    expect(r.compound).toBe(true);
+    const beat = r.beats[11] - r.beats[10];
+    expect(Math.abs(beat - 3 * eighth)).toBeLessThan(0.02);
+  });
+});

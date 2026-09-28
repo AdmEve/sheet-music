@@ -6,10 +6,7 @@
 // with dynamic programming (best-scoring non-overlapping, smoothly connected notes).
 import type { Instrument, LabeledNote, RawNote } from './types';
 
-export type InstrumentMode = 'piano+cello' | 'piano+cello+other' | 'piano' | 'cello';
-
 export interface AssignOptions {
-  mode: InstrumentMode;
   /** Lowest/highest cello pitch considered (MIDI). */
   celloLow: number;
   celloHigh: number;
@@ -18,7 +15,6 @@ export interface AssignOptions {
 }
 
 export const DEFAULT_ASSIGN: AssignOptions = {
-  mode: 'piano+cello',
   celloLow: 36,
   celloHigh: 84,
   celloBias: 0,
@@ -26,12 +22,34 @@ export const DEFAULT_ASSIGN: AssignOptions = {
 
 const dur = (n: RawNote) => n.end - n.start;
 
-/** How much a note sounds like a bowed string (positive) vs. a struck piano key (negative). */
+/**
+ * How much a note sounds like a bowed string (positive) vs. a struck piano key (negative).
+ *
+ * With the full set of cues (piano-model re-fires, attack time and decay measured from the
+ * audio) this is a logistic-regression classifier fitted on the piano+cello benchmark
+ * (scripts/bench/fit_classifier.py, three sound sets; ~87% accuracy on a held-out sound set). Its log-odds
+ * are scaled to the range the cello-line search expects. Without those cues (older
+ * saved pieces) a hand-made rule is used.
+ */
 export function bowedScore(n: RawNote): number {
   const vib = Math.min(n.vibrato, 0.8);
   const sus = Math.max(-0.5, Math.min(0.8, n.sustain - 0.9));
-  const att = 0.6 - n.attack;
   const len = Math.max(-1, Math.min(1.5, Math.log2(dur(n) / 0.4)));
+  if (n.refire !== undefined && n.attackTime !== undefined && n.decay !== undefined) {
+    const logit =
+      2.807 * vib +
+      1.313 * sus -
+      0.703 * (n.attack - 0.6) -
+      1.265 * len +
+      2.897 * (n.refire >= 1 ? 1 : 0) +
+      2.089 * (Math.min(n.refire, 3) / 3) +
+      1.704 * (Math.min(n.attackTime, 0.3) / 0.3) +
+      0.132 * (Math.max(-60, Math.min(20, n.decay)) / 20) +
+      1.77 * (n.hammer ?? 0.5) -
+      3.64;
+    return logit / 2.5;
+  }
+  const att = 0.6 - n.attack;
   return 1.8 * vib + 1.2 * sus + 0.8 * att + 0.1 * len - 0.15;
 }
 
@@ -154,7 +172,7 @@ function joinBowedFragments(input: RawNote[]): RawNote[] {
       p.pitch === n.pitch &&
       n.start - p.end < 0.05 &&
       n.attack < 0.75 &&
-      (p.vibrato > 0.2 || n.vibrato > 0.2 || p.sustain > 1.1)
+      (p.vibrato > 0.2 || n.vibrato > 0.2 || p.sustain > 1.1 || (n.refire ?? 0) >= 1 || (p.refire ?? 0) >= 1)
     ) {
       const dp = dur(p);
       const dn = dur(n);
@@ -162,6 +180,10 @@ function joinBowedFragments(input: RawNote[]): RawNote[] {
       p.sustain = Math.max(p.sustain, n.sustain);
       p.amp = (p.amp * dp + n.amp * dn) / (dp + dn);
       p.end = Math.max(p.end, n.end);
+      // The merged note re-fires where the second part began, plus inside it.
+      if (p.refire !== undefined || n.refire !== undefined) p.refire = (p.refire ?? 0) + (n.refire ?? 0) + 1;
+      if (p.attackTime !== undefined && n.attackTime !== undefined && dp < 0.3) p.attackTime = Math.max(p.attackTime, dp + n.attackTime);
+      if (n.decay !== undefined && dn > dp) p.decay = n.decay;
       continue;
     }
     out.push({ ...n });
@@ -169,10 +191,30 @@ function joinBowedFragments(input: RawNote[]): RawNote[] {
   return out.sort((a, b) => a.start - b.start || a.pitch - b.pitch);
 }
 
-export function assignInstruments(input: RawNote[], opt: AssignOptions = DEFAULT_ASSIGN): LabeledNote[] {
-  const notes = removeGhosts(joinBowedFragments(input));
-  if (opt.mode === 'piano') return notes.map((n) => ({ ...n, instrument: 'piano' as Instrument }));
+/** A note from the piano-specialist model. */
+export interface PianoModelNote {
+  start: number;
+  end: number;
+  pitch: number;
+  conf: number;
+}
 
+/**
+ * The piano model reacts to real notes of both instruments but almost never to the
+ * overtones and blips the general model invents, so notes it did not register at all
+ * are dropped (unless they are unmistakably bowed).
+ */
+function realNotesOnly(notes: RawNote[]): RawNote[] {
+  if (!notes.some((n) => n.hammer !== undefined)) return notes;
+  return notes.filter((n) => n.hammer === undefined || n.hammer >= 0.06 || (bowedScore(n) > 0.8 && dur(n) > 0.5));
+}
+
+export function assignInstruments(
+  input: RawNote[],
+  opt: AssignOptions = DEFAULT_ASSIGN,
+  pianoModel?: PianoModelNote[],
+): LabeledNote[] {
+  const notes = removeGhosts(joinBowedFragments(realNotesOnly(input)));
   const cello = celloLine(notes, opt);
   // The first moment of a bowed note (before vibrato settles) is often detected as a
   // separate short note; pull such lead-ins into the cello note that follows them.
@@ -186,7 +228,42 @@ export function assignInstruments(input: RawNote[], opt: AssignOptions = DEFAULT
   const celloNotes = joinCelloFragments(
     notes.filter((_, i) => cello.has(i)).map((n) => ({ ...n, instrument: 'cello' as Instrument })),
   );
-  if (opt.mode === 'cello') return celloNotes;
+  if (pianoModel?.length) {
+    // Piano part from the piano specialist, minus what is really the cello: the piano
+    // model re-fires on a bowed note's vibrato at the cello's own pitch.
+    // A re-trigger inside a note that is already sounding at that pitch is never a new
+    // piano note (a real re-strike shows up as a fresh note in the general model too).
+    const sounding = (o: PianoModelNote) =>
+      notes.some((n) => n.pitch === o.pitch && o.start > n.start + 0.08 && o.start < n.end - 0.05);
+    // Piano doubling the cello's note: keep it when it is half of a piano octave struck
+    // together (a very common left-hand pattern), since the cello cannot explain both.
+    const octaveMate = (o: PianoModelNote) =>
+      pianoModel.some((q) => Math.abs(q.pitch - o.pitch) === 12 && Math.abs(q.start - o.start) < 0.02 && !celloNotes.some((c) => c.pitch === q.pitch && Math.abs(c.start - q.start) < 0.1));
+    const explainedByCello = (o: PianoModelNote) =>
+      celloNotes.some((c) => c.pitch === o.pitch && o.start >= c.start - 0.1 && o.start < c.end - 0.02) &&
+      !(octaveMate(o) && celloNotes.some((c) => c.pitch === o.pitch && Math.abs(o.start - c.start) < 0.1));
+    const fromModel = pianoModel.filter((o) => !explainedByCello(o)).filter((o) => !sounding(o));
+    // Chord notes the piano model missed but the general model heard (and the piano model
+    // saw at least a hint of a hammer): add them.
+    const missed = notes
+      .filter((n, i) => !cello.has(i) && (n.hammer ?? 0) >= 0.2 && bowedScore(n) < 0)
+      .filter((n) => !fromModel.some((o) => o.pitch === n.pitch && Math.abs(o.start - n.start) < 0.08))
+      .filter((n) => !celloNotes.some((c) => c.pitch === n.pitch && n.start >= c.start - 0.1 && n.start < c.end))
+      .map((n) => ({ start: n.start, end: n.end, pitch: n.pitch, conf: n.hammer ?? 0.2 }));
+    const piano: LabeledNote[] = [...fromModel, ...missed]
+      .map((o) => ({
+        start: o.start,
+        end: Math.max(o.end, o.start + 0.05),
+        pitch: o.pitch,
+        amp: o.conf,
+        vibrato: 0,
+        sustain: 0.7,
+        attack: o.conf,
+        hammer: o.conf,
+        instrument: 'piano' as Instrument,
+      }));
+    return [...celloNotes, ...piano].sort((a, b) => a.start - b.start || a.pitch - b.pitch);
+  }
 
   const rest: LabeledNote[] = [];
   notes.forEach((n, i) => {
@@ -194,14 +271,7 @@ export function assignInstruments(input: RawNote[], opt: AssignOptions = DEFAULT
     // Doubled by the cello line at the same pitch: merged fragment, not a separate piano note.
     if (celloNotes.some((c) => c.pitch === n.pitch && n.start >= c.start - 0.05 && n.end <= c.end + 0.05 && n.attack < 0.7))
       return;
-    let instrument: Instrument = 'piano';
-    if (opt.mode === 'piano+cello+other') {
-      const s = bowedScore(n) + opt.celloBias;
-      const echoesCello = celloNotes.some(
-        (c) => [12, 19, 24].includes(Math.abs(n.pitch - c.pitch)) && n.start < c.end && n.end > c.start,
-      );
-      if (s > 0.45 && !echoesCello && dur(n) > 0.25) instrument = 'other';
-    }
+    const instrument: Instrument = 'piano';
     rest.push({ ...n, instrument });
   });
   return [...celloNotes, ...rest].sort((a, b) => a.start - b.start || a.pitch - b.pitch);

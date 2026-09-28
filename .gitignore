@@ -16,3 +16,6 @@ test-audio/*.bin
 test-audio/*.analysis.json
 test-audio/*.a7.json
 test-audio/*.browser.analysis.json
+public/piano-model/
+test-audio/bench/*.wav
+test-audio/bench/*.bin

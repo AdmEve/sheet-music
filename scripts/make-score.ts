@@ -1,17 +1,15 @@
-// Usage: npx vite-node scripts/make-score.ts analysis.json out-prefix [mode] [detail]
+// Usage: npx vite-node scripts/make-score.ts analysis.json out-prefix [detail]
 // Builds MusicXML + MIDI from a saved analysis (see dump-analysis.ts).
 import { readFileSync, writeFileSync } from 'node:fs';
 import { DEFAULT_SETTINGS, makeScore } from '../src/engine/pipeline';
-import type { InstrumentMode } from '../src/engine/assign';
 import type { Detail } from '../src/engine/score';
 
-const [an, out, mode, detail] = process.argv.slice(2);
+const [an, out, detail] = process.argv.slice(2);
 const a = JSON.parse(readFileSync(an, 'utf8'));
 a.onsetEnv = new Float32Array(a.onsetEnv);
 const r = makeScore(a, {
   ...DEFAULT_SETTINGS,
   score: { ...DEFAULT_SETTINGS.score, title: 'Test Duet', detail: (detail as Detail) ?? 'normal' },
-  instruments: { ...DEFAULT_SETTINGS.instruments, mode: (mode as InstrumentMode) ?? 'piano+cello' },
 });
 writeFileSync(out + '.musicxml', r.musicxml);
 writeFileSync(out + '.mid', r.midi);

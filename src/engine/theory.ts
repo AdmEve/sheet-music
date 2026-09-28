@@ -28,7 +28,14 @@ function corr(a: number[], b: number[]): number {
 
 export function detectKey(notes: { pitch: number; start: number; end: number; amp?: number }[]): Key {
   const hist = new Array(12).fill(0);
-  for (const n of notes) hist[n.pitch % 12] += Math.min(2, n.end - n.start) * (n.amp ?? 1);
+  // The bass line and the last notes carry most of the tonal weight.
+  const last = notes.reduce((m, n) => Math.max(m, n.end), 0);
+  const lowest = notes.reduce((m, n) => Math.min(m, n.pitch), 127);
+  for (const n of notes) {
+    const bass = n.pitch < Math.max(48, lowest + 12) ? 1.6 : 1;
+    const ending = n.end > last - 2 ? 1.5 : 1;
+    hist[n.pitch % 12] += Math.min(2, n.end - n.start) * (n.amp ?? 1) * bass * ending;
+  }
   if (hist.every((v) => v === 0)) return { fifths: 0, mode: 'major' };
   let best: Key = { fifths: 0, mode: 'major' };
   let bestR = -Infinity;

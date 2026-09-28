@@ -12,7 +12,23 @@ const CLEF: Record<ClefName, string> = {
 
 const ACCIDENTAL: Record<number, string> = { [-2]: 'flat-flat', [-1]: 'flat', 0: 'natural', 1: 'sharp', 2: 'double-sharp' };
 
-export function toMusicXML(score: Score): string {
+/**
+ * Which pages to write:
+ * - 'score': full score (cello above piano),
+ * - 'cello': the cellist's part,
+ * - 'piano': the pianist's part, with the cello line in small notes above (as in
+ *   published cello sonatas, so the pianist can follow the cellist).
+ */
+export type ScoreView = 'score' | 'cello' | 'piano';
+
+export function toMusicXML(full: Score, view: ScoreView = 'score'): string {
+  const score: Score =
+    view === 'cello'
+      ? { ...full, title: `${full.title} (Cello)`, parts: full.parts.filter((p) => p.instrument === 'cello') }
+      : view === 'piano'
+        ? { ...full, title: `${full.title} (Piano)` }
+        : full;
+  const cue = (p: Score['parts'][number]) => view === 'piano' && p.instrument === 'cello';
   const { key } = score;
   const keySig = keyAlterations(key.fifths);
   const o: string[] = [];
@@ -55,6 +71,8 @@ export function toMusicXML(score: Score): string {
           prevClef[si] = c;
         }
       });
+      // Small cue staff for the cello line in the piano part (staff-details follow the clef).
+      if (mi === 0 && cue(part)) attrs.push('<staff-details><staff-size>70</staff-size></staff-details>');
       if (attrs.length) o.push(`<attributes>${attrs.join('')}</attributes>`);
       if (mi === 0 && part === score.parts[0]) o.push(tempoDirection(score));
       part.staves.forEach((st, si) => {

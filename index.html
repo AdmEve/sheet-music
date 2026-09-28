@@ -26,7 +26,7 @@
             <input type="file" id="file" accept="audio/*,video/*,.mp3,.m4a,.wav,.ogg,.flac,.aac,.mp4" hidden />
             <span class="drop-icon" aria-hidden="true">♫</span>
             <span id="file-label">Choose a recording</span>
-            <small>MP3, M4A, WAV, OGG, FLAC… Piano and cello work best.</small>
+            <small>A piano and cello duet · MP3, M4A, WAV, OGG, FLAC…</small>
           </label>
 
           <details class="more">
@@ -69,6 +69,11 @@
         </div>
 
         <div class="toolbar wrap">
+          <select id="view" aria-label="Show" class="view-select">
+            <option value="score">Full score</option>
+            <option value="cello">Cello part</option>
+            <option value="piano">Piano part</option>
+          </select>
           <button id="zoom-out" class="ghost" aria-label="Smaller">A−</button>
           <button id="zoom-in" class="ghost" aria-label="Bigger">A+</button>
           <button id="settings-toggle" class="ghost">⚙ Adjust</button>
@@ -81,15 +86,6 @@
 
         <div id="settings" class="card settings hidden">
           <div class="grid">
-            <label
-              >Instruments
-              <select id="s-mode">
-                <option value="piano+cello">Piano + Cello</option>
-                <option value="piano+cello+other">Piano + Cello + Other</option>
-                <option value="piano">Piano only</option>
-                <option value="cello">Cello only</option>
-              </select>
-            </label>
             <label
               >Time signature
               <select id="s-meter">

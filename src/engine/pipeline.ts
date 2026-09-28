@@ -1,12 +1,13 @@
 // High-level API: audio -> analysis (slow, neural network) -> score (fast, re-run on every settings change).
-import type * as tf from '@tensorflow/tfjs';
 import { assignInstruments, DEFAULT_ASSIGN, type AssignOptions } from './assign';
-import { runModel } from './basicpitch';
+import { SAMPLE_RATE } from './basicpitch';
+import { withPianoEvidence, type PianoRoll } from './pianomodel';
+import { withEnvelopes } from './timbre';
 import { toMidi } from './midi';
 import { toMusicXML } from './musicxml';
 import { analyse, noteOptionsForSensitivity } from './notes';
 import { buildScore, DEFAULT_SCORE_OPTIONS, type Score, type ScoreOptions } from './score';
-import type { Analysis } from './types';
+import type { Analysis, Posteriors } from './types';
 
 export interface Settings {
   score: ScoreOptions;
@@ -21,14 +22,15 @@ export const DEFAULT_SETTINGS: Settings = {
   sensitivity: 0.6,
 };
 
-export async function transcribe(
-  audio22k: Float32Array,
-  model: Promise<tf.GraphModel> | tf.GraphModel,
-  sensitivity: number,
-  onProgress: (p: number) => void = () => {},
-): Promise<Analysis> {
-  const post = await runModel(audio22k, model, onProgress);
-  return analyse(post, noteOptionsForSensitivity(sensitivity));
+/**
+ * Everything that comes from listening: notes from the general model, the piano
+ * specialist's view of them, and loudness envelopes measured from the audio.
+ */
+export function analyseAll(post: Posteriors, roll: PianoRoll | null, audio22k: Float32Array | null, sensitivity: number): Analysis {
+  let a = analyse(post, noteOptionsForSensitivity(sensitivity));
+  if (roll) a = withPianoEvidence(a, roll);
+  if (audio22k) a = withEnvelopes(a, audio22k, SAMPLE_RATE);
+  return a;
 }
 
 export interface Result {
@@ -38,7 +40,7 @@ export interface Result {
 }
 
 export function makeScore(analysis: Analysis, settings: Settings): Result {
-  const labeled = assignInstruments(analysis.notes, settings.instruments);
+  const labeled = assignInstruments(analysis.notes, settings.instruments, analysis.pianoNotes);
   const score = buildScore(analysis, labeled, settings.score);
   return { score, musicxml: toMusicXML(score), midi: toMidi(score) };
 }

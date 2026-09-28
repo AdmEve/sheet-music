@@ -1,6 +1,6 @@
 // Builds a notated score (measures, note values, ties, triplets, clefs, hands) from
 // instrument-labelled notes in seconds.
-import { beatPosition, constantGrid, detectMeter, trackBeats } from './rhythm';
+import { beatPosition, constantGrid, extendBeats, inferMetre, trackBeats } from './rhythm';
 import { detectKey, type Key } from './theory';
 import type { Analysis, Instrument, LabeledNote } from './types';
 
@@ -484,18 +484,13 @@ function markBeams(evs: ScoreEvent[], mi: MeterInfo, m: MeasureInfo) {
   }
 }
 
-function chooseClefs(staff: ScoreEvent[][], instrument: Instrument, hand?: 'rh' | 'lh'): ClefName[] {
+function chooseClefs(staff: ScoreEvent[][], hand?: 'rh' | 'lh'): ClefName[] {
   if (hand === 'rh') return staff.map(() => 'treble');
   if (hand === 'lh') return staff.map(() => 'bass');
   const avg = staff.map((evs) => {
     const ps = evs.flatMap((e) => e.pitches);
     return ps.length ? ps.reduce((a, b) => a + b, 0) / ps.length : null;
   });
-  if (instrument === 'other') {
-    const all = avg.filter((a): a is number => a !== null);
-    const med = all.length ? all.sort((a, b) => a - b)[Math.floor(all.length / 2)] : 65;
-    return staff.map(() => (med < 57 ? 'bass' : 'treble'));
-  }
   // Cello: bass clef, tenor for high passages, treble for very high ones (with hysteresis).
   let cur: ClefName = 'bass';
   return avg.map((a) => {
@@ -517,30 +512,37 @@ export interface RhythmResult {
 }
 
 export function analyseRhythm(analysis: Analysis, notes: LabeledNote[], opt: ScoreOptions): RhythmResult {
+  // With a tempo given, the tracked pulse is the beat; otherwise the beat level is inferred.
   const tracked = trackBeats(analysis.onsetEnv, analysis.envRate, analysis.duration, { bpm: opt.bpm ?? undefined });
-  let beats = tracked.beats;
-  if (!opt.followTempo) beats = constantGrid(beats, analysis.duration, opt.bpm ?? undefined);
-  let meter: Meter;
-  let phase: number;
-  if (opt.meter) {
-    meter = opt.meter;
-    const mi = meterInfo(meter);
-    const bpb = mi.beatsPerBar;
-    phase = detectMeter(beats, notes, [bpb]).phase;
-  } else {
-    const d = detectMeter(beats, notes, [3, 4]);
-    meter = { beats: d.beatsPerBar, beatType: 4 };
-    phase = d.phase;
+  const fixedInfo = opt.meter ? meterInfo(opt.meter) : null;
+  const metre = inferMetre(tracked.beats, notes, {
+    beatsPerBar: fixedInfo?.beatsPerBar,
+    compound: fixedInfo ? fixedInfo.compound : undefined,
+    pulseIsBeat: opt.bpm != null,
+  });
+  let beats = extendBeats(metre.beats, analysis.duration);
+  let phase = metre.phase + Math.max(0, beats.indexOf(metre.beats[0]));
+  if (!opt.followTempo) {
+    const grid = constantGrid(metre.beats, analysis.duration, opt.bpm ?? undefined);
+    // Keep the downbeat: find the grid beat nearest to the chosen downbeat.
+    const down = metre.beats[Math.max(0, Math.min(metre.beats.length - 1, metre.phase))];
+    let best = 0;
+    grid.forEach((b, i) => {
+      if (Math.abs(b - down) < Math.abs(grid[best] - down)) best = i;
+    });
+    beats = grid;
+    phase = best;
   }
+  const meter: Meter =
+    opt.meter ?? (metre.compound ? { beats: metre.beatsPerBar * 3, beatType: 8 } : { beats: metre.beatsPerBar, beatType: 4 });
   const d = beats.slice(1).map((b, i) => b - beats[i]).sort((a, b) => a - b);
   const bpm = opt.bpm ?? (d.length ? 60 / d[Math.floor(d.length / 2)] : tracked.bpm);
-  return { beats, bpm, meter, phase };
+  return { beats, bpm, meter, phase: phase % Math.max(1, meterInfo(meter).beatsPerBar) };
 }
 
 const PART_DEFS: Record<Instrument, { name: string; abbreviation: string; program: number }> = {
   cello: { name: 'Cello', abbreviation: 'Vc.', program: 42 },
   piano: { name: 'Piano', abbreviation: 'Pno.', program: 0 },
-  other: { name: 'Other', abbreviation: 'Oth.', program: 48 },
 };
 
 export function buildScore(analysis: Analysis, labeled: LabeledNote[], opt: ScoreOptions): Score {
@@ -575,7 +577,8 @@ export function buildScore(analysis: Analysis, labeled: LabeledNote[], opt: Scor
   }
 
   const parts: PartData[] = [];
-  const order: Instrument[] = ['other', 'cello', 'piano'];
+  // Published cello sonatas put the cello above the piano.
+  const order: Instrument[] = ['cello', 'piano'];
   for (const ins of order) {
     const ns = ticked.filter((n) => n.instrument === ins && n.start >= 0);
     if (!ns.length) continue;
@@ -588,11 +591,11 @@ export function buildScore(analysis: Analysis, labeled: LabeledNote[], opt: Scor
       const lh = fillGaps(ns.filter((n) => !hands.get(n)), gap);
       const rhM = buildStaff(rh, measures, mi, meter, tripletBeats, false);
       const lhM = buildStaff(lh, measures, mi, meter, tripletBeats, false);
-      staves.push({ measures: rhM, clefs: chooseClefs(rhM, ins, 'rh') });
-      staves.push({ measures: lhM, clefs: chooseClefs(lhM, ins, 'lh') });
+      staves.push({ measures: rhM, clefs: chooseClefs(rhM, 'rh') });
+      staves.push({ measures: lhM, clefs: chooseClefs(lhM, 'lh') });
     } else {
       const sm = buildStaff(fillGaps(ns, mi.beatTicks / 4), measures, mi, meter, tripletBeats, ins === 'cello');
-      staves.push({ measures: sm, clefs: chooseClefs(sm, ins) });
+      staves.push({ measures: sm, clefs: chooseClefs(sm) });
     }
     parts.push({
       id: `P${parts.length + 1}`,
