@@ -170,10 +170,19 @@ function joinBowedFragments(input: RawNote[]): RawNote[] {
 }
 
 export function assignInstruments(input: RawNote[], opt: AssignOptions = DEFAULT_ASSIGN): LabeledNote[] {
-  const notes = joinBowedFragments(removeGhosts(input));
+  const notes = removeGhosts(joinBowedFragments(input));
   if (opt.mode === 'piano') return notes.map((n) => ({ ...n, instrument: 'piano' as Instrument }));
 
   const cello = celloLine(notes, opt);
+  // The first moment of a bowed note (before vibrato settles) is often detected as a
+  // separate short note; pull such lead-ins into the cello note that follows them.
+  for (const i of [...cello]) {
+    const c = notes[i];
+    notes.forEach((n, j) => {
+      if (!cello.has(j) && n.pitch === c.pitch && n.start < c.start && Math.abs(n.end - c.start) < 0.05 && dur(n) < 0.5)
+        cello.add(j);
+    });
+  }
   const celloNotes = joinCelloFragments(
     notes.filter((_, i) => cello.has(i)).map((n) => ({ ...n, instrument: 'cello' as Instrument })),
   );
