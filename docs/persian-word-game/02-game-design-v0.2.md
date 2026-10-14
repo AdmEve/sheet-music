@@ -228,3 +228,14 @@ D = Σ_groups typeWeight(category)        // semantic 1 … wordplay 4
 | M4 | IAP, ads, store builds, ESRA, store listing | Accounts + submission | Release candidate |
 | M5 | **Soft launch on Myket**, tune with data | Weekly review | Data-driven fixes |
 | M6 | Bazaar launch with a Nowruz 1406 event (if ready), else the next good window | Marketing | 🚀 |
+
+---
+
+## 11. Decisions log (round 3)
+
+| Question | Decision | Consequence |
+|---|---|---|
+| Code location | **New dedicated repo** | Development moves there once it exists. These docs move with it. |
+| Art | **AI art + owner curation** | Lock one style early (style guide + a reference sheet of about 10 images), and draw UI/tiles in code/vector. Generate the garden pieces as layered PNGs from the same prompt template. |
+| Tone | **Elegant visuals, warm & lightly funny copy** | As in §2. |
+| Diaspora stores | **Not yet** | Launch **Iran-only (Bazaar + Myket)**. Keep the codebase Play/iOS-ready. Diaspora players can be reached later once a legal publishing path exists. |
