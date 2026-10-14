@@ -1,5 +1,7 @@
 # «ربطش چیه؟» — Game Design v0.2
 
+> **STATUS: DROPPED.** The association/Connections core overlaps with a friend's game in development. The research, platform, economy and pipeline sections still apply to whichever core replaces it.
+
 > Builds on [01-brainstorm.md](01-brainstorm.md).
 > Decisions so far: solo owner, **part-time**; **AI agents write all the code**; **AI generates most puzzles**; goal is **revenue**; markets are **Iran + diaspora**; the concept is an **association core + daily puzzle**.
 
