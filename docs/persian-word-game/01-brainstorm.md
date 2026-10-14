@@ -233,9 +233,26 @@ Many competitors get these details wrong. Getting them right is a quality signal
 
 ---
 
-## 16. Open questions for you
+## 16. Decisions so far
 
-See the chat. Answers will shape v0.2 of this document (detailed mechanics spec, level design rules, economy model, art direction).
+| Question | Decision |
+|---|---|
+| Team | **Solo developer** |
+| Direction | **Concept A + daily puzzle** (association core, shareable daily, duels later) |
+| Goal | **Revenue / business** |
+| Markets | **Iran (Bazaar/Myket) + Persian diaspora (Google Play/App Store)** |
+
+### What "solo + revenue" changes
+- **Scope cut for the MVP:** one core mechanic only (association sorting), with Wordle-style as a *daily side mode* at most. No multiplayer until revenue justifies the server and moderation cost.
+- **Simpler meta:** a 2D garden built from a purchased or commissioned asset pack (one artist commission, about 20–30 garden pieces), not a full renovation story.
+- **Content is the bottleneck, not code.** Use LLM-assisted drafting plus your own editing, and recruit 5–10 Persian playtesters (friends/family) as reviewers. Aim for about 300 levels at launch and about 30 new levels per week afterwards.
+- **Revenue mix:** IAP packs + remove-ads + rewarded ads at launch. Add the VIP subscription once the daily archive exists. **The diaspora release matters a lot for revenue.** Release on Google Play in the same month as Bazaar, because USD ARPU can fund the Iranian side.
+- **Flutter** is the strongest choice for a solo developer: one codebase for Android (3 store flavors), iOS and Web.
+- **Realistic timeline:** about 4–6 months solo to a soft launch, if you work on it full-time.
+
+## 17. Open questions (round 2)
+
+See the chat. Answers will shape v0.2 (detailed mechanics spec, level design rules, economy model, art direction).
 
 ---
 
