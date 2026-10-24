@@ -82,6 +82,9 @@ seasons ≈ 9,700 energy for a free player (≈ 4–6 weeks casual).
 Also: performance pass for low-end phones (memoized HUD/orders/nav; ~40–110 ms per tap at
 6× CPU throttle), season 2 store screenshot, Persian launch checklist (`docs/LAUNCH-fa.md`).
 
+Robustness: unreadable saves are backed up (never overwritten), global error guards,
+privacy page (`docs/privacy-fa.md`). Charm: neighbours' thank-you bubbles on delivery.
+
 Myket: second store flavor done (`android/app/src/myket`, Myket billing 1.19); CI publishes
 `Mahalle.apk` (Bazaar) and `Mahalle-myket.apk`.
 
