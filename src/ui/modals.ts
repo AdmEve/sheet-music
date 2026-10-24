@@ -10,9 +10,9 @@ import {
   OFFER_SKU, OfferId, PIGGY_CAP, PIGGY_MIN, PIGGY_PER_ORDER, WelcomeGift, activeOffers, breakPiggy, endOffer, firstBonusOpen, openGift, piggyReady,
   skipGift,
 } from '../game/offers';
-import { monthEnd, toJalali } from '../game/calendar';
+import { monthEnd } from '../game/calendar';
 import {
-  EVENT_COLLECT, EVENT_LEVEL, EVENT_ORDER, MILESTONES, THEMES, ThemeId, claimMilestone, eventClaimable, eventEnd, eventForDay, eventProgress,
+  EVENT_COLLECT, EVENT_LEVEL, EVENT_ORDER, MILESTONES, THEMES, claimMilestone, eventClaimable, eventEnd, eventProgress, eventTitle,
   milestonesReached,
 } from '../game/events';
 import {
@@ -59,12 +59,8 @@ const today = () => dateKey();
 
 /** "یلدای ۱۴۰۵", "نوروز ۱۴۰۶", "بادبادک‌بازی (آبان ۱۴۰۵)" for a finished event id. */
 export function trophyName(id: string): string {
-  const [kind, ...rest] = id.split('-');
-  if (kind === 'yalda') return `یلدای ${fa(rest[0])}`;
-  if (kind === 'nowruz') return `نوروز ${fa(rest[0])}`;
-  const d = new Date(Number(rest[0]), Number(rest[1]) - 1, Number(rest[2]));
-  const j = toJalali(d);
-  return `${THEMES[eventForDay(d).theme as ThemeId].title} (${fa(j.d)}/${fa(j.m)}/${fa(j.y)})`;
+  const t = eventTitle(id);
+  return t.date ? `${t.title} (${fa(t.date.d)}/${fa(t.date.m)}/${fa(t.date.y)})` : `${t.title} ${fa(t.year ?? '')}`;
 }
 
 /** Picture for each paid bundle: starter = golden chest, episode party = box of sweets. */

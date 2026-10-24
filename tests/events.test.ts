@@ -142,3 +142,16 @@ describe('event play', () => {
     expect(s.trophies).toEqual([]);
   });
 });
+
+describe('trophy names', () => {
+  it('names calendar events by year and weekly ones by their Saturday', async () => {
+    const { THEMES, eventTitle } = await import('../src/game/events');
+    expect(eventTitle('yalda-1405')).toEqual({ title: 'یلدای', year: '1405' });
+    expect(eventTitle('nowruz-1406')).toEqual({ title: 'نوروز', year: '1406' });
+    expect(eventTitle('suri-1405')).toEqual({ title: 'چهارشنبه‌سوری', year: '1405' });
+    expect(eventTitle('school-1405')).toEqual({ title: 'بوی ماه مهر', year: '1405' });
+    const w = eventTitle('week-2026-10-24');
+    expect(w.date).toEqual({ y: 1405, m: 8, d: 2 });
+    expect(w.title).toBe(THEMES[eventForDay(new Date(2026, 9, 24)).theme].title);
+  });
+});

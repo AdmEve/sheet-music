@@ -218,6 +218,17 @@ export function eventEnd(now: Date): Date {
   return new Date(end);
 }
 
+/**
+ * A finished event's name for the trophy shelf: "یلدای ۱۴۰۵", "چهارشنبه‌سوری ۱۴۰۵",
+ * "بادبادک‌بازی (۲/۸/۱۴۰۵)". Digits are left Latin; the UI converts them.
+ */
+export function eventTitle(id: string): { title: string; year?: string; date?: { y: number; m: number; d: number } } {
+  const [kind, ...rest] = id.split('-');
+  if (kind !== 'week' && kind in THEMES) return { title: kind === 'yalda' ? 'یلدای' : THEMES[kind as ThemeId].title, year: rest[0] };
+  const d = new Date(Number(rest[0]), Number(rest[1]) - 1, Number(rest[2]));
+  return { title: THEMES[eventForDay(d).theme].title, date: toJalali(d) };
+}
+
 export const isEventItem = (it: Item | null | undefined) => !!it && !!CHAINS[it.chain].event;
 
 /** Milestones reached so far (0…12). */
