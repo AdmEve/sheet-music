@@ -115,17 +115,17 @@ QA in a browser: localStorage `mahalle.fakeAds=1` / `mahalle.fakeStore=1` fake t
 and store (browser builds only). A QA harness lives in the session scratchpad; staged
 saves are written into localStorage `mahalle.save.v1`.
 
-Next (in order):
-1. Phase 7 (quality): review every new system for bugs (purchases, event cleanup, race,
-   migrations, transfer), performance at 6× CPU throttle with the new per-second work,
-   first-session pacing (popups at levels 2–6), refreshed store screenshots
-2. Phase 8 (engagement): reminders for events ending / race done / piggy full, more event
-   themes (Chaharshanbe Suri, Mehregan, autumn), sounds for the new features
-3. Phase 9: Season 4 (teased: Narges's news)
-4. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
+- [x] Phase 7: quality — perf at 6× CPU throttle (no idle long tasks; tap→frame 11–97 ms),
+      first-session pacing checked, eight new store screenshots (`npm run` script
+      `scripts/store-shots.ts`), catch-up toasts after the splash
+- [x] Phase 8: engagement — event/race reminders, weekly rotation of four themes (lavashak,
+      kites, ash reshteh, ice cream), zarb/chime sounds
 
-Known limits: local Gradle builds here can hit Maven Central rate limits (429); CI is the
-source of truth for APK builds.
+Next (in order):
+1. Phase 9 (looks): ambient animation in place scenes (lights, glows, steam), richer
+   Season 1 scenes (the first rewards players see)
+2. Phase 10: Season 4 (teased: Narges's news), more calendar events (Chaharshanbe Suri…)
+3. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)
 
