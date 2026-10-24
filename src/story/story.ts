@@ -485,6 +485,119 @@ export const PLACES: Place[] = [
       { who: 'mahin', text: 'وای! نکنه… خبریه؟! فصل بعد…', mood: 'surprised' },
     ],
   },
+  // ------------------------------------------------------------------ season 4: یه نفر تو راهه
+  {
+    id: 'grocery',
+    name: 'بقالی آقا مرتضی',
+    intro: [
+      { who: 'mahin', text: 'خبر داغ! نرگس امروز صبح سه بار رفته داروخونه!', mood: 'surprised' },
+      { who: 'shirin', text: 'خاله! شاید سرما خورده!' },
+      { who: 'mahin', text: 'سرما خورده و یه جعبه شیرینی هم خریده؟ من بیست ساله خبرنگارم، دخترم!' },
+      { who: 'narges', text: 'باشه، باشه… بله. یه نفر تو راهه.', mood: 'happy' },
+      { who: 'morteza', text: 'مبارکه! حالا که بچه داره میاد، بقالی من باید آبرومند باشه. یه عمره خاک می‌خوره.' },
+    ],
+    tasks: [
+      { id: 'grocery.shelves', title: 'قفسه‌های بقالی', cost: 120, layer: 'shelves', after: [{ who: 'morteza', text: 'هر قوطی سر جاش. حتی اونایی که تاریخشون… نه، همه تازه‌ست!' }] },
+      { id: 'grocery.scale', title: 'ترازوی دوکفه', cost: 122, layer: 'scale', after: [{ who: 'kaveh', text: 'این ترازو کج بود آقا مرتضی. یه عمر کم‌فروشی می‌کردی؟' }, { who: 'morteza', text: 'کج بود؟ … خب، الان که صافه دیگه!' }] },
+      { id: 'grocery.fridge', title: 'یخچال نوشیدنی', cost: 124, layer: 'fridge', after: [{ who: 'shirin', text: 'یخچال روشن شد! نرگس، هوس چی کردی؟ ترشی؟ بستنی؟ هر دو با هم؟' }] },
+      { id: 'grocery.sacks', title: 'گونی‌های برنج و حبوبات', cost: 126, layer: 'sacks', after: [{ who: 'golab', text: 'برنج دم‌سیاه گرفتم، برای کاچی و آش. زن حامله باید جون بگیره.' }] },
+      { id: 'grocery.sign', title: 'تابلوی «بقالی برکت»', cost: 128, layer: 'sign', after: [{ who: 'morteza', text: 'بقالی برکت. سی ساله این تابلو رو می‌خواستم. هزینه‌ش رو هم… خودم دادم!' }, { who: 'mahin', text: 'آقا مرتضی پول داد؟ دیگه هیچی تو این دنیا عجیب نیست!' }] },
+    ],
+    outro: [
+      { who: 'fakhri', text: 'نوه‌ی من باید تو اتاق درست و حسابی بزرگ بشه. سیسمونی رو من می‌خرم.' },
+      { who: 'golab', text: 'سیسمونی رسم خونواده‌ی عروسه، فخری‌خانم. من جای مادربزرگ نرگسم.' },
+      { who: 'fakhri', text: '…پس با هم می‌خریم. ولی سلیقه با من.' },
+      { who: 'golab', text: 'اینو دیگه خواب ببینی!', mood: 'angry' },
+    ],
+  },
+  {
+    id: 'sismooni',
+    name: 'سیسمونی‌فروشی محله',
+    intro: [
+      { who: 'shirin', text: 'ته کوچه یه مغازه‌ی سیسمونی خالیه. صاحبش رفته کانادا و کلیدش دست منه!' },
+      { who: 'fakhri', text: 'پس خودمون راهش می‌ندازیم. هرچی بچه لازم داره، از همین کوچه.' },
+      { who: 'golab', text: 'اولین چیزی هم که می‌خریم، گهواره‌ی چوبیه. مثل قدیما.' },
+      { who: 'fakhri', text: 'گهواره؟ الان همه تخت بچه می‌خرن!', mood: 'surprised' },
+    ],
+    tasks: [
+      { id: 'sis.window', title: 'ویترین مغازه', cost: 126, layer: 'window', after: [{ who: 'shirin', text: 'ویترین برق می‌زنه! حالا هر کی رد شه، وایمیسه.' }] },
+      { id: 'sis.cradle', title: 'گهواره‌ی چوبی', cost: 128, layer: 'cradle', after: [{ who: 'golab', text: 'این گهواره رو پدربزرگ نرگس با دست خودش ساخته بود. تو انباری پیداش کردم.' }, { who: 'fakhri', text: '…خب، قشنگه. قبول. ولی پتوش رو من انتخاب می‌کنم.' }] },
+      { id: 'sis.clothes', title: 'لباس‌های بچه', cost: 130, layer: 'clothes', after: [{ who: 'mahin', text: 'آبی بخریم یا صورتی؟ هنوز نمی‌دونیم پسره یا دختر!' }, { who: 'narges', text: 'سبز می‌خریم، خاله. مثل درختای کوچه.' }] },
+      { id: 'sis.toys', title: 'قفسه‌ی اسباب‌بازی', cost: 132, layer: 'toys', after: [{ who: 'reza', text: 'این عروسک نمدی رو خانمم دوخته. هدیه‌ی نونوایی برای بچه!' }] },
+      { id: 'sis.sign', title: 'تابلوی «سیسمونی محله»', cost: 134, layer: 'sign', after: [{ who: 'kaveh', text: 'مادرم و ننه‌گلاب تا آخر با هم دعوا کردن… ولی با هم خرید کردن. اینم یه جور صلحه.' }] },
+    ],
+    outro: [
+      { who: 'bahman', text: 'نرگس جان، من هم یه هدیه دارم: کتابای داداش، و کتابای خودم از هامبورگ.' },
+      { who: 'bahman', text: 'تو خونه‌ی همسایه‌ها یه کتابخونه بسازیم. بچه‌ی تو اولین عضوش باشه.' },
+      { who: 'narges', text: 'عمو… این بهترین هدیه‌ی دنیاست.', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'library',
+    name: 'کتابخونه‌ی خونه‌ی همسایه‌ها',
+    intro: [
+      { who: 'kaveh', text: 'اتاق شاه‌نشین رو قفسه‌بندی می‌کنیم. نور ارسی‌ها برای کتاب خوندن عالیه.' },
+      { who: 'bahman', text: 'دیوان حافظ داداش رو می‌ذاریم بالای همه. با همون حاشیه‌نویسی‌هاش.' },
+      { who: 'mahin', text: 'یه قفسه هم مال مجله‌های من. چهل سال خبر جمع کردم!' },
+    ],
+    tasks: [
+      { id: 'lib.shelves', title: 'قفسه‌های کتاب', cost: 132, layer: 'shelves', after: [{ who: 'kaveh', text: 'قفسه‌ها از چوب گردوئه. صد سال دووم میارن، مثل همین خونه.' }] },
+      { id: 'lib.rug', title: 'فرش و پشتی', cost: 134, layer: 'rug', after: [{ who: 'golab', text: 'بچه‌ها رو زمین می‌شینن و قصه گوش می‌دن. مثل ما، شب‌های قدیم.' }] },
+      { id: 'lib.lamp', title: 'چراغ مطالعه', cost: 136, layer: 'lamp', after: [{ who: 'shirin', text: 'هر پنجشنبه برای بچه‌ها قصه می‌خونم! با صداسازی!' }] },
+      { id: 'lib.hafez', title: 'دیوان حافظ حاج‌بابا', cost: 138, layer: 'hafez', after: [{ who: 'bahman', text: 'یه فال بگیریم برای بچه…' }, { who: 'bahman', text: '«مژده ای دل که مسیحا نفسی می‌آید…»' }, { who: 'narges', text: 'حافظ هم خبر داره، عمو!', mood: 'happy' }] },
+      { id: 'lib.globe', title: 'کره‌ی جغرافیا', cost: 140, layer: 'globe', after: [{ who: 'bahman', text: 'که بدونه دنیا بزرگه… ولی خونه همین‌جاست.' }] },
+    ],
+    outro: [
+      { who: 'narges', text: 'آخ… کاوه… فکر کنم وقتشه!', mood: 'surprised' },
+      { who: 'kaveh', text: 'وقتش؟! الان؟! ماشین! کی ماشین داره؟!', mood: 'surprised' },
+      { who: 'farokhi', text: 'ماشین من سر کوچه‌ست. بپرید بالا!' },
+      { who: 'mahin', text: 'من زودتر از همه می‌رم بیمارستان. خبرش باید اول دست من باشه!' },
+    ],
+  },
+  {
+    id: 'nursery',
+    name: 'اتاق بچه',
+    intro: [
+      { who: 'kaveh', text: 'تا نرگس و بچه از بیمارستان برگردن، اتاق بچه باید آماده باشه. فقط دو روز وقت داریم!' },
+      { who: 'fakhri', text: 'رنگ دیوارش رو من انتخاب کردم.' },
+      { who: 'golab', text: 'پرده‌ش رو هم من دوختم.' },
+      { who: 'reza', text: 'بقیه‌ش با ما. یالا محله!' },
+    ],
+    tasks: [
+      { id: 'nur.walls', title: 'رنگ دیوار اتاق', cost: 138, layer: 'walls', after: [{ who: 'fakhri', text: 'سبز پسته‌ای. آرامش‌بخشه. تو کتاب خوندم.' }] },
+      { id: 'nur.cradle', title: 'گهواره کنار پنجره', cost: 140, layer: 'cradle', after: [{ who: 'golab', text: 'گهواره‌ی پدربزرگش، رو به آفتاب صبح.' }] },
+      { id: 'nur.mobile', title: 'آویز بالای گهواره', cost: 142, layer: 'mobile', after: [{ who: 'shirin', text: 'ماه و ستاره و ماهی قرمز! همه‌ش رو خودم ساختم.' }] },
+      { id: 'nur.curtain', title: 'پرده‌ی گل‌دوزی', cost: 144, layer: 'curtain', after: [{ who: 'golab', text: 'گل‌هاش رو یکی‌یکی دوختم. هر گل یه دعا.' }] },
+      { id: 'nur.lamp', title: 'چراغ‌خواب', cost: 146, layer: 'lamp', after: [{ who: 'kaveh', text: 'زنگ زدن… دارن میان! همه برید سر کوچه!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'narges', text: 'سلام به همه… با یه مهمون کوچولو.', mood: 'happy' },
+      { who: 'mahin', text: 'دختره یا پسر؟! زود بگو!', mood: 'surprised' },
+      { who: 'narges', text: 'دختر. اسمش رو هم… فردا شب، تو جشن می‌گیم.' },
+    ],
+  },
+  {
+    id: 'naming',
+    name: 'جشن نام‌گذاری',
+    intro: [
+      { who: 'shirin', text: 'جشن تو حیاط ننه‌گلاب! کل محله دعوتن.' },
+      { who: 'reza', text: 'نون و پنیر و سبزی با من!' },
+      { who: 'bahman', text: 'اسپند دود کنیم، مثل قدیم.' },
+    ],
+    tasks: [
+      { id: 'name.tables', title: 'میز و صندلی حیاط', cost: 144, layer: 'tables', after: [{ who: 'morteza', text: 'صندلی‌ها رو از بقالی آوردم. کرایه هم نمی‌گیرم! … این بار.' }] },
+      { id: 'name.sofreh', title: 'سفره‌ی شیرینی و شربت', cost: 146, layer: 'sofreh', after: [{ who: 'fakhri', text: 'شربت بیدمشک با گلاب ننه‌گلاب. باید قبول کنم، ترکیب‌مون حرف نداره.' }] },
+      { id: 'name.lights', title: 'ریسه و فانوس', cost: 148, layer: 'lights', after: [{ who: 'farokhi', text: 'من کوچه‌های زیادی ساختم. ولی هیچ‌کدوم این‌قدر روشن نبودن.' }] },
+      { id: 'name.esfand', title: 'اسپنددون', cost: 150, layer: 'esfand', after: [{ who: 'golab', text: 'اسفند دونه دونه، اسفند سی و سه دونه… چشم حسود بترکه!' }] },
+      { id: 'name.cradle', title: 'گهواره وسط جشن', cost: 152, layer: 'cradle', after: [{ who: 'narges', text: 'اسمش رو گذاشتیم «گلاب». به یاد کسی که چهل سال منتظر موند و نذاشت این کوچه بمیره.' }, { who: 'golab', text: '…الهی قربونش برم. الهی قربون هر دوتون برم.', mood: 'sad' }] },
+    ],
+    outro: [
+      { who: 'mahin', text: 'بچه‌ها… یه نامه از شهرداری اومده. برای کل کوچه.', mood: 'sad' },
+      { who: 'kaveh', text: '«طرح تعریض خیابان… تخریب ضلع شمالی کوچه»؟!', mood: 'surprised' },
+      { who: 'narges', text: 'یعنی خونه‌ی ننه‌گلاب… قهوه‌خونه… همه‌ش؟', mood: 'sad' },
+      { who: 'farokhi', text: 'این دفعه من طرف شمام. فصل بعد…' },
+    ],
+  },
 ];
 
 export function findTask(id: string): { place: Place; task: Task; index: number } | null {

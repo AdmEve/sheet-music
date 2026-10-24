@@ -4,9 +4,9 @@
 import { INK, O, THIN, g, sparkle } from './kit';
 import { Layer, SceneDef, brickWall, cobweb, dustPile, floor, glow, plank, stringLights } from './scenes';
 
-const darkness = (op = 0.3) => `<rect width="360" height="240" fill="#1c1430" opacity="${op}"/>`;
-const wall = (fill: string, h = 170) => `<rect width="360" height="${h}" fill="${fill}"/><path d="M0 ${h - 16} H360" stroke="rgba(0,0,0,.12)" stroke-width="10"/>`;
-const text = (x: number, y: number, t: string, size: number, fill: string, extra = '') =>
+export const darkness = (op = 0.3) => `<rect width="360" height="240" fill="#1c1430" opacity="${op}"/>`;
+export const wall = (fill: string, h = 170) => `<rect width="360" height="${h}" fill="${fill}"/><path d="M0 ${h - 16} H360" stroke="rgba(0,0,0,.12)" stroke-width="10"/>`;
+export const text = (x: number, y: number, t: string, size: number, fill: string, extra = '') =>
   `<text x="${x}" y="${y}" text-anchor="middle" font-family="Vazirmatn, sans-serif" font-weight="900" font-size="${size}" fill="${fill}"${extra}>${t}</text>`;
 
 // ------------------------------------------------------------------ پستخونه
@@ -160,7 +160,7 @@ const CINEMA: Record<string, Layer> = {
 
 // ------------------------------------------------------------------ خونه‌ی پدری
 
-const courtyard = () =>
+export const courtyard = () =>
   `<rect width="360" height="170" fill="url(#gSky)"/>` + brickWall('#e0b07a', '#b5804d', 150).replace('<rect x="0" y="0" width="360" height="150"', '<rect x="0" y="20" width="360" height="130"') +
   floor('#c69260', 150);
 

@@ -121,10 +121,16 @@ saves are written into localStorage `mahalle.save.v1`.
 - [x] Phase 8: engagement — event/race reminders, weekly rotation of four themes (lavashak,
       kites, ash reshteh, ice cream), zarb/chime sounds
 
+- [x] Phase 9: living scenes (glows, bulbs, steam, sparkles animate), richer teahouse and
+      bakery, tutorial hand drawn in SVG
+- [x] Phase 10: Season 4 «یه نفر تو راهه» (`src/art/scenes4.ts`: grocery, baby shop, library,
+      nursery, naming party; «سیسمونی» chain + knitting basket at level 25), map of 20 places
+      with a «ادامه دارد…» barrier teasing Season 5 (the street-widening plan)
+
 Next (in order):
-1. Phase 9 (looks): ambient animation in place scenes (lights, glows, steam), richer
-   Season 1 scenes (the first rewards players see)
-2. Phase 10: Season 4 (teased: Narges's news), more calendar events (Chaharshanbe Suri…)
+1. Phase 11: more calendar events (Chaharshanbe Suri, Mehregan),
+   richer garden/salon/hammam scenes
+2. Phase 12: Season 5 «طرح تعریض خیابان»
 3. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)

@@ -4,8 +4,9 @@ import { hasStyles, restyle } from './decor';
 import { SCENES1, SceneDef } from './scenes';
 import { SCENES2 } from './scenes2';
 import { SCENES3 } from './scenes3';
+import { SCENES4 } from './scenes4';
 
-const SCENES: Record<string, SceneDef> = { ...SCENES1, ...SCENES2, ...SCENES3 };
+const SCENES: Record<string, SceneDef> = { ...SCENES1, ...SCENES2, ...SCENES3, ...SCENES4 };
 
 /** `style` picks the decoration style of each restored layer (0 = traditional). */
 export function sceneSvg(placeId: string, done: (layer: string) => boolean, style: (layer: string) => number = () => 0): string {

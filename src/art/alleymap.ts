@@ -5,7 +5,7 @@
 
 import { INK, O, THIN, sparkle } from './kit';
 
-export const MAP_H = 1710;
+export const MAP_H = 2240;
 const STEP = 106;
 const faDigits = (n: number) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 
@@ -75,6 +75,14 @@ const FACADES: Record<string, Facade> = {
     wall: '#e0b07a', roof: 'gable', door: 'gate',
     deco: `<circle cx="-56" cy="-70" r="16" fill="url(#gLeaf)" ${O}/><ellipse cx="-60" cy="-72" rx="2" ry="3" fill="url(#gPlum)"/><ellipse cx="-50" cy="-66" rx="2" ry="3" fill="url(#gPlum)"/>`,
   },
+  grocery: { wall: '#f2e8d0', door: 'shop', roof: 'awning', roofFill: 'url(#gLeaf)', deco: `<rect x="-60" y="-26" width="18" height="22" rx="2" fill="#c9a26b" ${THIN}/>` },
+  sismooni: { wall: '#fde8ef', door: 'shop', sign: 'سیسمونی', roofFill: 'url(#gRose)' },
+  library: { wall: '#efe3cc', roof: 'gable', roofFill: 'url(#gTurq)', door: 'arch', sign: 'کتابخونه' },
+  nursery: { wall: '#cfe8c4', roof: 'gable', door: 'arch', deco: `<path d="M44 -58 a9 9 0 1 1 -1 -16 a7 7 0 1 0 1 16 Z" fill="url(#gYellow)" ${THIN}/>` },
+  naming: {
+    wall: '#e0b07a', w: 124, h: 60, door: 'gate',
+    deco: `<path d="M-60 -66 Q0 -84 60 -66" fill="none" stroke="url(#gLeaf)" stroke-width="4"/>` + Array.from({ length: 7 }, (_, i) => `<circle cx="${-48 + i * 16}" cy="${-70 - Math.sin((i / 6) * Math.PI) * 8}" r="4" fill="url(#gRose)" ${THIN} stroke-width=".8"/>`).join(''),
+  },
   wedding: {
     wall: 'url(#gWood)', w: 120, h: 70, door: 'gate',
     deco: Array.from({ length: 9 }, (_, i) => `<circle cx="${-56 + i * 14}" cy="${-72 + Math.sin(i / 8 * Math.PI) * -8}" r="3.2" fill="${['#ffd36b', '#ff7a9c', '#5fe0e0'][i % 3]}" ${THIN} stroke-width=".8"/>`).join(''),
@@ -115,12 +123,22 @@ export function mapSvg(ids: string[], names: string[], states: MapState[]): stri
   let s = `<rect width="360" height="${MAP_H}" fill="#e9d9b8"/>`;
   s += Array.from({ length: 40 }, (_, i) => `<circle cx="${(i * 97) % 360}" cy="${(i * 211) % MAP_H}" r="${2 + (i % 3)}" fill="#d8c39c" opacity=".7"/>`).join('');
   s += alley(ids.length);
-  s += [[30, 1650], [330, 1510], [20, 1290], [340, 1090], [26, 860], [334, 690], [24, 470], [336, 300], [40, 120]].map(([x, y]) => tree(x, y, 0.9)).join('');
+  // The alley goes on past the last episode: a striped barrier and a sign tease what comes next.
+  s += `<g transform="translate(180 70)"><path d="M-30 0 V22 M30 0 V22" ${O} stroke-width="4"/>` +
+    `<rect x="-40" y="-10" width="80" height="12" rx="3" fill="#fff" ${O}/>` +
+    [-32, -16, 0, 16].map((x) => `<path d="M${x} 2 L${x + 8} -10 H${x + 16} L${x + 8} 2 Z" fill="#e0303f"/>`).join('') +
+    `<rect x="-40" y="-10" width="80" height="12" rx="3" fill="none" ${O}/>` +
+    `<rect x="-36" y="-40" width="72" height="22" rx="5" fill="url(#gWood)" ${O}/><path d="M0 -18 V-10" ${O} stroke-width="3"/>` +
+    `<text x="0" y="-25" text-anchor="middle" font-family="Vazirmatn, sans-serif" font-weight="800" font-size="10" fill="#fff8ea">ادامه دارد…</text></g>`;
+  s += Array.from({ length: 13 }, (_, i) => [i % 2 ? 334 : 26, MAP_H - 70 - i * 170]).map(([x, y]) => tree(x, y, 0.9)).join('');
   ids.forEach((id, k) => {
     const p = plot(k);
     const f = FACADES[id] ?? FACADES.teahouse;
     const st = states[k];
     const h = f.h ?? 74;
+    const label = `${faDigits(k + 1)}. ${names[k]}`;
+    // Long names shrink to stay inside the pill (about 4 units per character at size 10).
+    const fs = label.length > 26 ? (260 / label.length).toFixed(1) : '10';
     let g = facade(f);
     if (st === 'current') g += scaffold(f.w ?? 128, h);
     s += `<g class="map-place" data-k="${k}" transform="translate(${p.x} ${p.y})">` +
@@ -129,7 +147,7 @@ export function mapSvg(ids: string[], names: string[], states: MapState[]): stri
       (st === 'current' ? pin(-h - 18) : '') +
       (st === 'locked' ? lock(-h / 2) : '') +
       `<rect x="-58" y="10" width="116" height="20" rx="10" fill="${st === 'done' ? '#3fae5a' : st === 'current' ? '#e2507a' : '#9b8a76'}" ${THIN}/>` +
-      `<text x="0" y="24" text-anchor="middle" font-family="Vazirmatn, sans-serif" font-weight="800" font-size="10" fill="#fff">${faDigits(k + 1)}. ${names[k]}</text>` +
+      `<text x="0" y="24" text-anchor="middle" font-family="Vazirmatn, sans-serif" font-weight="800" font-size="${fs}" fill="#fff">${label}</text>` +
       `<rect x="-70" y="${-h - 60}" width="140" height="${h + 92}" fill="transparent"/>` +
       `</g>`;
   });

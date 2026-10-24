@@ -4,7 +4,8 @@ A Persian merge game for Android. Merge Persian items (tea glasses → golden sa
 wheat → sangak breakfast spread, seeds → rosewater sprinkler…) to fill the neighbours'
 orders, earn stars, and restore an old Tehran alley that a developer wants to demolish.
 Each restoration plays the next episode of the neighbourhood drama: season 1 saves the
-alley (5 episodes), season 2 «عروسی» follows Narges' wedding (5 episodes).
+alley (5 episodes), season 2 «عروسی» follows Narges' wedding, season 3 «نامه‌ای از اون ور
+دنیا» brings Uncle Bahman home and season 4 «یه نفر تو راهه» waits for the baby (5 episodes each).
 
 - Fully **offline**; progress is saved on the phone.
 - Monetization through store in-app billing (two Android flavors: **Cafe Bazaar** via
