@@ -1,10 +1,10 @@
 // Store screenshots: stages real game states, captures them at phone size and frames each
 // with a caption at 1080×1920. Usage (after `npm run build`): npx tsx scripts/store-shots.ts
 import { createServer } from 'node:http';
-import { existsSync, mkdirSync, readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
 import { extname, join, resolve } from 'node:path';
 import { createRequire } from 'node:module';
-import { CELLS, COLS, GameState, fillOrders, newGame } from '../src/game/model';
+import { CELLS, COLS, GameState, ensureGenerators, fillOrders, newGame } from '../src/game/model';
 import { Item } from '../src/game/items';
 import { PLACES } from '../src/story/story';
 const { chromium } = createRequire(import.meta.url)('playwright');
@@ -55,7 +55,9 @@ function midGame(): GameState {
   return s;
 }
 
-interface Shot { name: string; caption: string; sub: string; state: GameState; act?: (page: any) => Promise<void> }
+interface Shot { name: string; caption: string; sub: string; state: GameState; at?: string; act?: (page: any) => Promise<void> }
+const done = (n: number) => PLACES.slice(0, n).flatMap((p) => p.tasks.map((t) => t.id));
+const seenUpTo = (n: number) => [...allSeen, ...PLACES.slice(0, n + 1).map((p) => `${p.id}:intro`), ...PLACES.slice(0, n).map((p) => `${p.id}:outro`), 'ask:rate', 'tut:bubble'];
 const finishedTeahouse = () => {
   const s = midGame();
   s.tasksDone = PLACES[0].tasks.slice(0, 5).map((t) => t.id);
@@ -63,62 +65,99 @@ const finishedTeahouse = () => {
   s.stars = 6;
   return s;
 };
-const weddingState = () => {
+const decorState = () => {
   const s = midGame();
-  const ids = (n: number) => PLACES[n].tasks.map((t) => t.id);
-  s.tasksDone = [0, 1, 2, 3, 4, 5, 6, 7, 8].flatMap(ids).concat(ids(9).slice(0, 4));
-  s.storySeen = [...allSeen, ...PLACES.map((p) => `${p.id}:intro`), ...PLACES.map((p) => `${p.id}:outro`), 'ask:rate'];
-  s.stars = 120;
-  s.level = 11;
+  s.tasksDone = PLACES[0].tasks.slice(0, 3).map((t) => t.id);
+  s.storySeen = [...allSeen, 'event:week'];
+  s.stars = 20;
   return s;
 };
+const raceState = () => {
+  const s = midGame();
+  s.level = 6; s.xp = 150;
+  s.race = { day: today, count: 1, active: { start: Date.now() - 38 * 60e3, orders0: s.stats.orders - 4, finishedAt: null, claimed: false,
+    bots: [{ name: 'مریم از کوچه‌ی یاس', hue: 0, finishMs: 52 * 60e3 }, { name: 'علی از کوچه‌ی بهار', hue: 1, finishMs: 61 * 60e3 }, { name: 'سارا از کوچه‌ی نارنج', hue: 2, finishMs: 95 * 60e3 }, { name: 'حسین از کوچه‌ی اقاقیا', hue: 3, finishMs: 130 * 60e3 }] } };
+  return s;
+};
+const lateState = (placesDone: number, partial: number) => {
+  const s = midGame();
+  s.tasksDone = done(placesDone).concat(PLACES[placesDone]?.tasks.slice(0, partial).map((t) => t.id) ?? []);
+  s.storySeen = seenUpTo(placesDone);
+  s.level = 22; s.xp = 3000; s.stars = 60;
+  return s;
+};
+const skipStory = async (page: any) => {
+  for (let k = 0; k < 12 && await page.$('.dialogue'); k++) { await page.click('.dialogue', { force: true }); await page.waitForTimeout(80); }
+};
+const closeAll = async (page: any) => {
+  for (let k = 0; k < 4 && await page.$('.overlay .close'); k++) { await page.click('.overlay .close', { force: true }); await page.waitForTimeout(150); }
+};
+/** Lets on-load scenes (event intro, daily gift) play out and closes them. */
+const ready = async (page: any) => {
+  await page.waitForTimeout(1300);
+  for (let k = 0; k < 2; k++) { await skipStory(page); await closeAll(page); }
+};
 const shots: Shot[] = [
-  { name: '1-board', caption: 'وسایل ایرانی رو ادغام کن!', sub: 'از برگ چای تا سماور طلایی', state: midGame() },
-  { name: '2-orders', caption: 'سفارش همسایه‌ها رو تحویل بده', sub: 'خاله مهین، اوستا رضا، ننه‌گلاب…', state: midGame(),
-    act: async (page) => { await page.click('.order', { force: true }); await page.waitForTimeout(250); } },
-  { name: '3-teahouse', caption: 'قهوه‌خانه‌ی حاج‌بابا رو زنده کن', sub: 'هر کار، یه گوشه از کوچه رو نجات می‌ده', state: finishedTeahouse(),
+  { name: '1-board', caption: 'وسایل ایرانی رو ادغام کن!', sub: 'از برگ چای تا سماور طلایی', state: midGame(), act: ready },
+  { name: '2-teahouse', caption: 'قهوه‌خانه‌ی حاج‌بابا رو زنده کن', sub: 'هر کار، یه گوشه از کوچه رو نجات می‌ده', state: finishedTeahouse(),
+    act: async (page) => { await ready(page); await page.click('#nav-alley', { force: true }); await page.waitForTimeout(500); } },
+  { name: '3-gossip', caption: 'یه سریال ایرانی، قسمت به قسمت', sub: 'خاله مهین همه‌چی رو اول از همه می‌دونه!', state: midGame(),
     act: async (page) => {
+      await ready(page);
+      await page.click('#nav-alley', { force: true }); await page.waitForTimeout(400);
+      await page.evaluate(() => (window as any).__showLine?.('mahin'));
+      await page.waitForTimeout(900);
+    } },
+  { name: '4-decor', caption: 'به سلیقه‌ی خودت بچینش', sub: 'سنتی، فیروزه‌ای یا گلبهی؟', state: decorState(),
+    act: async (page) => {
+      await ready(page);
       await page.click('#nav-alley', { force: true }); await page.waitForTimeout(500);
+      await page.click('.place .card .btn', { force: true }); await page.waitForTimeout(1500);
+      await page.click('.decor-opt:nth-child(2)', { force: true }); await page.waitForTimeout(300);
     } },
-  { name: '4-gossip', caption: 'خاله مهین همه‌چی رو می‌دونه!', sub: 'یه سریال ایرانی، قسمت به قسمت', state: midGame(),
+  { name: '5-yalda', caption: 'شب یلدا و نوروز تو محله', sub: 'رویدادهای هفتگی، وسیله‌ها و جام‌های مخصوص', state: midGame(), at: '2026-12-18T11:00:00',
+    act: async (page) => { await page.waitForTimeout(1500); await skipStory(page); await page.waitForTimeout(400); } },
+  { name: '6-race', caption: 'مسابقه با کوچه‌های بغل!', sub: 'اول کی سفارش‌ها رو تحویل می‌ده؟', state: raceState(),
+    act: async (page) => { await ready(page); await page.click('#side-race', { force: true }); await page.waitForTimeout(500); } },
+  { name: '7-season3', caption: 'فصل سوم: نامه‌ای از اون ور دنیا 💌', sub: 'بعد از چهل سال، عمو بهمن برمی‌گرده…', state: lateState(14, 3),
     act: async (page) => {
-      await page.click('#nav-alley', { force: true }); await page.waitForTimeout(400);
-      await page.evaluate(() => (window as any).__showLine?.());
+      await ready(page);
+      await page.click('#nav-alley', { force: true }); await page.waitForTimeout(500); await skipStory(page);
+      await page.evaluate(() => (window as any).__showLine?.('bahman'));
       await page.waitForTimeout(900);
     } },
-  { name: '5-chain', caption: 'صدها وسیله‌ی ایرانی', sub: 'سنگک، گل محمدی، گلاب کاشون، فرش کاشان…', state: midGame(),
+  { name: '8-map', caption: '۱۵ قسمت، سه فصل، یه محله', sub: 'آفلاین، بدون تبلیغ اجباری', state: lateState(10, 2),
     act: async (page) => {
-      const cell = await page.$('.cell[data-i="23"]'); await cell.click(); await page.waitForTimeout(200);
-      await page.click('.infobar .chip', { force: true }); await page.waitForTimeout(400);
-    } },
-  { name: '7-wedding', caption: 'فصل دوم: عروسی! 💍', sub: 'از خواستگاری تا جشن عروسی تو کوچه', state: weddingState(),
-    act: async (page) => { await page.click('#nav-alley', { force: true }); await page.waitForTimeout(500); } },
-  { name: '6-farokhi', caption: 'کوچه رو از دست فرخی نجات بده', sub: 'آفلاین، بدون تبلیغ اجباری', state: midGame(),
-    act: async (page) => {
-      await page.click('#nav-alley', { force: true }); await page.waitForTimeout(400);
-      await page.evaluate(() => (window as any).__showLine?.('farokhi'));
-      await page.waitForTimeout(900);
+      await ready(page);
+      await page.click('#nav-alley', { force: true }); await page.waitForTimeout(500); await skipStory(page);
+      await page.click('.place .top button[aria-label="نقشه‌ی محله"]', { force: true }); await page.waitForTimeout(700);
     } },
 ];
 
 const browser = await chromium.launch();
 for (const shot of shots) {
   const page = await browser.newPage({ viewport: { width: 360, height: 640 }, deviceScaleFactor: 3 });
+  // Hand out every generator the staged level has earned, so no catch-up toast shows.
+  ensureGenerators(shot.state);
   await page.addInitScript((json: string) => {
     if (!sessionStorage.getItem('seeded')) { localStorage.setItem('mahalle.save.v1', json); sessionStorage.setItem('seeded', '1'); }
   }, JSON.stringify(shot.state));
   await page.addInitScript(() => {
     // Screenshot helper: shows one story line over the current screen.
-    (window as any).__showLine = (who = 'mahin') => {
-      const text = who === 'farokhi' ? 'همه‌چی فروشیه خانم. حتی این کوچه.' : 'خبر داغ! زن فرخی دیروز با یه ماشین به این گندگی اومده بود سنگک بخره!';
-      document.dispatchEvent(new CustomEvent('debug-line', { detail: { who, text } }));
+    const LINES: Record<string, string> = {
+      mahin: 'خبر داغ! زن فرخی دیروز با یه ماشین به این گندگی اومده بود سنگک بخره!',
+      farokhi: 'همه‌چی فروشیه خانم. حتی این کوچه.',
+      bahman: 'چهل سال… درخت توت حیاط هنوز هست. ولی خونه‌ی پدری…',
     };
+    (window as any).__showLine = (who = 'mahin') => document.dispatchEvent(new CustomEvent('debug-line', { detail: { who, text: LINES[who] } }));
   });
+  if (shot.at) await page.clock.setFixedTime(new Date(shot.at));
   await page.goto('http://localhost:4175/');
   await page.waitForTimeout(500);
   await page.click('.splash');
   await page.waitForTimeout(600);
-  while (await page.$('.overlay .btn')) { await page.click('.overlay .btn', { force: true }); await page.waitForTimeout(200); }
+  // Daily gift / level-up windows that open on load.
+  for (let k = 0; k < 3 && await page.$('.overlay .btn:not(.close)') && !await page.$('.overlay .close'); k++) { await page.click('.overlay .btn', { force: true }); await page.waitForTimeout(200); }
   if (shot.act) await shot.act(page);
   await page.waitForTimeout(300);
   await page.screenshot({ path: join(OUT, `raw-${shot.name}.png`) });
@@ -142,6 +181,7 @@ for (const shot of shots) {
 }
 await browser.close();
 server.close();
+for (const shot of shots) rmSync(join(OUT, `raw-${shot.name}.png`), { force: true });
 
 async function fontUrl(): Promise<string> {
   const { readdirSync } = await import('node:fs');

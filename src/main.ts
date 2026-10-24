@@ -35,6 +35,7 @@ async function boot(): Promise<void> {
 
   await splash();
   setMusic(music !== '0');
+  void app.flushAnnouncements();
 
   // Store connections happen in the background; the game never waits on them.
   connectBilling().then(async (ok) => {

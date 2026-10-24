@@ -86,7 +86,7 @@ export class App {
     this.boardEl.addEventListener('pointermove', (e) => this.onMove(e));
     this.boardEl.addEventListener('pointerup', (e) => this.onUp(e));
     this.boardEl.addEventListener('pointercancel', () => this.cancelDrag());
-    for (const it of ensureGenerators(this.s)) this.toast(`«${itemName(it)}» به صفحه اضافه شد!`);
+    this.announcements.push(...ensureGenerators(this.s).map((it) => `«${itemName(it)}» به صفحه اضافه شد!`));
     this.renderAll();
     setInterval(() => this.tick(), 1000);
   }
@@ -941,6 +941,16 @@ export class App {
       if (step('alley')) this.toast('ستاره داری! دکمه‌ی «محله» رو بزن و قهوه‌خانه رو تعمیر کن.');
       const nav = document.getElementById('nav-alley');
       if (nav) this.showHand(nav.getBoundingClientRect());
+    }
+  }
+
+  /** Messages that wait until the splash screen is gone. */
+  private announcements: string[] = [];
+
+  async flushAnnouncements(): Promise<void> {
+    for (const msg of this.announcements.splice(0)) {
+      this.toast(msg);
+      await wait(2400);
     }
   }
 

@@ -71,7 +71,7 @@ base64 -w0 mahalle-release.jks > mahalle-release.jks.b64
 1. `Mahalle.apk` جدید (امضاشده با کلید خودتان) را از Releases بردارید و در پیشخوان بازار آپلود
    کنید. `Mahalle-myket.apk` را در پنل مایکت آپلود کنید (همان کلید امضا، نسخه‌ی مخصوص مایکت).
 2. متن‌ها: [`docs/store-listing.md`](store-listing.md) (نام، توضیح کوتاه، توضیح کامل).
-3. تصاویر: پوشه‌ی [`docs/screenshots/`](screenshots/) (۷ تصویر ۱۰۸۰×۱۹۲۰ با کپشن).
+3. تصاویر: پوشه‌ی [`docs/screenshots/`](screenshots/) (۸ تصویر ۱۰۸۰×۱۹۲۰ با کپشن).
 4. آیکون: `android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png` (یا `public/icon.svg`).
 5. رده‌ی سنی: ۳+. دسته: بازی › تفننی.
 
