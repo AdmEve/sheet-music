@@ -891,7 +891,8 @@ export class App {
   /** Animated pointing hand for the tutorial: taps at `a`, or drags from `a` to `b`. */
   private showHand(a: DOMRect, b?: DOMRect): void {
     this.hideHand();
-    const hand = h('div', { class: 'tut-hand' }, '👆');
+    // Fingertip sits at (14, 4) px of the 46-px drawing, which `at` below lines up on the target.
+    const hand = h('div', { class: 'tut-hand', html: svgIcon(ICONS.hand) });
     document.body.append(hand);
     const at = (r: DOMRect) => `translate(${r.left + r.width / 2 - 14}px, ${r.top + r.height / 2 - 4}px)`;
     hand.animate(

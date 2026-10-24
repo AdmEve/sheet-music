@@ -77,5 +77,10 @@ export const ICONS = {
     `<path d="M26 16 C42 8 56 22 82 14 L82 52 C56 60 42 46 26 54 Z" fill="#fff" ${O}/>` +
     `<path d="M26 16 L38 13 L38 25 L26 28 Z M50 16 L62 19 L62 31 L50 28 Z M74 16 L82 14 L82 27 L74 29 Z M38 25 L50 28 L50 40 L38 37 Z M62 31 L74 29 L74 42 L62 43 Z M26 28 L38 37 L38 49 L26 54 Z M50 40 L62 43 L62 55 L50 52 Z M74 42 L82 40 L82 52 L74 54 Z" fill="#4b2e1e"/>` +
     `<circle cx="24" cy="10" r="5" fill="url(#gGold)" ${THIN}/>`,
+  /** Tutorial pointer: a gloved hand pointing up-left (tip at 30,8). */
+  hand:
+    `<path d="M30 8 C25 8 23 12 23 16 L23 54 L17 48 C13 44 7 45 6 50 C5 54 8 57 10 60 L28 84 C32 90 38 94 48 94 L62 94 C76 94 84 84 84 70 L84 46 C84 41 80 38 76 39 C74 35 70 33 66 35 C64 31 60 29 56 31 C54 28 50 27 46 29 L37 31 L37 16 C37 12 35 8 30 8 Z" fill="#fff" ${O} stroke-width="3.2"/>` +
+    `<path d="M46 29 V54 M56 31 V54 M66 35 V56 M76 39 V58" fill="none" ${THIN} opacity=".55"/>` +
+    `<path d="M40 82 C46 86 58 87 66 84" fill="none" stroke="#e2507a" stroke-width="4" stroke-linecap="round"/>`,
   sparkles: sparkle(30, 30, 14) + sparkle(70, 60, 10) + sparkle(64, 22, 7),
 };
