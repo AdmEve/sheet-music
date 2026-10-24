@@ -3,7 +3,8 @@
 A Persian merge game for Android. Merge Persian items (tea glasses → golden samovar,
 wheat → sangak breakfast spread, seeds → rosewater sprinkler…) to fill the neighbours'
 orders, earn stars, and restore an old Tehran alley that a developer wants to demolish.
-Each restoration plays the next episode of the neighbourhood drama.
+Each restoration plays the next episode of the neighbourhood drama: season 1 saves the
+alley (5 episodes), season 2 «عروسی» follows Narges' wedding (5 episodes).
 
 - Fully **offline**; progress is saved on the phone.
 - Monetization through **Cafe Bazaar in-app billing** (Poolakey) and opt-in **Tapsell

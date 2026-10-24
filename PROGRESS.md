@@ -75,9 +75,13 @@ gift), Bazaar rating + share prompt after episode 1, code-review fixes (purchase
 grant → save → consume with token tracking; native connection handling; double-tap guard;
 ad cap), old-WebView compatibility (Chrome 69 build target, animation fallbacks).
 
+Season 2 «عروسی» is done: 5 episodes (proposal, pastry shop, tailor, sofreh-ye aghd, alley
+wedding), Fakhri Khanum, sweets chain + pastry generator (level 7 gift). Balance: both
+seasons ≈ 9,700 energy for a free player (≈ 4–6 weeks casual).
+
 Next (in order):
-1. Season 2 «عروسی»: 5 more places, sweets chain (قنادی) + generator, dialogue
-2. Small-size art polish pass; more juice on deliveries
+1. Small-size art polish pass; more juice on deliveries
+2. Season 3 («نامه‌ای از اون ور دنیا») as a post-launch update
 3. Weekly prize event design (needs a small domestic server) — optional
 
 Known limits: local Gradle builds here can hit Maven Central rate limits (429); CI is the
