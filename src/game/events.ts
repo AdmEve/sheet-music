@@ -1,6 +1,8 @@
 // Live events, scheduled offline from the device date. One event is always running:
-// a weekly theme (Saturday to Friday, rotating lavashak / kites / ash / ice cream), replaced by Yalda
-// (25 Azar – 1 Dey) and Nowruz (25 Esfand – 13 Farvardin) when they come round.
+// a weekly theme (Saturday to Friday, rotating lavashak / kites / ash / ice cream), replaced by
+// the calendar ones when they come round: back to school (25 Shahrivar – 3 Mehr), Yalda
+// (25 Azar – 1 Dey), Chaharshanbe Suri (the week ending on the year's last Wednesday) and
+// Nowruz (from the day after Suri to 13 Farvardin).
 //
 // While an event runs, its generator sits on the board. Tapping it (1 energy) drops event
 // items; merging them earns points (the new level), tapping a top-level item collects it
@@ -13,7 +15,7 @@ import { CHAINS, ChainId, Item, maxLevel } from './items';
 import type { GameState } from './model';
 import type { PassReward } from './pass';
 
-export type ThemeId = 'yalda' | 'nowruz' | 'kite' | 'lavashak' | 'ash' | 'icecream';
+export type ThemeId = 'yalda' | 'nowruz' | 'kite' | 'lavashak' | 'ash' | 'icecream' | 'suri' | 'school';
 
 export interface Theme {
   id: ThemeId;
@@ -84,6 +86,26 @@ export const THEMES: Record<ThemeId, Theme> = {
       { who: 'narges', text: 'بستنی‌ساز رو گذاشتم کنار مولدها. شیر و زعفرون رو ادغام کن تا گاری بستنی راه بیفته!' },
     ],
   },
+  suri: {
+    id: 'suri', title: 'چهارشنبه‌سوری', chain: 'suri', gen: 'genSuri',
+    blurb: 'آخرین سه‌شنبه‌شب سال: آتیش، قاشق‌زنی و آجیل مشکل‌گشا. ترقه ممنوع!',
+    intro: [
+      { who: 'mahin', text: 'چهارشنبه‌سوریه! امسال کی از رو آتیش می‌پره؟ آقا مرتضی، شما که سبک‌بالی!' },
+      { who: 'morteza', text: 'زردی من از تو، سرخی تو از من! … فقط یه بوته‌ی کوچیک لطفاً.' },
+      { who: 'golab', text: 'قاشق‌زنی یادتون نره. هر کی در زد، آجیل مشکل‌گشا داره!' },
+      { who: 'narges', text: 'سبد چهارشنبه‌سوری رو گذاشتم کنار مولدها. فقط ترقه نه‌ها! با فانوس و آتیش کوچیک جشن می‌گیریم.' },
+    ],
+  },
+  school: {
+    id: 'school', title: 'بوی ماه مهر', chain: 'school', gen: 'genSchool',
+    blurb: 'مدرسه‌ها دارن باز می‌شن. برای بچه‌های کوچه کیف و دفتر جور کن!',
+    intro: [
+      { who: 'reza', text: 'بوی ماه مهر میاد! پسرم امسال کلاس اوله، از الان دلش شور می‌زنه.' },
+      { who: 'mahin', text: 'من روز اول مدرسه گریه کردم… تا کلاس پنجم!' },
+      { who: 'shirin', text: 'یادته نرگس؟ «بابا آب داد»! هنوز بوی کتاب نو رو یادمه.' },
+      { who: 'narges', text: 'جعبه‌ی لوازم‌التحریر رو گذاشتم کنار مولدها. ادغام کن تا بچه‌های کوچه کیف نو داشته باشن!' },
+    ],
+  },
 };
 
 /** Weekly themes in turn (week counted from the Unix epoch, Saturday-based). */
@@ -122,28 +144,60 @@ export interface EventState {
 
 export const emptyEvent = (): EventState => ({ id: '', theme: '', points: 0, claimed: 0, joined: false });
 
+const dayNum = (d: Date) => Math.round(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / DAY_MS);
+
+/** The last Wednesday of the Persian year that `d` (a day in Esfand) belongs to, as a day number. */
+function suriDay(d: Date): number {
+  let k = 1;
+  while (k < 32 && toJalali(new Date(d.getFullYear(), d.getMonth(), d.getDate() + k)).m !== 1) k++;
+  const nowruz = new Date(d.getFullYear(), d.getMonth(), d.getDate() + k);
+  // Wednesday is getDay() 3; if Nowruz itself is a Wednesday, Suri is the week before.
+  return dayNum(nowruz) - ((nowruz.getDay() + 4) % 7 || 7);
+}
+
 const dayKey = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+/** The calendar event (not a weekly theme) on the local day of `d`, if any. */
+function calendarEvent(d: Date): { id: string; theme: ThemeId } | null {
+  const j = toJalali(d);
+  if ((j.m === 9 && j.d >= 25) || (j.m === 10 && j.d === 1)) return { id: `yalda-${j.y}`, theme: 'yalda' };
+  if ((j.m === 6 && j.d >= 25) || (j.m === 7 && j.d <= 3)) return { id: `school-${j.y}`, theme: 'school' };
+  if (j.m === 12 && j.d >= 15) {
+    const suri = suriDay(d);
+    if (dayNum(d) > suri) return { id: `nowruz-${j.y + 1}`, theme: 'nowruz' };
+    if (dayNum(d) > suri - 7) return { id: `suri-${j.y}`, theme: 'suri' };
+  }
+  if (j.m === 1 && j.d <= 13) return { id: `nowruz-${j.y}`, theme: 'nowruz' };
+  return null;
+}
+
+const plus = (d: Date, k: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + k);
 
 /** Which event runs on the local day of `d`. */
 export function eventForDay(d: Date): { id: string; theme: ThemeId } {
-  const j = toJalali(d);
-  if ((j.m === 9 && j.d >= 25) || (j.m === 10 && j.d === 1)) return { id: `yalda-${j.y}`, theme: 'yalda' };
-  if (j.m === 12 && j.d >= 25) return { id: `nowruz-${j.y + 1}`, theme: 'nowruz' };
-  if (j.m === 1 && j.d <= 13) return { id: `nowruz-${j.y}`, theme: 'nowruz' };
+  const cal = calendarEvent(d);
+  if (cal) return cal;
   // Persian week: Saturday (getDay 6) to Friday.
-  const sat = new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 1) % 7));
-  const week = Math.floor(Date.UTC(sat.getFullYear(), sat.getMonth(), sat.getDate()) / DAY_MS / 7);
+  let sat = plus(d, -((d.getDay() + 1) % 7));
+  // A week cut down to one or two days by a calendar event joins the neighbouring full
+  // week, so a weekly event never lasts just a day.
+  const off = dayNum(d) - dayNum(sat);
+  let a = off, b = off;
+  while (a > 0 && !calendarEvent(plus(sat, a - 1))) a--;
+  while (b < 6 && !calendarEvent(plus(sat, b + 1))) b++;
+  if (b - a < 2) sat = plus(sat, a > 0 ? 7 : -7);
+  const week = Math.floor(dayNum(sat) / 7);
   return { id: `week-${dayKey(sat)}`, theme: WEEKLY[week % WEEKLY.length] };
 }
 
 /** Local midnight when the event running at `now` gives way to the next one. */
 export function eventEnd(now: Date): Date {
   const id = eventForDay(now).id;
-  for (let k = 1; k <= 21; k++) {
+  for (let k = 1; k <= 30; k++) {
     const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + k);
     if (eventForDay(d).id !== id) return d;
   }
-  return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 21);
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 30);
 }
 
 export const isEventItem = (it: Item | null | undefined) => !!it && !!CHAINS[it.chain].event;

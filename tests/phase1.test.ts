@@ -120,3 +120,20 @@ describe('generator catch-up', () => {
     expect(ensureGenerators(s)).toEqual([]);
   });
 });
+
+describe('clock set back', () => {
+  it('keeps the energy, gift and bubble timers to their normal length', async () => {
+    const { ENERGY_REGEN_MS, msToNextEnergy, tickBubbles, tickEnergy } = await import('../src/game/model');
+    const { GIFT_EVERY_MS } = await import('../src/game/offers');
+    const s = emptyGame();
+    s.energy = 10;
+    s.energyAt = T0 + 30 * 86_400_000;
+    s.giftAt = T0 + 30 * 86_400_000;
+    s.board[0] = { item: { chain: 'tea', level: 2 }, lock: 'bubble', until: T0 + 30 * 86_400_000 };
+    tickEnergy(s, T0);
+    tickBubbles(s, T0);
+    expect(msToNextEnergy(s, T0)).toBe(ENERGY_REGEN_MS);
+    expect(s.giftAt).toBe(T0 + GIFT_EVERY_MS);
+    expect(s.board[0].until! - T0).toBeLessThanOrEqual(5 * 60_000);
+  });
+});

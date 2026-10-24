@@ -23,7 +23,7 @@ describe('event schedule', () => {
     expect(eventForDay(new Date(2026, 11, 21))).toEqual({ id: 'yalda-1405', theme: 'yalda' }); // 30 Azar
     expect(eventForDay(new Date(2026, 11, 22)).theme).toBe('yalda'); // 1 Dey
     expect(eventForDay(new Date(2026, 11, 23)).theme).not.toBe('yalda');
-    expect(eventForDay(new Date(2027, 2, 16))).toEqual({ id: 'nowruz-1406', theme: 'nowruz' }); // 25 Esfand 1405
+    expect(eventForDay(new Date(2027, 2, 18))).toEqual({ id: 'nowruz-1406', theme: 'nowruz' }); // 27 Esfand 1405
     expect(eventForDay(new Date(2027, 3, 2))).toEqual({ id: 'nowruz-1406', theme: 'nowruz' }); // 13 Farvardin 1406
     expect(eventForDay(new Date(2027, 3, 3)).theme).not.toBe('nowruz');
     const sat = eventForDay(new Date(2026, 9, 24)); // a Saturday
@@ -34,6 +34,32 @@ describe('event schedule', () => {
     expect(next.theme).not.toBe(sat.theme); // themes rotate
     const four = [0, 7, 14, 21].map((d) => eventForDay(new Date(2026, 9, 24 + d)).theme);
     expect(new Set(four).size).toBe(4);
+  });
+
+  it('runs Chaharshanbe Suri the week ending on the last Wednesday, then Nowruz', () => {
+    // 1406 starts on Sunday 21 March 2027, so Suri night is Tuesday 16 March.
+    expect(eventForDay(new Date(2027, 2, 10)).theme).not.toBe('suri'); // Wednesday before
+    expect(eventForDay(new Date(2027, 2, 11))).toEqual({ id: 'suri-1405', theme: 'suri' }); // Thursday
+    expect(eventForDay(new Date(2027, 2, 17))).toEqual({ id: 'suri-1405', theme: 'suri' }); // Wednesday
+    expect(eventForDay(new Date(2027, 2, 18)).theme).toBe('nowruz');
+    // When Nowruz is the day after a Wednesday (Thursday 21 March 2030), Suri ends the day before.
+    expect(eventForDay(new Date(2030, 2, 20)).theme).toBe('suri');
+    expect(eventForDay(new Date(2030, 2, 21)).theme).toBe('nowruz');
+  });
+
+  it('runs back to school from 25 Shahrivar to 3 Mehr', () => {
+    expect(eventForDay(new Date(2026, 8, 15)).theme).not.toBe('school'); // 24 Shahrivar
+    expect(eventForDay(new Date(2026, 8, 16))).toEqual({ id: 'school-1405', theme: 'school' });
+    expect(eventForDay(new Date(2026, 8, 25)).theme).toBe('school'); // 3 Mehr
+    expect(eventForDay(new Date(2026, 8, 26)).theme).not.toBe('school');
+  });
+
+  it('folds a one- or two-day leftover week into the next full week', () => {
+    // Nowruz 1410 ends on Wednesday 2 April 2031; Thursday and Friday join the week after.
+    const thu = eventForDay(new Date(2031, 3, 3));
+    expect(thu.id).toBe('week-2031-04-05');
+    expect(eventForDay(new Date(2031, 3, 5))).toEqual(thu);
+    expect(eventEnd(new Date(2031, 3, 3))).toEqual(new Date(2031, 3, 12));
   });
 
   it('finds the end of the running event', () => {

@@ -7,7 +7,7 @@ export type ChainId =
   | 'genTea' | 'genBread' | 'genGarden' | 'genTools' | 'genTextile' | 'genPottery' | 'genSweets' | 'genPost' | 'genBaby'
   | 'chest' | 'coins' | 'energy'
   | 'yalda' | 'genYalda' | 'nowruz' | 'genNowruz' | 'kite' | 'genKite' | 'lavashak' | 'genLavashak'
-  | 'ash' | 'genAsh' | 'icecream' | 'genIcecream';
+  | 'ash' | 'genAsh' | 'icecream' | 'genIcecream' | 'suri' | 'genSuri' | 'school' | 'genSchool';
 
 export interface ChainDef {
   id: ChainId;
@@ -94,6 +94,10 @@ export const CHAINS: Record<ChainId, ChainDef> = {
   genAsh: { id: 'genAsh', name: 'سبد سبزی', levels: ['سبد سبزی'], produces: 'ash', event: 'ash' },
   icecream: { id: 'icecream', name: 'بستنی سنتی', levels: ['شیشه‌ی شیر', 'زعفران', 'بستنی نونی', 'فالوده', 'بستنی سنتی', 'گاری بستنی'], event: 'icecream' },
   genIcecream: { id: 'genIcecream', name: 'بستنی‌ساز', levels: ['بستنی‌ساز دستی'], produces: 'icecream', event: 'icecream' },
+  suri: { id: 'suri', name: 'چهارشنبه‌سوری', levels: ['بوته‌ی خار', 'قاشق و کاسه', 'آجیل مشکل‌گشا', 'فانوس', 'کوزه‌ی نو', 'آتیش چهارشنبه‌سوری'], event: 'suri' },
+  genSuri: { id: 'genSuri', name: 'سبد چهارشنبه‌سوری', levels: ['سبد چهارشنبه‌سوری'], produces: 'suri', event: 'suri' },
+  school: { id: 'school', name: 'بوی ماه مهر', levels: ['مداد', 'پاک‌کن و تراش', 'دفتر مشق', 'جامدادی', 'کتاب فارسی اول', 'کیف مدرسه‌ی نو'], event: 'school' },
+  genSchool: { id: 'genSchool', name: 'جعبه‌ی لوازم‌التحریر', levels: ['جعبه‌ی لوازم‌التحریر'], produces: 'school', event: 'school' },
 };
 
 export const PRODUCT_CHAINS: ChainId[] = ['tea', 'bread', 'garden', 'tools', 'textile', 'pottery', 'sweets', 'post', 'baby'];

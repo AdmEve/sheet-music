@@ -6,7 +6,9 @@ import { CHEST, COINS, ENERGY } from './chainsC';
 import { GEN_SWEETS, SWEETS } from './chainsD';
 import { GEN_POST, POST } from './chainsE';
 import { BABY, GEN_BABY } from './chainsF';
-import { ASH, GEN_ASH, GEN_ICECREAM, GEN_KITE, GEN_LAVASHAK, GEN_NOWRUZ, GEN_YALDA, ICECREAM, KITE, LAVASHAK, NOWRUZ, YALDA } from './events';
+import {
+  ASH, GEN_ASH, GEN_ICECREAM, GEN_KITE, GEN_LAVASHAK, GEN_NOWRUZ, GEN_SCHOOL, GEN_SURI, GEN_YALDA, ICECREAM, KITE, LAVASHAK, NOWRUZ, SCHOOL, SURI, YALDA,
+} from './events';
 
 const ART: Record<ChainId, string[]> = {
   tea: TEA,
@@ -42,6 +44,10 @@ const ART: Record<ChainId, string[]> = {
   genAsh: GEN_ASH,
   icecream: ICECREAM,
   genIcecream: GEN_ICECREAM,
+  suri: SURI,
+  genSuri: GEN_SURI,
+  school: SCHOOL,
+  genSchool: GEN_SCHOOL,
 };
 
 export function itemArt(it: Item): string {

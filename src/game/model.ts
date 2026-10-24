@@ -8,7 +8,7 @@ import {
 } from './items';
 import { discover } from './codex';
 import { EVENT_COLLECT, EVENT_ORDER, EventState, addEventPoints, emptyEvent, isTopEventItem, mergePoints } from './events';
-import { TimedOffer, fillPiggy } from './offers';
+import { GIFT_EVERY_MS, TimedOffer, fillPiggy } from './offers';
 import { RaceState, emptyRace, notePlayerFinish } from './race';
 import { PassState, QUEST_BONUS_POINTS, QUEST_POINTS, addPassPoints, emptyPass } from './pass';
 
@@ -260,6 +260,8 @@ export function newGame(seed: number, now: number): GameState {
 // ---------------------------------------------------------------------------- energy / daily
 
 export function tickEnergy(s: GameState, now: number): void {
+  // The phone's clock was set back: restart the timer instead of waiting days for it.
+  if (s.energyAt > now) s.energyAt = now;
   if (s.energy >= ENERGY_CAP) {
     s.energyAt = now;
     return;
@@ -778,8 +780,11 @@ export function findHint(s: GameState): [number, number] | null {
 /** Advances the clock; bubbles past their time float away. Returns the cells cleared. */
 export function tickBubbles(s: GameState, now: number): number[] {
   s.clock = now;
+  // If the phone's clock was set back, keep timers to their normal length.
+  if (s.giftAt > now + GIFT_EVERY_MS) s.giftAt = now + GIFT_EVERY_MS;
   const gone: number[] = [];
   s.board.forEach((c, i) => {
+    if (c.lock === 'bubble' && (c.until ?? 0) > now + BUBBLE_MS) c.until = now + BUBBLE_MS;
     if (c.lock === 'bubble' && (c.until ?? 0) <= now) {
       s.board[i] = { item: null };
       gone.push(i);

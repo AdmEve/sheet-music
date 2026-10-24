@@ -300,3 +300,105 @@ export const GEN_ICECREAM: string[] = [
     `<rect x="34" y="28" width="32" height="14" rx="3" fill="url(#gSteel)" ${O}/><path d="M50 28 V16 H72 V24" fill="none" ${O} stroke-width="3"/><circle cx="72" cy="26" r="4" fill="url(#gRed)" ${THIN}/>` +
     `<circle cx="40" cy="24" r="4" fill="#e8f6ff" opacity=".9"/><circle cx="30" cy="34" r="3" fill="#e8f6ff" opacity=".8"/>`,
 ];
+
+// ---------------------------------------------------------------- Chaharshanbe Suri
+
+const brush = (x: number, y: number, s = 1) =>
+  g(`<path d="M-20 6 L20 6" ${O} stroke-width="5"/><path d="M-20 6 L20 6" stroke="#c99a5a" stroke-width="2.4"/>` +
+    [-16, -8, 0, 8, 16].map((dx, i) => `<path d="M${dx} 6 L${dx + (i - 2) * 3} -14 M${dx} 2 L${dx - 5} -6 M${dx} 0 L${dx + 5} -8" fill="none" stroke="#8a5a22" stroke-width="1.8" stroke-linecap="round"/>`).join(''),
+    `translate(${x} ${y}) scale(${s})`);
+
+const flame = (x: number, y: number, s = 1) =>
+  g(`<path d="M0 -26 C8 -16 14 -10 12 0 C10 8 -10 8 -12 0 C-14 -8 -6 -12 -4 -20 C-2 -14 2 -14 0 -26 Z" fill="url(#gFire)" ${THIN}/>` +
+    `<path d="M0 -12 C4 -7 6 -4 5 0 C4 4 -4 4 -5 0 C-6 -4 -2 -6 0 -12 Z" fill="#ffe08a"/>`,
+    `translate(${x} ${y}) scale(${s})`);
+
+const spoon = (x: number, y: number, rot: number) =>
+  g(`<path d="M0 0 L0 -26" stroke="${INK}" stroke-width="5" stroke-linecap="round"/><path d="M0 0 L0 -26" stroke="#d9dee4" stroke-width="2.6" stroke-linecap="round"/>` +
+    `<ellipse cx="0" cy="-32" rx="6" ry="8" fill="url(#gSteel)" ${THIN}/>`, `translate(${x} ${y}) rotate(${rot})`);
+
+const nutBag = (x: number, y: number, s = 1) =>
+  g(`<path d="M-18 -6 C-22 10 -18 22 0 22 C18 22 22 10 18 -6 Z" fill="url(#gRose)" ${O}/><path d="M-18 -6 L-12 -16 L12 -16 L18 -6" fill="url(#gRoseDeep)" ${O}/>` +
+    `<path d="M-14 -8 Q0 -2 14 -8" fill="none" stroke="#ffe08a" stroke-width="2.4"/>` +
+    [[-8, -18, '#c99a5a'], [0, -20, '#8fbf4a'], [8, -18, '#e8d3a8'], [-3, -14, '#a5621f'], [5, -14, '#c99a5a']].map(([cx, cy, f]) => `<ellipse cx="${cx}" cy="${cy}" rx="3.4" ry="2.6" fill="${f}" ${THIN} stroke-width="1"/>`).join(''),
+    `translate(${x} ${y}) scale(${s})`);
+
+export const SURI: string[] = [
+  // 1 بوته‌ی خار (a tied sheaf of dry brush)
+  shadow(50, 86, 28) +
+    [-34, -24, -14, -5, 5, 14, 24, 34].map((a, i) => g(`<path d="M0 0 L0 -${40 + (i % 3) * 6}" stroke="${INK}" stroke-width="4.6" stroke-linecap="round"/><path d="M0 0 L0 -${40 + (i % 3) * 6}" stroke="${i % 2 ? '#c99a5a' : '#a77a4f'}" stroke-width="2.4" stroke-linecap="round"/>` +
+      `<path d="M0 -18 l-6 -6 M0 -28 l6 -6" stroke="#8a5a22" stroke-width="1.8" stroke-linecap="round"/>`, `translate(50 66) rotate(${a})`)).join('') +
+    [-20, -10, 0, 10, 20].map((a) => g(`<path d="M0 0 L0 18" stroke="${INK}" stroke-width="4.6" stroke-linecap="round"/><path d="M0 0 L0 18" stroke="#a77a4f" stroke-width="2.4" stroke-linecap="round"/>`, `translate(50 66) rotate(${a})`)).join('') +
+    `<rect x="40" y="60" width="20" height="10" rx="3" fill="url(#gRed)" ${THIN}/>`,
+  // 2 قاشق و کاسه
+  shadow(50, 88, 28) + bowl('url(#gCopper)', 58) + spoon(36, 64, -28) + spoon(64, 62, 24) +
+    `<path d="M24 34 l4 4 M76 34 l-4 4 M50 26 v5" stroke="${INK}" stroke-width="2" stroke-linecap="round"/>`,
+  // 3 آجیل مشکل‌گشا
+  shadow(50, 88, 26) + nutBag(50, 64, 1.3),
+  // 4 فانوس
+  shadow(50, 90, 18) + `<path d="M50 10 V20" ${O}/><path d="M40 20 H60 L64 28 H36 Z" fill="url(#gBrass)" ${O}/>` +
+    `<path d="M36 28 H64 L60 76 H40 Z" fill="url(#gYellow)" ${O}/><circle cx="50" cy="52" r="16" fill="url(#rGlow)" opacity=".8"/>` +
+    `<path d="M44 28 L42 76 M56 28 L58 76" stroke="${INK}" stroke-width="1.6" opacity=".6"/><rect x="36" y="76" width="28" height="8" rx="2" fill="url(#gBrass)" ${O}/>` +
+    flame(50, 60, 0.6),
+  // 5 کوزه‌ی نو
+  shadow(50, 90, 24) + `<path d="M40 22 H60 V30 C76 38 78 54 74 70 C70 84 30 84 26 70 C22 54 24 38 40 30 Z" fill="url(#gTerracotta)" ${O}/>` +
+    `<path d="M38 22 H62" ${O} stroke-width="5"/><path d="M30 52 Q50 60 70 52" fill="none" stroke="#fff" stroke-width="2.4" opacity=".7"/>` +
+    [36, 50, 64].map((x) => `<circle cx="${x}" cy="${62 + (x === 50 ? 2 : 0)}" r="2.2" fill="#ffe08a"/>`).join('') + shine(36, 40, 3, 8, 20, 0.5),
+  // 6 آتیش چهارشنبه‌سوری
+  `<circle cx="50" cy="54" r="44" fill="url(#rGlow)" opacity=".6"/>` + shadow(50, 90, 40) +
+    [24, 50, 76].map((x) => brush(x, 80, 0.6) + flame(x, 74, x === 50 ? 1.3 : 0.95)).join('') +
+    sparkle(16, 24, 4, '#ffe08a') + sparkle(84, 20, 5, '#ffe08a'),
+];
+
+export const GEN_SURI: string[] = [
+  // سبد چهارشنبه‌سوری
+  shadow(50, 90, 36) + nutBag(34, 48, 0.8) + spoon(58, 54, 18) + spoon(68, 54, 32) + basket(54) +
+    `<rect x="40" y="64" width="20" height="10" rx="3" fill="url(#gFire)" ${THIN}/>`,
+];
+
+// ---------------------------------------------------------------- back to school (Mehr)
+
+const pencil = (x: number, y: number, rot: number, s = 1, body = 'url(#gYellow)') =>
+  g(`<rect x="-5" y="-30" width="10" height="44" fill="${body}" ${O}/><rect x="-5" y="-36" width="10" height="7" rx="2" fill="#ffb3bd" ${THIN}/>` +
+    `<rect x="-5" y="-30" width="10" height="4" fill="url(#gSilver)" ${THIN}/><path d="M-5 14 L0 26 L5 14 Z" fill="#f2d3a0" ${THIN}/><path d="M-1.6 22 L0 26 L1.6 22 Z" fill="${INK}"/>`,
+    `translate(${x} ${y}) rotate(${rot}) scale(${s})`);
+
+const notebook = (x: number, y: number, s: number, cover: string, rot = 0) =>
+  g(`<rect x="-20" y="-26" width="40" height="52" rx="3" fill="${cover}" ${O}/><rect x="-14" y="-14" width="28" height="12" rx="2" fill="#fffdf6" ${THIN}/>` +
+    `<path d="M-10 -10 H10 M-10 -6 H4" stroke="#9b8a76" stroke-width="1.4"/>` +
+    [-20, -12, -4, 4, 12, 20].map((dy) => `<circle cx="-20" cy="${dy}" r="2" fill="#fffdf6" ${THIN} stroke-width="1"/>`).join(''),
+    `translate(${x} ${y}) rotate(${rot}) scale(${s})`);
+
+export const SCHOOL: string[] = [
+  // 1 مداد
+  shadow(50, 86, 22) + pencil(50, 56, 35, 1.2),
+  // 2 پاک‌کن و مدادتراش
+  shadow(50, 86, 30) + g(`<rect x="-16" y="-9" width="32" height="18" rx="4" fill="#fffdf6" ${O}/><rect x="-16" y="-9" width="14" height="18" rx="4" fill="url(#gSky)" ${O}/>`, 'translate(34 70) rotate(-12)') +
+    g(`<rect x="-12" y="-12" width="24" height="24" rx="3" fill="url(#gRed)" ${O}/><circle cx="2" cy="0" r="5" fill="${INK}"/><rect x="-10" y="-4" width="8" height="3" fill="url(#gSilver)"/>`, 'translate(66 66) rotate(8)'),
+  // 3 دفتر مشق
+  shadow(50, 88, 26) + notebook(50, 58, 1.1, 'url(#gBlue)', -6),
+  // 4 جامدادی
+  shadow(50, 86, 34) + `<rect x="16" y="52" width="68" height="28" rx="12" fill="url(#gRose)" ${O}/><path d="M22 56 H78" stroke="${INK}" stroke-width="2" stroke-dasharray="3 3"/>` +
+    `<rect x="70" y="50" width="6" height="12" rx="2" fill="url(#gGold)" ${THIN}/>` + pencil(36, 44, -12, 0.7, 'url(#gLeaf)') + pencil(50, 42, 6, 0.7, 'url(#gSky)') +
+    `<circle cx="36" cy="68" r="4" fill="#ffe08a" ${THIN} stroke-width="1"/><circle cx="50" cy="68" r="4" fill="#8fd3f4" ${THIN} stroke-width="1"/>`,
+  // 5 کتاب فارسی اول
+  shadow(50, 90, 30) + `<path d="M50 30 C40 24 24 24 16 28 V82 C24 78 40 78 50 84 Z" fill="#fffdf6" ${O}/><path d="M50 30 C60 24 76 24 84 28 V82 C76 78 60 78 50 84 Z" fill="#fffdf6" ${O}/>` +
+    // A father watering a garden: the first lesson every Iranian child remembers.
+    `<circle cx="30" cy="42" r="5" fill="#f3c7a0" ${THIN}/><path d="M24 62 V50 Q30 46 36 50 V62" fill="url(#gBlue)" ${THIN}/><path d="M36 52 L44 56" ${THIN}/>` +
+    `<path d="M44 56 q3 6 2 12" fill="none" stroke="#6cc0ea" stroke-width="2" stroke-dasharray="2 2"/>` +
+    `<path d="M58 44 H76 M58 52 H72 M58 60 H76 M58 68 H70" stroke="#9b8a76" stroke-width="2.2" stroke-linecap="round"/>` +
+    leaf(38, 70, -70, 0.6) + leaf(46, 72, -110, 0.6),
+  // 6 کیف مدرسه‌ی نو
+  `<circle cx="50" cy="52" r="44" fill="url(#rGlow)" opacity=".55"/>` + shadow(50, 92, 34) +
+    `<path d="M38 26 Q50 14 62 26" fill="none" ${O} stroke-width="5"/><path d="M38 26 Q50 14 62 26" fill="none" stroke="#3a76c4" stroke-width="2.4"/>` +
+    `<rect x="22" y="26" width="56" height="60" rx="12" fill="url(#gBlue)" ${O}/><path d="M22 48 Q50 56 78 48 V40 Q78 26 66 26 H34 Q22 26 22 40 Z" fill="url(#gSky)" ${O}/>` +
+    `<rect x="44" y="46" width="12" height="9" rx="2" fill="url(#gGold)" ${THIN}/><rect x="32" y="62" width="36" height="16" rx="5" fill="url(#gYellow)" ${THIN}/>` +
+    `<path d="M36 70 H64" stroke="${INK}" stroke-width="1.4" stroke-dasharray="3 2"/>` + pencil(80, 30, 25, 0.5, 'url(#gRed)') + sparkle(14, 26, 5),
+];
+
+export const GEN_SCHOOL: string[] = [
+  // جعبه‌ی لوازم‌التحریر
+  shadow(50, 92, 38) + pencil(30, 40, -14, 0.8, 'url(#gRed)') + pencil(44, 36, -4, 0.8, 'url(#gLeaf)') + pencil(58, 38, 6, 0.8) + notebook(72, 40, 0.6, 'url(#gRose)', 10) +
+    `<path d="M14 50 L86 50 L80 88 L20 88 Z" fill="url(#gWood)" ${O}/><rect x="10" y="46" width="80" height="10" rx="3" fill="url(#gWoodDark)" ${O}/>` +
+    `<rect x="38" y="64" width="24" height="12" rx="3" fill="#fffdf6" ${THIN}/><path d="M43 70 H57" stroke="#9b8a76" stroke-width="1.6"/>`,
+];
