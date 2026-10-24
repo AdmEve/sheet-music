@@ -107,15 +107,22 @@ season pass ~10%, events run 4–10 at a time, decoration choice drives self-exp
 - [x] Phase 5: decoration styles per restored piece (`src/art/decor.ts`), celebrations
       (`src/ui/celebrate.ts`), mood expressions in dialogue, carved board frame + girih
       background, alley map with revisit mode (`src/art/alleymap.ts`)
-- [ ] Phase 6: save-transfer code, Season 3, e2e smoke test in CI
+- [x] Phase 6: save-transfer code (`src/game/transfer.ts`), Season 3 «نامه‌ای از اون ور دنیا»
+      (5 episodes, Uncle Bahman, «نامه و پست» chain + writing desk at level 20), browser
+      smoke test in CI (`npm run smoke`)
 
 QA in a browser: localStorage `mahalle.fakeAds=1` / `mahalle.fakeStore=1` fake the video
 and store (browser builds only). A QA harness lives in the session scratchpad; staged
 saves are written into localStorage `mahalle.save.v1`.
 
 Next (in order):
-1. Continue the AAA phases above
-2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
+1. Phase 7 (quality): review every new system for bugs (purchases, event cleanup, race,
+   migrations, transfer), performance at 6× CPU throttle with the new per-second work,
+   first-session pacing (popups at levels 2–6), refreshed store screenshots
+2. Phase 8 (engagement): reminders for events ending / race done / piggy full, more event
+   themes (Chaharshanbe Suri, Mehregan, autumn), sounds for the new features
+3. Phase 9: Season 4 (teased: Narges's news)
+4. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 Known limits: local Gradle builds here can hit Maven Central rate limits (429); CI is the
 source of truth for APK builds.
