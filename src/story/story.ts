@@ -1,3 +1,5 @@
+import type { Mood } from '../art/portraits';
+
 // The neighbourhood serial: places in the alley, the restoration tasks bought with stars,
 // and the dialogue that plays after each one. Text is colloquial Tehrani Persian on purpose.
 
@@ -36,6 +38,8 @@ export const THANKS: Record<string, string[]> = {
 export interface Line {
   who: string;
   text: string;
+  /** Face to show; guessed from the text when omitted (art/portraits.ts moodOf). */
+  mood?: Mood;
 }
 
 export interface Task {

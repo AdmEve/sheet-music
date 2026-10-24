@@ -514,3 +514,4 @@ svg { display: block; }
 .w-tag.b { left: 8px; }
 .w-tag.a { right: 8px; background: var(--green); }
 .wipe.go .w-tag.b { opacity: 0; transition: opacity 0.3s 1.6s; }
+.dialogue .face.react svg { animation: pop 0.3s cubic-bezier(0.3, 1.6, 0.5, 1); }

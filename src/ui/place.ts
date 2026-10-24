@@ -1,7 +1,7 @@
 // The alley screen: the place being restored, its next task, and the story dialogue.
 
 import { ICONS } from '../art/icons';
-import { portrait } from '../art/portraits';
+import { moodOf, portrait } from '../art/portraits';
 import { STYLES } from '../art/decor';
 import { layerHasStyles, sceneSvg } from '../art/places';
 import { offerOnEpisode } from '../game/offers';
@@ -222,7 +222,7 @@ export class PlaceScreen {
         root.classList.toggle('flip', line.who !== 'narges');
         textEl = h('div', { class: 'text' });
         root.append(h('div', { class: 'row' },
-          h('div', { class: 'face', html: svgIcon(portrait(line.who)) }),
+          h('div', { class: `face${k > 0 && lines[k - 1].who === line.who ? ' react' : ''}`, html: svgIcon(portrait(line.who, line.mood ?? moodOf(line.text))) }),
           h('div', { class: 'bubble' },
             h('div', { class: 'who' }, who?.name ?? '', h('span', { class: 'role' }, who?.role ?? '')),
             textEl,
