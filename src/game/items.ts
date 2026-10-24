@@ -5,7 +5,8 @@
 export type ChainId =
   | 'tea' | 'bread' | 'garden' | 'tools' | 'textile' | 'pottery' | 'sweets'
   | 'genTea' | 'genBread' | 'genGarden' | 'genTools' | 'genTextile' | 'genPottery' | 'genSweets'
-  | 'chest' | 'coins' | 'energy';
+  | 'chest' | 'coins' | 'energy'
+  | 'yalda' | 'genYalda' | 'nowruz' | 'genNowruz' | 'kite' | 'genKite' | 'lavashak' | 'genLavashak';
 
 export interface ChainDef {
   id: ChainId;
@@ -18,6 +19,8 @@ export interface ChainDef {
   unlockLevel?: number;
   /** Tapping consumes the item and gives a reward instead of merging further (coins, energy). */
   collectible?: 'coins' | 'energy';
+  /** Event chains and their generators exist only while their event runs. */
+  event?: string;
 }
 
 export const CHAINS: Record<ChainId, ChainDef> = {
@@ -66,6 +69,14 @@ export const CHAINS: Record<ChainId, ChainDef> = {
   chest: { id: 'chest', name: 'صندوقچه', levels: ['صندوقچه چوبی', 'صندوقچه مسی', 'صندوقچه طلایی'] },
   coins: { id: 'coins', name: 'سکه', levels: ['چند سکه', 'کیسه سکه', 'کوزه سکه'], collectible: 'coins' },
   energy: { id: 'energy', name: 'انرژی', levels: ['استکان انرژی', 'قوری انرژی', 'سماور انرژی'], collectible: 'energy' },
+  yalda: { id: 'yalda', name: 'یلدا', levels: ['دونه‌ی انار', 'انار', 'کاسه‌ی انار دون‌شده', 'قاچ هندونه', 'سینی آجیل', 'دیوان حافظ'], event: 'yalda' },
+  genYalda: { id: 'genYalda', name: 'سبد یلدا', levels: ['سبد یلدا'], produces: 'yalda', event: 'yalda' },
+  nowruz: { id: 'nowruz', name: 'نوروز', levels: ['تخم‌مرغ رنگی', 'سیب سرخ', 'سبزه', 'ماهی قرمز', 'گل سنبل', 'سفره‌ی هفت‌سین'], event: 'nowruz' },
+  genNowruz: { id: 'genNowruz', name: 'سبد نوروزی', levels: ['سبد نوروزی'], produces: 'nowruz', event: 'nowruz' },
+  kite: { id: 'kite', name: 'بادبادک', levels: ['کاغذ رنگی', 'قرقره‌ی نخ', 'بادبادک کوچک', 'بادبادک دم‌دار', 'دو بادبادک', 'بادبادک طاووسی'], event: 'kite' },
+  genKite: { id: 'genKite', name: 'جعبه‌ی کاردستی', levels: ['جعبه‌ی کاردستی'], produces: 'kite', event: 'kite' },
+  lavashak: { id: 'lavashak', name: 'لواشک', levels: ['آلوچه', 'زردآلو', 'کاسه‌ی آلو', 'لواشک لوله‌ای', 'سینی لواشک', 'سبد سوغاتی'], event: 'lavashak' },
+  genLavashak: { id: 'genLavashak', name: 'زنبیل میوه', levels: ['زنبیل میوه'], produces: 'lavashak', event: 'lavashak' },
 };
 
 export const PRODUCT_CHAINS: ChainId[] = ['tea', 'bread', 'garden', 'tools', 'textile', 'pottery', 'sweets'];

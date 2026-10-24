@@ -66,5 +66,16 @@ export const ICONS = {
     `<path d="M14 72 L10 30 L32 50 L50 20 L68 50 L90 30 L86 72 Z" fill="url(#gGold)" ${O}/>` +
     `<rect x="14" y="70" width="72" height="14" rx="4" fill="url(#gGold)" ${O}/>` +
     `<circle cx="50" cy="52" r="6" fill="url(#gRed)" ${THIN}/><circle cx="30" cy="62" r="4" fill="url(#gTurq)" ${THIN}/><circle cx="70" cy="62" r="4" fill="url(#gTurq)" ${THIN}/>`,
+  trophy:
+    `<path d="M30 16 L70 16 L68 44 C66 58 58 64 50 64 C42 64 34 58 32 44 Z" fill="url(#gGold)" ${O}/>` +
+    `<path d="M31 22 C16 22 16 44 34 46 M69 22 C84 22 84 44 66 46" fill="none" ${O} stroke-width="4"/>` +
+    `<rect x="44" y="62" width="12" height="12" fill="url(#gGold)" ${O}/><rect x="30" y="74" width="40" height="12" rx="3" fill="url(#gWood)" ${O}/>` +
+    `<path d="M40 22 Q38 38 44 50" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".6"/>`,
+  /** Race flag (checkered). */
+  flag:
+    `<path d="M24 12 L24 90" ${O} stroke-width="5"/>` +
+    `<path d="M26 16 C42 8 56 22 82 14 L82 52 C56 60 42 46 26 54 Z" fill="#fff" ${O}/>` +
+    `<path d="M26 16 L38 13 L38 25 L26 28 Z M50 16 L62 19 L62 31 L50 28 Z M74 16 L82 14 L82 27 L74 29 Z M38 25 L50 28 L50 40 L38 37 Z M62 31 L74 29 L74 42 L62 43 Z M26 28 L38 37 L38 49 L26 54 Z M50 40 L62 43 L62 55 L50 52 Z M74 42 L82 40 L82 52 L74 54 Z" fill="#4b2e1e"/>` +
+    `<circle cx="24" cy="10" r="5" fill="url(#gGold)" ${THIN}/>`,
   sparkles: sparkle(30, 30, 14) + sparkle(70, 60, 10) + sparkle(64, 22, 7),
 };

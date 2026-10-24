@@ -32,7 +32,7 @@ export function discover(s: GameState): Item[] {
   const known = new Set(s.found);
   const out: Item[] = [];
   const see = (it: Item | null | undefined) => {
-    if (!it) return;
+    if (!it || CHAINS[it.chain].event) return;
     const k = itemKey(it);
     if (known.has(k)) return;
     known.add(k);

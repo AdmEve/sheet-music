@@ -39,6 +39,14 @@ export function faClock(ms: number, short = false): string {
   return fa(short ? `${hh}:${mm}` : `${hh}:${mm}:${String(s % 60).padStart(2, '0')}`);
 }
 
+/** Time left for events: "۳ روز و ۵ ساعت" (or "۳ روز" when `short`), clock under a day. */
+export function faLeft(ms: number, short = false): string {
+  const days = Math.floor(ms / 86_400_000);
+  if (days < 1) return faClock(ms, short);
+  const hours = Math.floor((ms % 86_400_000) / 3_600_000);
+  return short || !hours ? `${fa(days)} روز` : `${fa(days)} روز و ${fa(hours)} ساعت`;
+}
+
 export const svgIcon = (inner: string, cls = '') =>
   `<svg class="${cls}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
 

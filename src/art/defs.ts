@@ -13,6 +13,16 @@ const rad = (id: string, stops: [number, string][], cx = 0.35, cy = 0.3, r = 0.8
 
 export const DEFS = `
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+${lin('gPom', [[0, '#ff6d7a'], [0.5, '#d9283f'], [1, '#8e1230']], 1, 1)}
+${lin('gSeed', [[0, '#ffb3bd'], [1, '#e0284a']])}
+${lin('gRind', [[0, '#6fcf62'], [1, '#2d7a33']])}
+${lin('gMelon', [[0, '#ff8a8a'], [1, '#e0303f']])}
+${lin('gWater', [[0, '#bfe9ff'], [1, '#6cc0ea']])}
+${lin('gOrange', [[0, '#ffc266'], [1, '#f07b1d']])}
+${lin('gPlum', [[0, '#b26ad0'], [1, '#5a2178']])}
+${lin('gGreenPlum', [[0, '#d5f28a'], [1, '#7fb32e']])}
+${lin('gLavashak', [[0, '#c0394f'], [1, '#6e1426']])}
+${lin('gWicker', [[0, '#e8b46a'], [1, '#a8702d']])}
 ${lin('gCopper', [[0, '#f3a26b'], [0.5, '#c8642f'], [1, '#8d3d1a']], 1, 0)}
 ${lin('gBrass', [[0, '#ffe08a'], [0.45, '#d9a63a'], [1, '#93661a']], 1, 0)}
 ${lin('gGold', [[0, '#fff2a8'], [0.4, '#f6c945'], [1, '#b7801c']], 1, 0)}

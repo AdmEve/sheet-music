@@ -36,7 +36,8 @@ export function toJalali(date: Date): JDate {
   return { y: jy, m, d };
 }
 
-const DAY = 86_400_000;
+export const DAY_MS = 86_400_000;
+const DAY = DAY_MS;
 
 /** Local midnight that starts the next Jalali month after `now`. */
 export function monthEnd(now: Date): Date {

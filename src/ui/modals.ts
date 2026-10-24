@@ -2,17 +2,25 @@
 
 import { itemArt } from '../art/index';
 import { ICONS } from '../art/icons';
+import { portrait } from '../art/portraits';
 import {
   CHAIN_BONUS_GEMS, CODEX_CHAINS, Reward, chainComplete, chainKey, claimAllCodex, claimCodex, codexClaimable, codexReward, isFound,
 } from '../game/codex';
 import {
   OFFER_SKU, OfferId, PIGGY_CAP, PIGGY_MIN, PIGGY_PER_ORDER, activeOffers, breakPiggy, endOffer, firstBonusOpen, openGift, piggyReady, skipGift,
 } from '../game/offers';
-import { monthEnd } from '../game/calendar';
+import { monthEnd, toJalali } from '../game/calendar';
+import {
+  EVENT_COLLECT, EVENT_LEVEL, EVENT_ORDER, MILESTONES, THEMES, ThemeId, claimMilestone, eventClaimable, eventEnd, eventForDay, eventProgress,
+  milestonesReached,
+} from '../game/events';
 import {
   ENDLESS_COST, ENDLESS_REWARD, FREE, PASS_STEPS, PREMIUM, PassReward, QUEST_BONUS_POINTS, QUEST_POINTS, Track, canClaim, claimEndless,
   claimPass, endlessReady, grantPremium, passClaimable, passName, passProgress,
 } from '../game/pass';
+import {
+  RACE_GOAL, RACE_MS, RACE_REWARDS, botScore, claimRace, playerScore, raceOver, raceRank, racesLeft, startRace,
+} from '../game/race';
 import { CHAINS, ChainId, GENERATOR_CHAINS, Item, PRODUCT_CHAINS, itemKey, itemName, maxLevel } from '../game/items';
 import {
   BAG_MAX, COIN_CHEST_PRICE, COIN_ENERGY_AMOUNT, DAILY_REWARDS, ENERGY_CAP, addEnergy, adsLeft, bagSlotCost, buyBagSlot,
@@ -27,10 +35,20 @@ import { askNotifications } from '../platform/notify';
 import { rateOnStore, shareGame } from '../platform/social';
 import { writeSetting } from '../platform/storage';
 import type { App } from './app';
-import { add, clear, dateKey, fa, faClock, faNum, faTime, h, svgIcon } from './dom';
+import { add, clear, dateKey, fa, faClock, faLeft, faNum, faTime, h, svgIcon } from './dom';
 import { musicEnabled, setMusic, setSound, sfx, soundOn } from './sound';
 
 const today = () => dateKey();
+
+/** "یلدای ۱۴۰۵", "نوروز ۱۴۰۶", "بادبادک‌بازی (آبان ۱۴۰۵)" for a finished event id. */
+export function trophyName(id: string): string {
+  const [kind, ...rest] = id.split('-');
+  if (kind === 'yalda') return `یلدای ${fa(rest[0])}`;
+  if (kind === 'nowruz') return `نوروز ${fa(rest[0])}`;
+  const d = new Date(Number(rest[0]), Number(rest[1]) - 1, Number(rest[2]));
+  const j = toJalali(d);
+  return `${THEMES[eventForDay(d).theme as ThemeId].title} (${fa(j.d)}/${fa(j.m)}/${fa(j.y)})`;
+}
 
 /** Picture for each paid bundle: starter = golden chest, episode party = box of sweets. */
 export function bundleArt(sku: string): string {
@@ -513,6 +531,133 @@ export class Modals {
     });
   }
 
+  /** The live event: how it works, the milestone track, the countdown. */
+  event(): Promise<void> {
+    const s = this.app.s;
+    const theme = s.event.theme ? THEMES[s.event.theme] : null;
+    if (!theme) return Promise.resolve();
+    const genName = CHAINS[theme.gen].levels[0];
+    const topName = CHAINS[theme.chain].levels[maxLevel(theme.chain) - 1];
+    return this.open(theme.title, (body) => {
+      const render = () => {
+        clear(body);
+        const left = eventEnd(new Date()).getTime() - Date.now();
+        add(body,
+          h('div', { class: 'event-hero' },
+            h('span', { html: svgIcon(itemArt({ chain: theme.gen, level: 1 })) }),
+            h('b', {}, '←'),
+            h('span', { html: svgIcon(itemArt({ chain: theme.chain, level: 1 })) }),
+            h('b', {}, '…'),
+            h('span', { html: svgIcon(itemArt({ chain: theme.chain, level: maxLevel(theme.chain) })) })),
+          h('p', { style: 'font-size:13px;margin:0' }, theme.blurb),
+          h('div', { class: 'timer' }, `⏳ ${faLeft(left)} مونده`));
+        if (!s.event.joined) {
+          body.append(h('p', {}, `از سطح ${fa(EVENT_LEVEL)} می‌تونی تو رویدادهای محله شرکت کنی. سفارش‌ها رو تحویل بده تا سطحت بالا بره!`));
+          return;
+        }
+        const reached = milestonesReached(s);
+        const pr = eventProgress(s);
+        add(body,
+          h('div', { class: 'ev-points' }, h('span', { html: svgIcon(itemArt({ chain: theme.gen, level: 1 })) }), `${faNum(s.event.points)} امتیاز`),
+          pr.need ? h('div', { class: 'bar' }, h('div', { style: `width:${(pr.into / pr.need) * 100}%` })) : h('p', { style: 'font-weight:900' }, 'همه‌ی جایزه‌ها رو بردی! 🏆'),
+          pr.need ? h('div', { class: 'muted', style: 'font-size:12px;text-align:center' }, `${fa(pr.into)}/${fa(pr.need)} تا جایزه‌ی بعدی`) : null,
+          eventClaimable(s) ? h('button', { class: 'btn gold', onclick: (e: Event) => {
+            const from = (e.currentTarget as HTMLElement).getBoundingClientRect();
+            const total: PassReward = { coins: 0, gems: 0, energy: 0 };
+            const trophyBefore = s.trophies.length;
+            for (let r = claimMilestone(s); r; r = claimMilestone(s)) {
+              total.coins! += r.coins ?? 0;
+              total.gems! += r.gems ?? 0;
+              total.energy! += r.energy ?? 0;
+              if (r.chest) this.app.giveItem({ chain: 'chest', level: r.chest });
+            }
+            this.passPaid(total, from);
+            if (s.trophies.length > trophyBefore) this.app.toast(`جام «${trophyName(s.event.id)}» مال تو شد! 🏆`);
+            this.app.renderSide();
+            render();
+          } }, `جایزه‌ها رو بگیر (${fa(eventClaimable(s))})`) : null);
+        const track = h('div', { class: 'ev-track' });
+        MILESTONES.forEach((m, k) => {
+          const state = k < s.event.claimed ? 'taken' : k < reached ? 'ready' : k === reached ? 'next' : '';
+          track.append(h('div', { class: `ev-node ${state}` },
+            h('span', { class: 'n' }, fa(k + 1)),
+            this.passRewardEl(m.reward),
+            k === MILESTONES.length - 1 ? h('span', { class: 'cup', html: svgIcon(ICONS.trophy) }) : null,
+            state === 'taken' ? h('span', { class: 'tick' }, '✓') : null));
+        });
+        add(body, track,
+          h('div', { class: 'howto' },
+            h('div', {}, `۱. «${genName}» رو بزن (۱ ⚡) تا وسیله‌ی رویداد بده.`),
+            h('div', {}, `۲. هر ادغام امتیاز داره. «${topName}» رو دو بار بزن: +${fa(EVENT_COLLECT)} امتیاز.`),
+            h('div', {}, `۳. هر سفارش هم ${fa(EVENT_ORDER)} امتیاز می‌ده. آخر رویداد جام می‌گیری!`)));
+      };
+      render();
+    });
+  }
+
+  /** The alley race: start one, watch the lanes, collect the prize. */
+  race(): Promise<void> {
+    const s = this.app.s;
+    const HUES = ['#e2507a', '#14879a', '#e7a512', '#7b4bb8', '#3fae5a', '#d9774a'];
+    return this.open('مسابقه‌ی محله', (body) => {
+      let timer = 0;
+      const render = () => {
+        clear(body);
+        const now = Date.now();
+        const r = s.race.active;
+        if (!r) {
+          const left = racesLeft(s, today());
+          add(body,
+            h('div', { class: 'offer-hero', html: svgIcon(ICONS.flag) }),
+            h('p', {}, `اولین نفری باش که ${fa(RACE_GOAL)} سفارش تحویل می‌ده! چهار نفر از کوچه‌های بغل هم توی مسابقه‌ان. ۲ ساعت وقت داری.`),
+            h('div', { class: 'race-prizes' }, ...RACE_REWARDS.slice(0, 3).map((rw, k) => h('div', {}, h('b', {}, ['🥇', '🥈', '🥉'][k]), this.passRewardEl(rw)))),
+            h('button', { class: 'btn big', disabled: left <= 0, onclick: () => {
+              if (!startRace(s, Date.now(), today(), Math.random)) return;
+              sfx.task();
+              this.app.renderSide();
+              this.app.dirty();
+              render();
+            } }, left > 0 ? `شروع مسابقه (${fa(left)} بار دیگه امروز)` : 'امروز دیگه مسابقه نداریم. فردا!'));
+          return;
+        }
+        const lanes = [
+          { name: 'تو (نرگس)', me: true, score: playerScore(s, r), hue: '', fin: r.finishedAt ?? Infinity },
+          ...r.bots.map((b) => ({ name: b.name, me: false, score: botScore(b, r, now), hue: HUES[b.hue], fin: r.start + b.finishMs })),
+        ].sort((a, b) => b.score - a.score || a.fin - b.fin);
+        const over = raceOver(r, now);
+        const rank = raceRank(s, now);
+        add(body,
+          over
+            ? h('div', { class: 'race-result' }, h('b', {}, rank === 1 ? 'نفر اول شدی! 🏆' : `نفر ${['', 'اول', 'دوم', 'سوم', 'چهارم', 'پنجم'][rank ?? 5]} شدی!`))
+            : h('div', { class: 'timer' }, `⏳ ${faClock(r.start + RACE_MS - now)} مونده · ${fa(RACE_GOAL)} سفارش`));
+        const list = h('div', { class: 'lanes' });
+        for (const l of lanes) {
+          list.append(h('div', { class: `lane${l.me ? ' me' : ''}` },
+            l.me ? h('span', { class: 'av', html: svgIcon(portrait('narges')) }) : h('span', { class: 'av txt', style: `background:${l.hue}` }, l.name[0]),
+            h('div', { class: 'lane-body' },
+              h('div', { class: 'lane-name' }, l.name, h('span', {}, `${fa(l.score)}/${fa(RACE_GOAL)}`)),
+              h('div', { class: 'bar' }, h('div', { style: `width:${(l.score / RACE_GOAL) * 100}%` }))),
+            l.score >= RACE_GOAL ? h('span', { class: 'fin', html: svgIcon(ICONS.flag) }) : null));
+        }
+        body.append(list);
+        if (over && rank) {
+          add(body, h('div', { class: 'race-prizes' }, h('div', {}, h('b', {}, 'جایزه'), this.passRewardEl(RACE_REWARDS[rank - 1]))),
+            h('button', { class: 'btn gold big', onclick: (e: Event) => {
+              const got = claimRace(s, Date.now());
+              if (got) this.passPaid(got, (e.currentTarget as HTMLElement).getBoundingClientRect());
+              this.app.renderSide();
+              render();
+            } }, 'جایزه‌ام رو بده!'));
+        } else {
+          body.append(h('p', { class: 'muted', style: 'font-size:12px' }, 'سفارش‌ها رو تحویل بده تا جلو بیفتی. همسایه‌ها هم بیکار نمی‌شینن!'));
+        }
+        clearInterval(timer);
+        if (!over) timer = window.setInterval(() => (body.isConnected ? render() : clearInterval(timer)), 2000);
+      };
+      render();
+    });
+  }
+
   bag(): Promise<void> {
     const s = this.app.s;
     return this.open('کیف', (body, close) => {
@@ -644,7 +789,7 @@ export class Modals {
     return this.open('پروفایل و تنظیمات', (body, close) => {
       const cur = xpForLevel(s.level), next = xpForLevel(s.level + 1);
       const total = CODEX_CHAINS.reduce((n, c) => n + maxLevel(c), 0);
-      body.append(h('div', { class: 'profile' },
+      add(body, h('div', { class: 'profile' },
         h('div', { class: 'level-badge big' }, h('span', {}, fa(s.level))),
         h('div', { style: 'flex:1' },
           h('div', { style: 'font-weight:900' }, `سطح ${fa(s.level)}`),
@@ -654,7 +799,10 @@ export class Modals {
           h('div', {}, h('b', {}, faNum(s.stats.merges)), 'ادغام'),
           h('div', {}, h('b', {}, faNum(s.stats.orders)), 'سفارش'),
           h('div', {}, h('b', {}, `${fa(s.found.length)}/${fa(total)}`), 'کلکسیون'),
-          h('div', {}, h('b', {}, fa(s.tasksDone.length)), 'تعمیر')));
+          h('div', {}, h('b', {}, fa(s.tasksDone.length)), 'تعمیر')),
+        s.trophies.length ? h('div', { class: 'trophies' },
+          h('b', {}, 'جام‌ها'),
+          ...s.trophies.map((id) => h('span', { class: 'got' }, h('span', { html: svgIcon(ICONS.trophy) }), trophyName(id)))) : null);
       const toggle = (label: string, get: () => boolean, set: (v: boolean) => void) => {
         const btn = h('button', { class: `btn ${get() ? '' : 'plain'}` }, `${label}: ${get() ? 'روشن' : 'خاموش'}`);
         btn.addEventListener('click', () => {

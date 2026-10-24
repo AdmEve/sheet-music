@@ -6,6 +6,8 @@ import { ICONS } from '../art/icons';
 import { O, THIN } from '../art/kit';
 import { portrait } from '../art/portraits';
 import { codexClaimable, discover } from '../game/codex';
+import { EVENT_COLLECT, THEMES, ensureEvent, eventActive, eventClaimable, eventEnd, isTopEventItem } from '../game/events';
+import { RACE_GOAL, playerScore, raceOver, raceUnlocked } from '../game/race';
 import { ensurePass, passClaimable, passProgress, passUnlocked, PASS_STEPS } from '../game/pass';
 import { OFFER_SKU, OfferId, PIGGY_CAP, activeOffers, giftReady, offerOnLevel, piggyFull, piggyUnlocked } from '../game/offers';
 import { CHAINS, Item, canMerge, isGenerator, itemName, maxLevel, sameItem } from '../game/items';
@@ -20,7 +22,7 @@ import { introKey, markSeen, progress } from '../game/progress';
 import { buzz } from '../platform/haptics';
 import { writeSave } from '../platform/storage';
 import { CAST, THANKS } from '../story/story';
-import { add, animDone, clear, dateKey, fa, faClock, faNum, faTime, h, svgIcon, wait } from './dom';
+import { add, animDone, clear, dateKey, fa, faClock, faLeft, faNum, faTime, h, svgIcon, wait } from './dom';
 import { Modals, bundleArt } from './modals';
 import { PlaceScreen } from './place';
 import { sfx } from './sound';
@@ -131,10 +133,14 @@ export class App {
     const now = Date.now();
     const offers = activeOffers(s, now);
     const gift = giftReady(s, now) && adsAvailable() && adsLeft(s, dateKey(), MAX_ADS_PER_DAY) > 0;
+    const ev = eventActive(s) ? s.event : null;
     const labels: [string, string, string][] = [
+      ...(ev ? [['side-event', faLeft(eventEnd(new Date(now)).getTime() - now, true), eventClaimable(s) ? 'ready' : 'event'] as [string, string, string]] : []),
       ...offers.map((o): [string, string, string] => [`side-${o.id}`, faClock(o.until - now, true), 'offer']),
       ...(passUnlocked(s) ? [['side-pass', `${fa(Math.min(passProgress(s).step, PASS_STEPS))}/${fa(PASS_STEPS)}`, passClaimable(s) ? 'ready' : ''] as [string, string, string]] : []),
       ...(piggyUnlocked(s) ? [['side-piggy', piggyFull(s) ? 'پر شد!' : `${fa(s.piggy)}/${fa(PIGGY_CAP)}`, piggyFull(s) ? 'full' : ''] as [string, string, string]] : []),
+      ...(raceUnlocked(s) ? [['side-race', s.race.active ? `${fa(playerScore(s, s.race.active))}/${fa(RACE_GOAL)}` : 'مسابقه',
+        s.race.active && raceOver(s.race.active, now) ? 'ready' : ''] as [string, string, string]] : []),
       ...(gift ? [['side-gift', 'هدیه', 'gift'] as [string, string, string]] : []),
     ];
     const key = labels.map(([id, , cls]) => `${id}:${cls}`).join('|');
@@ -151,10 +157,12 @@ export class App {
     const open: Record<string, () => Promise<void>> = {
       'side-piggy': () => this.modals.piggy(),
       'side-pass': () => this.modals.pass(),
+      'side-event': () => this.modals.event(),
+      'side-race': () => this.modals.race(),
       'side-gift': () => this.modals.gift(),
       ...Object.fromEntries(offers.map((o) => [`side-${o.id}`, () => this.modals.offer(o.id)])),
     };
-    const icon = (id: string) => id === 'side-gift' ? ICONS.gift : id === 'side-pass' ? ICONS.medal : bundleArt(id === 'side-piggy' ? 'piggy_bank' : OFFER_SKU[id.slice(5) as OfferId]);
+    const icon = (id: string) => id === 'side-event' && ev?.theme ? itemArt({ chain: THEMES[ev.theme].gen, level: 1 }) : id === 'side-gift' ? ICONS.gift : id === 'side-pass' ? ICONS.medal : id === 'side-race' ? ICONS.flag : bundleArt(id === 'side-piggy' ? 'piggy_bank' : OFFER_SKU[id.slice(5) as OfferId]);
     for (const [id, text, cls] of labels) {
       this.sideEl.append(h('button', { class: `sidebtn ${cls}`, id, onclick: () => open[id]().then(() => this.renderAll()) },
         h('span', { html: svgIcon(icon(id)) }), h('span', { class: 'lbl' }, text)));
@@ -210,7 +218,50 @@ export class App {
     }
     this.maybeHint();
     this.checkSeason();
+    this.checkEvent();
     this.renderSide();
+  }
+
+  private eventIntroPending = false;
+
+  /** Starts/ends live events with the calendar and plays a new event's intro once. */
+  checkEvent(): void {
+    const s = this.s;
+    const ch = ensureEvent(s, new Date(), (it) => placeItem(s, it));
+    if (ch.cleared.length || ch.chests.length) {
+      for (const i of ch.cleared) {
+        this.renderCell(i);
+        if (this.selected === i) this.select(null);
+      }
+      for (const level of ch.chests) this.giveItem({ chain: 'chest', level });
+      if (ch.coins) this.toast(`رویداد قبلی تموم شد؛ وسایلش ${fa(ch.coins)} سکه شد.`);
+    }
+    if (ch.joined) {
+      if (ch.genAt !== null) {
+        this.renderCell(ch.genAt);
+        this.cells[ch.genAt].querySelector('.item')?.classList.add('pop');
+      }
+      this.eventIntroPending = true;
+    }
+    if (ch.started || ch.joined || ch.cleared.length) {
+      this.renderNav();
+      this.renderOrders();
+      this.dirty();
+    }
+    if (this.eventIntroPending && !this.busy && !this.drag && !document.querySelector('.overlay, .dialogue, .place, .splash')) {
+      this.eventIntroPending = false;
+      void this.playEventIntro();
+    }
+  }
+
+  private async playEventIntro(): Promise<void> {
+    const s = this.s;
+    if (!s.event.theme || !markSeen(s, `event:${s.event.id}`)) return;
+    this.hideHand();
+    await this.place.dialogue(THEMES[s.event.theme].intro);
+    await this.modals.event();
+    this.renderAll();
+    this.dirty();
   }
 
   /** A new Persian month starts a new pass; rewards left on the old one are paid out. */
@@ -317,6 +368,7 @@ export class App {
     this.flyReward(ICONS.star, target, 'nav-alley', Math.min(5, order.stars + 1));
     if (ev.piggy) this.flyReward(ICONS.gem, target, 'side-piggy', 1);
     if (ev.pass) this.flyReward(ICONS.medal, target, 'side-pass', Math.min(3, ev.pass));
+    if (ev.event) this.flyReward(this.eventIcon(), target, 'side-event', 2);
     this.floatText(`+${fa(order.stars)} ⭐`, target);
     const lines = THANKS[order.who] ?? THANKS.narges;
     this.speech(lines[Math.floor(Math.random() * lines.length)], target);
@@ -445,7 +497,7 @@ export class App {
     sfx.tap();
     if (cell.lock) return;
     const def = CHAINS[it.chain];
-    if (def.produces || ((def.collectible || it.chain === 'chest') && wasSelected)) {
+    if (def.produces || ((def.collectible || it.chain === 'chest' || isTopEventItem(it)) && wasSelected)) {
       this.handle(tap(this.s, i, Date.now()), i);
     }
   }
@@ -509,10 +561,20 @@ export class App {
           this.renderCell(e.at);
           this.cells[e.at].querySelector('.item')?.classList.add('pop');
           break;
+        case 'eventPts': {
+          const r = this.cells[e.at].getBoundingClientRect();
+          this.floatText(`+${fa(e.amount)}`, r, 'event');
+          this.flyReward(this.eventIcon(), r, 'side-event', 1);
+          break;
+        }
         case 'collect': {
           const r = this.cells[e.at].getBoundingClientRect();
           this.renderCell(e.at);
-          if (e.kind === 'coins') {
+          if (e.kind === 'event') {
+            sfx.bigMerge();
+            this.sparkles(r, 12);
+            this.flyReward(this.eventIcon(), r, 'side-event', 4);
+          } else if (e.kind === 'coins') {
             sfx.coin();
             this.flyReward(ICONS.coin, r, 'hud-coins', 4);
           } else {
@@ -648,6 +710,10 @@ export class App {
       actions.push(h('button', { class: 'chip pink', onclick: () => this.handle(buySheet(this.s, i), i) }, fa(cost), h('span', { html: svgIcon(ICONS.gem) })));
     } else if (def.produces) {
       hint = `${levelText} · بزن تا «${CHAINS[def.produces].name}» بسازه (۱ ⚡)`;
+    } else if (isTopEventItem(it)) {
+      hint = `دوباره بزن تا جمعش کنی (+${fa(EVENT_COLLECT)} امتیاز رویداد)`;
+    } else if (def.event) {
+      hint = `${levelText} · وسیله‌ی رویداد: هر ادغام امتیاز داره`;
     } else if (def.collectible) {
       hint = 'دوباره بزن تا جمعش کنی';
     } else if (it.chain === 'chest') {
@@ -775,8 +841,13 @@ export class App {
     setTimeout(() => el.remove(), 2200);
   }
 
-  floatText(text: string, at: DOMRect): void {
-    const el = h('div', { class: 'float-text', style: `left:${at.left + at.width / 2 - 20}px;top:${at.top}px` }, text);
+  /** Little icon of the running event (its generator), for points flying to the strip. */
+  eventIcon(): string {
+    return this.s.event.theme ? itemArt({ chain: THEMES[this.s.event.theme].gen, level: 1 }) : ICONS.star;
+  }
+
+  floatText(text: string, at: DOMRect, cls = ''): void {
+    const el = h('div', { class: `float-text ${cls}`, style: `left:${at.left + at.width / 2 - 20}px;top:${at.top}px` }, text);
     document.body.append(el);
     setTimeout(() => el.remove(), 950);
   }

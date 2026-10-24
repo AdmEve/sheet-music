@@ -7,7 +7,9 @@ import {
   itemValue, maxLevel, sameItem, spawnWeights,
 } from './items';
 import { discover } from './codex';
+import { EVENT_COLLECT, EVENT_ORDER, EventState, addEventPoints, emptyEvent, isTopEventItem, mergePoints } from './events';
 import { TimedOffer, fillPiggy } from './offers';
+import { RaceState, emptyRace, notePlayerFinish } from './race';
 import { PassState, QUEST_BONUS_POINTS, QUEST_POINTS, addPassPoints, emptyPass } from './pass';
 
 export const COLS = 7;
@@ -91,6 +93,12 @@ export interface GameState {
   giftAt: number;
   /** This month's season pass. */
   pass: PassState;
+  /** The live event (weekly theme, Yalda, Nowruz). */
+  event: EventState;
+  /** Ids of events whose whole milestone track was finished. */
+  trophies: string[];
+  /** The alley race against bot neighbours. */
+  race: RaceState;
 }
 
 export type GameEvent =
@@ -102,10 +110,11 @@ export type GameEvent =
   | { type: 'bubble'; at: number; item: Item }
   | { type: 'bubblePop'; at: number }
   | { type: 'boxOpen'; at: number }
-  | { type: 'collect'; at: number; kind: 'coins' | 'energy'; amount: number }
+  | { type: 'collect'; at: number; kind: 'coins' | 'energy' | 'event'; amount: number }
+  | { type: 'eventPts'; at: number; amount: number }
   | { type: 'chest'; at: number; spawned: { to: number; item: Item }[] }
   | { type: 'sell'; at: number; coins: number }
-  | { type: 'deliver'; order: Order; cells: number[]; piggy: number; pass: number }
+  | { type: 'deliver'; order: Order; cells: number[]; piggy: number; pass: number; event: number }
   | { type: 'levelUp'; level: number; gems: number; gift: Item | null }
   | { type: 'newOrder'; order: Order }
   | { type: 'fail'; reason: FailReason };
@@ -206,6 +215,9 @@ export function newGame(seed: number, now: number): GameState {
     offers: [],
     giftAt: 0,
     pass: emptyPass(),
+    event: emptyEvent(),
+    trophies: [],
+    race: emptyRace(),
   };
   const put = (r: number, c: number, item: Item, lock?: Lock) => {
     s.board[idx(r, c)] = lock ? { item, lock } : { item };
@@ -297,6 +309,11 @@ export function tap(s: GameState, at: number, now: number): GameEvent[] {
   const it = cell.item;
   const def = CHAINS[it.chain];
 
+  if (isTopEventItem(it)) {
+    cell.item = null;
+    return [{ type: 'collect', at, kind: 'event', amount: addEventPoints(s, EVENT_COLLECT) }];
+  }
+
   if (def.collectible) {
     const amount = collectAmount(it);
     if (def.collectible === 'coins') s.coins += amount;
@@ -347,7 +364,7 @@ function chestDrop(s: GameState, chestLevel: number): Item {
 export function unlockedProducts(s: GameState): ChainId[] {
   const out = new Set<ChainId>();
   const consider = (it: Item | null | undefined) => {
-    if (it && CHAINS[it.chain].produces) out.add(CHAINS[it.chain].produces!);
+    if (it && CHAINS[it.chain].produces && !CHAINS[it.chain].event) out.add(CHAINS[it.chain].produces!);
   };
   for (const c of s.board) if (!c.lock) consider(c.item);
   for (const b of s.bag) consider(b);
@@ -373,6 +390,8 @@ export function drop(s: GameState, from: number, to: number): GameEvent[] {
     if (wasSheet) events.push({ type: 'unlock', at: to });
     events.push({ type: 'merge', at: to, item, from });
     events.push(...openBoxesAround(s, to));
+    const pts = addEventPoints(s, mergePoints(item));
+    if (pts) events.push({ type: 'eventPts', at: to, amount: pts });
     if (item.level >= BUBBLE_MIN_LEVEL && !CHAINS[item.chain].collectible && rand(s) < BUBBLE_CHANCE) {
       const at = nearestEmpty(s, to);
       if (at !== null) {
@@ -509,7 +528,9 @@ export function deliver(s: GameState, orderId: number): GameEvent[] {
   s.orders = s.orders.filter((o) => o.id !== orderId);
   const piggy = fillPiggy(s);
   const pass = addPassPoints(s, order.stars);
-  const events: GameEvent[] = [{ type: 'deliver', order, cells, piggy, pass }];
+  const event = addEventPoints(s, EVENT_ORDER);
+  notePlayerFinish(s, s.clock);
+  const events: GameEvent[] = [{ type: 'deliver', order, cells, piggy, pass, event }];
   events.push(...gainXp(s, order.stars));
   for (const o of fillOrders(s)) events.push({ type: 'newOrder', order: o });
   return events;
@@ -627,6 +648,7 @@ export function loadState(json: string | null): GameState | null {
       grantedTokens: raw.grantedTokens ?? [], refills: raw.refills ?? base.refills,
       found: raw.found ?? [], codexClaimed: raw.codexClaimed ?? [],
       piggy: raw.piggy ?? 0, offers: raw.offers ?? [], giftAt: raw.giftAt ?? 0, pass: raw.pass ?? emptyPass(),
+      event: raw.event ?? emptyEvent(), trophies: raw.trophies ?? [], race: raw.race ?? emptyRace(),
     } as GameState;
     // Saves from before the album: everything the player holds now counts as found.
     if (!raw.found) discover(s);
