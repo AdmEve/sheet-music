@@ -7,6 +7,7 @@ import {
   itemValue, maxLevel, sameItem, spawnWeights,
 } from './items';
 import { discover } from './codex';
+import { PLACES } from '../story/story';
 import { EVENT_COLLECT, EVENT_ORDER, EventState, addEventPoints, emptyEvent, isTopEventItem, mergePoints } from './events';
 import { GIFT_EVERY_MS, TimedOffer, fillPiggy } from './offers';
 import { RaceState, emptyRace, notePlayerFinish } from './race';
@@ -610,12 +611,27 @@ export function placeItem(s: GameState, it: Item): number | null {
  * and returns it. Generators cannot be sold, so "not on the board or in the bag" means
  * "never received".
  */
+/** The story has reached the place: every task of the places before it is done. */
+export function placeReached(s: GameState, placeId: string): boolean {
+  const k = PLACES.findIndex((p) => p.id === placeId);
+  if (k < 0) return false;
+  const done = new Set(s.tasksDone);
+  return PLACES.slice(0, k).every((p) => p.tasks.every((t) => done.has(t.id)));
+}
+
+/** A generator is due by player level (early chains) or by story progress (season chains). */
+export function generatorDue(s: GameState, g: ChainId): boolean {
+  const def = CHAINS[g];
+  if (def.unlockPlace) return placeReached(s, def.unlockPlace);
+  const lvl = def.unlockLevel ?? 1;
+  return lvl > 1 && lvl <= s.level;
+}
+
 export function ensureGenerators(s: GameState): Item[] {
   const owned = new Set([...s.board.map((c) => c.item?.chain), ...s.bag.map((b) => b?.chain)]);
   const given: Item[] = [];
   for (const g of GENERATOR_CHAINS) {
-    const lvl = CHAINS[g].unlockLevel ?? 1;
-    if (lvl <= 1 || lvl > s.level || owned.has(g)) continue;
+    if (owned.has(g) || !generatorDue(s, g)) continue;
     const it: Item = { chain: g, level: 1 };
     placeItem(s, it);
     given.push(it);
@@ -625,7 +641,7 @@ export function ensureGenerators(s: GameState): Item[] {
 
 /** New generators arrive as level-up gifts; every few levels a chest. */
 function levelGift(level: number): Item | null {
-  for (const g of GENERATOR_CHAINS) if (CHAINS[g].unlockLevel === level && level > 1) return { chain: g, level: 1 };
+  for (const g of GENERATOR_CHAINS) if (!CHAINS[g].unlockPlace && CHAINS[g].unlockLevel === level && level > 1) return { chain: g, level: 1 };
   return level % 3 === 0 ? { chain: 'chest', level: level >= 9 ? 2 : 1 } : null;
 }
 

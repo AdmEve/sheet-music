@@ -2,7 +2,7 @@
 // generator taps (energy) and orders it took. Usage: npx tsx scripts/simulate.ts [games]
 
 import { CHAINS, GENERATOR_CHAINS, Item, canMerge, isGenerator, maxLevel, sameItem } from '../src/game/items';
-import { CELLS, GameState, deliver, drop, findForOrder, needsMet, newGame, sell, tap, tickBubbles } from '../src/game/model';
+import { CELLS, GameState, deliver, drop, ensureGenerators, findForOrder, needsMet, newGame, sell, tap, tickBubbles } from '../src/game/model';
 import { completeNextTask, progress } from '../src/game/progress';
 import { PLACES } from '../src/story/story';
 
@@ -95,6 +95,7 @@ for (let g = 0; g < GAMES; g++) {
         perPlace[idx].push({ energy: s.stats.taps - placeStart.taps, orders: s.stats.orders - placeStart.orders, hours: (now - placeStart.time) / 3.6e6 });
         placeStart = { taps: s.stats.taps, orders: s.stats.orders, time: now };
         idx++;
+        ensureGenerators(s); // a new season brings its generator, as in the game
       }
       r = completeNextTask(s);
     }

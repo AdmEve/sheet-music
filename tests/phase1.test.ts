@@ -109,29 +109,25 @@ describe('merge hint', () => {
 });
 
 describe('generator catch-up', () => {
-  it('hands a missing generator to players already past its level, once', async () => {
+  it('hands early generators by level and season ones when the story reaches their season', async () => {
     const { ensureGenerators } = await import('../src/game/model');
+    const { PLACES } = await import('../src/story/story');
     const s = newGame(2, 0);
     s.level = 21;
     const given = ensureGenerators(s).map((i) => i.chain);
-    expect(given).toContain('genPost');
     expect(given).toContain('genSweets');
+    expect(given).not.toContain('genPost'); // its season has not started yet
     expect(given).not.toContain('genGarden'); // still in its crate on the board
     expect(ensureGenerators(s)).toEqual([]);
-    s.level = 31;
+    const finish = (n: number) => { s.tasksDone = PLACES.slice(0, n).flatMap((p) => p.tasks.map((t) => t.id)); };
+    finish(10);
+    expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genPost']);
+    s.level = 99; // level alone never brings a season's generator
+    expect(ensureGenerators(s)).toEqual([]);
+    finish(20);
     expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genBaby', 'genLamp']);
-    s.level = 35;
-    expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genSaz']);
-    s.level = 40;
-    expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genTile']);
-    s.level = 45;
-    expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genFootball']);
-    s.level = 50;
-    expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genSea']);
-    s.level = 55;
-    expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genCraft']);
-    s.level = 60;
-    expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genCallig']);
+    finish(50);
+    expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genSaz', 'genTile', 'genFootball', 'genSea', 'genCraft', 'genCallig']);
   });
 });
 

@@ -197,6 +197,10 @@ saves are written into localStorage `mahalle.save.v1`.
       inspectors' visit, a photo exhibition in the cistern, a night of Persian culture and
       the world-heritage party; «خوشنویسی» chain + calligrapher's desk at level 60); map of
       55 places; Season 12 teased (Golab's birthday)
+- [x] Season generators now arrive with their season, not by player level: levels outrun
+      the story (~level 37 by the end of Season 3), so the lamp, saz, tile… generators were
+      landing seasons early and crowding the board. Each one has an `unlockPlace` (its
+      season's first place) and is handed out when the story gets there, with a toast
 
 Next (in order):
 1. Season 12 «تولد ننه‌گلاب»

@@ -18,6 +18,8 @@ export interface ChainDef {
   produces?: ChainId;
   /** Player level at which this chain's generator starts appearing in rewards. */
   unlockLevel?: number;
+  /** Season generators: handed out when the story reaches this place (its season's first). */
+  unlockPlace?: string;
   /** Tapping consumes the item and gives a reward instead of merging further (coins, energy). */
   collectible?: 'coins' | 'energy';
   /** Event chains and their generators exist only while their event runs. */
@@ -112,15 +114,15 @@ export const CHAINS: Record<ChainId, ChainDef> = {
   genTextile: { id: 'genTextile', name: 'دار قالی', levels: ['دوک نخ‌ریسی', 'دار قالی', 'دار قالی بزرگ'], produces: 'textile', unlockLevel: 4 },
   genPottery: { id: 'genPottery', name: 'کوره', levels: ['کوره کوچک', 'کوره', 'کوره سفالگری'], produces: 'pottery', unlockLevel: 5 },
   genSweets: { id: 'genSweets', name: 'قنادی', levels: ['قابلمه‌ی شیره', 'فر قنادی', 'قنادی'], produces: 'sweets', unlockLevel: 7 },
-  genPost: { id: 'genPost', name: 'میز تحریر', levels: ['میز تحریر کوچک', 'میز تحریر', 'میز تحریر چوبی'], produces: 'post', unlockLevel: 20 },
-  genBaby: { id: 'genBaby', name: 'سبد کاموا', levels: ['سبد کاموای کوچک', 'سبد کاموا', 'صندوق بافتنی'], produces: 'baby', unlockLevel: 25 },
-  genLamp: { id: 'genLamp', name: 'سندان مسگری', levels: ['سندان کوچک', 'سندان مسگری', 'کارگاه مسگری'], produces: 'lamp', unlockLevel: 30 },
-  genSaz: { id: 'genSaz', name: 'میز سازسازی', levels: ['میز سازسازی کوچک', 'میز سازسازی', 'کارگاه سازسازی'], produces: 'saz', unlockLevel: 35 },
-  genTile: { id: 'genTile', name: 'جعبه‌ی لعاب', levels: ['جعبه‌ی لعاب کوچک', 'جعبه‌ی لعاب', 'کارگاه کاشی‌گری'], produces: 'tile', unlockLevel: 40 },
-  genFootball: { id: 'genFootball', name: 'ساک ورزشی', levels: ['ساک ورزشی کوچک', 'ساک ورزشی', 'کمد رختکن'], produces: 'football', unlockLevel: 45 },
-  genSea: { id: 'genSea', name: 'زنبیل ساحلی', levels: ['زنبیل ساحلی کوچک', 'زنبیل ساحلی', 'صندوق ساحلی'], produces: 'sea', unlockLevel: 50 },
-  genCraft: { id: 'genCraft', name: 'سه‌پایه‌ی نقاشی', levels: ['سه‌پایه‌ی کوچک', 'سه‌پایه‌ی نقاشی', 'کارگاه مینیاتور'], produces: 'craft', unlockLevel: 55 },
-  genCallig: { id: 'genCallig', name: 'میز خوشنویسی', levels: ['جعبه‌ی قلم', 'میز خوشنویسی', 'کارگاه خوشنویسی'], produces: 'callig', unlockLevel: 60 },
+  genPost: { id: 'genPost', name: 'میز تحریر', levels: ['میز تحریر کوچک', 'میز تحریر', 'میز تحریر چوبی'], produces: 'post', unlockPlace: 'postoffice' },
+  genBaby: { id: 'genBaby', name: 'سبد کاموا', levels: ['سبد کاموای کوچک', 'سبد کاموا', 'صندوق بافتنی'], produces: 'baby', unlockPlace: 'grocery' },
+  genLamp: { id: 'genLamp', name: 'سندان مسگری', levels: ['سندان کوچک', 'سندان مسگری', 'کارگاه مسگری'], produces: 'lamp', unlockPlace: 'gate' },
+  genSaz: { id: 'genSaz', name: 'میز سازسازی', levels: ['میز سازسازی کوچک', 'میز سازسازی', 'کارگاه سازسازی'], produces: 'saz', unlockPlace: 'carpetshop' },
+  genTile: { id: 'genTile', name: 'جعبه‌ی لعاب', levels: ['جعبه‌ی لعاب کوچک', 'جعبه‌ی لعاب', 'کارگاه کاشی‌گری'], produces: 'tile', unlockPlace: 'gardenhouse' },
+  genFootball: { id: 'genFootball', name: 'ساک ورزشی', levels: ['ساک ورزشی کوچک', 'ساک ورزشی', 'کمد رختکن'], produces: 'football', unlockPlace: 'radio' },
+  genSea: { id: 'genSea', name: 'زنبیل ساحلی', levels: ['زنبیل ساحلی کوچک', 'زنبیل ساحلی', 'صندوق ساحلی'], produces: 'sea', unlockPlace: 'station' },
+  genCraft: { id: 'genCraft', name: 'سه‌پایه‌ی نقاشی', levels: ['سه‌پایه‌ی کوچک', 'سه‌پایه‌ی نقاشی', 'کارگاه مینیاتور'], produces: 'craft', unlockPlace: 'safavid' },
+  genCallig: { id: 'genCallig', name: 'میز خوشنویسی', levels: ['جعبه‌ی قلم', 'میز خوشنویسی', 'کارگاه خوشنویسی'], produces: 'callig', unlockPlace: 'dossier' },
   chest: { id: 'chest', name: 'صندوقچه', levels: ['صندوقچه چوبی', 'صندوقچه مسی', 'صندوقچه طلایی'] },
   coins: { id: 'coins', name: 'سکه', levels: ['چند سکه', 'کیسه سکه', 'کوزه سکه'], collectible: 'coins' },
   energy: { id: 'energy', name: 'انرژی', levels: ['استکان انرژی', 'قوری انرژی', 'سماور انرژی'], collectible: 'energy' },

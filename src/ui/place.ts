@@ -5,6 +5,8 @@ import { moodOf, portrait } from '../art/portraits';
 import { STYLES } from '../art/decor';
 import { MAP_H, MapState, mapSvg, plot } from '../art/alleymap';
 import { layerHasStyles, sceneSvg } from '../art/places';
+import { CHAINS, itemName } from '../game/items';
+import { ensureGenerators } from '../game/model';
 import { offerOnEpisode } from '../game/offers';
 import { completeNextTask, introKey, markSeen, outroKey, progress } from '../game/progress';
 import { buzz } from '../platform/haptics';
@@ -273,6 +275,12 @@ export class PlaceScreen {
         this.render(screen, back);
         await wait(400);
         await this.dialogue(r.nextPlace.intro);
+      }
+      // A new season brings its own generator (and its chain into the orders).
+      for (const it of ensureGenerators(s)) {
+        const where = s.board.some((c) => c.item?.chain === it.chain) ? 'رو صفحه‌ست' : 'تو کیفته';
+        this.app.toast(`«${itemName(it)}» رسید و ${where}! از حالا سفارش «${CHAINS[CHAINS[it.chain].produces!].name}» هم میاد.`);
+        await wait(2600);
       }
       // From episode 2 on, a finished episode starts a 24 h celebration bundle.
       if (r.place.id !== PLACES[0].id) {
