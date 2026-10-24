@@ -816,6 +816,113 @@ export const PLACES: Place[] = [
       { who: 'mahin', text: 'آقا مرتضی پولدار شد! فصل بعد خیلی خبر داره…', mood: 'happy' },
     ],
   },
+  // ------------------------------------------------------------------ season 7: ارثیه‌ی آقا مرتضی
+  {
+    id: 'gardenhouse',
+    name: 'خونه‌باغ شمیرون',
+    intro: [
+      { who: 'morteza', text: 'اینه؟ این خونه‌باغ منه؟ … این که جنگله! علف تا زانو!', mood: 'surprised' },
+      { who: 'kaveh', text: 'خونه‌باغ قاجاریه، آقا مرتضی. یه کم کار داره، ولی گنجه.' },
+      { who: 'morteza', text: 'گنج؟ پس زود تمیزش کنیم، بفروشیمش! یعنی… یه نگاهی بندازیم.' },
+      { who: 'golab', text: 'عمه‌ت رو یادمه، مرتضی. زن نازنینی بود. هر عید برای بچه‌های کوچه عیدی می‌فرستاد.' },
+    ],
+    tasks: [
+      { id: 'gh.gate', title: 'در باغ', cost: 210, layer: 'gate', after: [{ who: 'reza', text: 'در باز شد! … جیر جیرش تا تجریش رفت.' }] },
+      { id: 'gh.path', title: 'خیابون‌باغ', cost: 212, layer: 'path', after: [{ who: 'kaveh', text: 'این خیابون‌باغ مستقیم می‌ره تا عمارت. قدیمیا به این می‌گفتن «محور».' }] },
+      { id: 'gh.chenar', title: 'چنارهای کهن', cost: 214, layer: 'chenar', after: [{ who: 'bahman', text: 'این چنارها صد سالشونه. ما رفتیم و برگشتیم، اینا همین‌جا موندن.' }] },
+      { id: 'gh.facade', title: 'نمای عمارت', cost: 216, layer: 'facade', after: [{ who: 'aydin', text: 'آجرکاری‌ش مثل بازار تبریزه! استادکار تبریزی ساخته، شک ندارم.' }] },
+      { id: 'gh.stream', title: 'جوی آب', cost: 218, layer: 'stream', after: [{ who: 'morteza', text: 'آب راه افتاد… صداش رو بشنوید. … چرا این‌قدر آرومم؟', mood: 'surprised' }] },
+    ],
+    outro: [
+      { who: 'morteza', text: 'یه دلال زنگ زد. گفت برای این باغ یه برج بیست طبقه می‌سازه. پول خوبی می‌ده.' },
+      { who: 'farokhi', text: 'مرتضی‌خان… من یه روز همین حرف رو درباره‌ی کوچه‌ی شما زدم. یادته چی شد؟' },
+      { who: 'morteza', text: '…بذارید اول زیرزمینش رو ببینیم. بعد تصمیم می‌گیرم.' },
+    ],
+  },
+  {
+    id: 'poolhouse',
+    name: 'حوضخانه',
+    intro: [
+      { who: 'kaveh', text: 'حوضخونه! تابستونا این‌جا خنک‌ترین جای خونه بوده. آب از وسط می‌گذره.' },
+      { who: 'shirin', text: 'آیدین، این کاشی‌ها رو ببین! همه‌ش ترک برداشته…' },
+      { who: 'aydin', text: 'استادکار کاشی تبریزی می‌شناسم. یه زنگ بزنم، فردا این‌جاست.' },
+    ],
+    tasks: [
+      { id: 'ph.pool', title: 'حوض هشت‌ضلعی', cost: 216, layer: 'pool', after: [{ who: 'golab', text: 'حوض هشت‌گوش. مادربزرگم می‌گفت هشت تا گوشه، هشت تا در بهشت.' }] },
+      { id: 'ph.tiles', title: 'کاشی‌های دیوار', cost: 218, layer: 'tiles', after: [{ who: 'aydin', text: 'کاشی هفت‌رنگ. هر رنگ رو جدا پختن. صبر می‌خواد، مثل فرش.' }] },
+      { id: 'ph.fountain', title: 'فواره‌ی سنگی', cost: 220, layer: 'fountain', after: [{ who: 'narges', text: 'گلاب کوچولو داره به فواره می‌خنده! اولین بارشه آب می‌بینه که بالا میره!', mood: 'happy' }] },
+      { id: 'ph.niche', title: 'طاقچه‌ها', cost: 222, layer: 'niche', after: [{ who: 'morteza', text: 'تو این طاقچه یه جعبه بود… یه نامه توشه. به خط عمه‌م. به اسم من.', mood: 'surprised' }] },
+      { id: 'ph.light', title: 'نورگیر سقف', cost: 224, layer: 'light', after: [{ who: 'morteza', text: '«مرتضی جان، تو تنها کسی بودی که بچه که بودی برام نون می‌خریدی. این باغ مال تو. ولی مال تو تنها نباشه.»', mood: 'sad' }] },
+    ],
+    outro: [
+      { who: 'morteza', text: '«مال تو تنها نباشه»… یعنی چی؟' },
+      { who: 'golab', text: 'یعنی عمه‌ت تو رو بهتر از خودت می‌شناخت، مرتضی.' },
+      { who: 'mahin', text: 'آقا مرتضی گریه کرد! … نه، خاک رفت تو چشمش. باشه.', mood: 'surprised' },
+    ],
+  },
+  {
+    id: 'orchard',
+    name: 'باغ میوه',
+    intro: [
+      { who: 'reza', text: 'پشت عمارت یه باغ میوه‌ست! گیلاس، آلبالو، زردآلو… همه‌ش خشک شده.' },
+      { who: 'golab', text: 'درخت تشنه‌ست، نمرده. آبش بدید، هرسش کنید، سال دیگه بار می‌ده.' },
+      { who: 'fakhri', text: 'من با پدرم باغ داشتیم. پیوند زدن بلدم. … بالاخره یه جا لازم شد!' },
+    ],
+    tasks: [
+      { id: 'or.prune', title: 'هرس درخت‌ها', cost: 222, layer: 'prune', after: [{ who: 'fakhri', text: 'شاخه‌های خشک رفت. حالا درخت نفس می‌کشه.' }] },
+      { id: 'or.water', title: 'آبیاری کرت‌ها', cost: 224, layer: 'water', after: [{ who: 'kaveh', text: 'قنات قدیمی هنوز آب داره. فقط مسیرش رو باز کردیم.' }] },
+      { id: 'or.cherries', title: 'گیلاس و آلبالو', cost: 226, layer: 'cherries', after: [{ who: 'shirin', text: 'گیلاس‌ها رسیدن! گوشواره‌ی گیلاسی، مثل بچگی!', mood: 'happy' }] },
+      { id: 'or.ladder', title: 'نردبون و سبدها', cost: 228, layer: 'ladder', after: [{ who: 'morteza', text: 'سبدها رو پر کنید، ببریم برای بچه‌های کوچه. … مجانی. آره، مجانی!' }] },
+      { id: 'or.swing', title: 'تاب زیر درخت', cost: 230, layer: 'swing', after: [{ who: 'narges', text: 'تاب! گلاب کوچولو اولین تابش رو این‌جا خورد.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'morteza', text: 'من تصمیمم رو گرفتم. این باغ رو نمی‌فروشم.' },
+      { who: 'morteza', text: 'درش رو باز می‌کنیم. برای همه. یه باغ عمومی، به اسم عمه‌م.' },
+      { who: 'farokhi', text: 'مرتضی‌خان… تو از من آدم بهتری شدی.', mood: 'happy' },
+      { who: 'kaveh', text: 'قبل از افتتاح، تالار آینه‌ی عمارت باید درست بشه. اون‌جا قلب این خونه‌ست.' },
+    ],
+  },
+  {
+    id: 'mirrorhall',
+    name: 'تالار آینه',
+    intro: [
+      { who: 'kaveh', text: 'آینه‌کاری قاجاری. هزاران تکه آینه‌ی کوچیک، با دست. نصفش ریخته.' },
+      { who: 'aydin', text: 'استادکار کاشی گفت یه دوست آینه‌کار داره. اونم داره میاد.' },
+      { who: 'mahin', text: 'تو آینه‌ها هزار تا خاله مهین می‌بینم! بالاخره یکی حرفم رو گوش می‌ده.' },
+    ],
+    tasks: [
+      { id: 'mh.mirrors', title: 'آینه‌کاری سقف', cost: 228, layer: 'mirrors', after: [{ who: 'kaveh', text: 'یه شمع روشن کنی، هزار تا شمع می‌بینی. این بود جادوی قاجاری.' }] },
+      { id: 'mh.orosi', title: 'ارسی‌های رنگی', cost: 230, layer: 'orosi', after: [{ who: 'bahman', text: 'مثل اتاق شاه‌نشین خونه‌ی پدری. همه‌ی خونه‌های خوب یه شکل خوشبختن.' }] },
+      { id: 'mh.chandelier', title: 'چلچراغ بلور', cost: 232, layer: 'chandelier', after: [{ who: 'reza', text: 'چلچراغ رو آویزون کردیم. … دستم می‌لرزید. اگه می‌افتاد، یه عمر باید نون می‌پختم تا پولش رو بدم!' }] },
+      { id: 'mh.carpet', title: 'فرش ابریشم', cost: 234, layer: 'carpet', after: [{ who: 'aydin', text: 'فرش ابریشم تبریز، هدیه‌ی ننه. گفت «باغ عمومی هم باید فرش آبرومند داشته باشه.»' }] },
+      { id: 'mh.portrait', title: 'تصویر عمه‌خانم', cost: 236, layer: 'portrait', after: [{ who: 'morteza', text: 'عکس عمه‌م رو زدیم بالای تالار. … عمه‌جان، باغت رو نگه داشتم.', mood: 'sad' }] },
+    ],
+    outro: [
+      { who: 'mahin', text: 'روز افتتاح رو اعلام کردم! کل شمیرون خبر دارن. کل تهران! کل…' },
+      { who: 'golab', text: 'خب، خب، مهین. بریم جشن رو آماده کنیم.' },
+    ],
+  },
+  {
+    id: 'parkopening',
+    name: 'افتتاح باغ عمومی',
+    intro: [
+      { who: 'morteza', text: 'امروز درِ «باغ عمه‌خانم» رو برای همه باز می‌کنیم. ورودی؟ … مجانی.' },
+      { who: 'shirin', text: 'آقا مرتضی، تو رو خدا یه بار دیگه بگو! «مجانی»!', mood: 'happy' },
+      { who: 'morteza', text: 'مجانی! … ولی بستنی‌فروشی کنار در مال خودمه. آدم باید یه درآمدی داشته باشه دیگه!' },
+    ],
+    tasks: [
+      { id: 'po.ribbon', title: 'روبان سر در باغ', cost: 234, layer: 'ribbon', after: [{ who: 'golab', text: 'قیچی دست مرتضی. عمه‌ش از بالا داره کیف می‌کنه.' }] },
+      { id: 'po.benches', title: 'نیمکت‌های باغ', cost: 236, layer: 'benches', after: [{ who: 'bahman', text: 'یه نیمکت زیر چنار. این‌جا می‌شینم و برای داداش نامه می‌نویسم. این بار پست می‌کنم.' }] },
+      { id: 'po.flowers', title: 'باغچه‌های گل', cost: 238, layer: 'flowers', after: [{ who: 'fakhri', text: 'لاله و اطلسی و شمعدونی. … ننه‌گلاب، این دفعه رنگ‌ها رو با هم انتخاب کردیم.' }, { who: 'golab', text: 'آخرش دوست شدیم، فخری‌جان.', mood: 'happy' }] },
+      { id: 'po.kiosk', title: 'دکه‌ی بستنی مرتضی', cost: 240, layer: 'kiosk', after: [{ who: 'morteza', text: 'بستنی سنتی، هر کدوم… نه، امروز همه مهمون من!', mood: 'happy' }] },
+      { id: 'po.lights', title: 'فانوس‌های باغ', cost: 242, layer: 'lights', after: [{ who: 'narges', text: 'هفت فصل پیش فقط یه قهوه‌خونه‌ی خاک‌گرفته داشتیم. حالا یه کوچه، یه محله، یه باغ.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'mahin', text: 'خبر داغ… این دفعه درباره‌ی خودمه!', mood: 'surprised' },
+      { who: 'mahin', text: 'رادیو محلی زنگ زد. می‌خوان من یه برنامه داشته باشم: «خبرهای محله با خاله مهین»!', mood: 'happy' },
+      { who: 'reza', text: 'خدا به داد کل تهران برسه!', mood: 'surprised' },
+    ],
+  },
 ];
 
 export function findTask(id: string): { place: Place; task: Task; index: number } | null {

@@ -5,7 +5,7 @@
 
 import { INK, O, THIN, sparkle } from './kit';
 
-export const MAP_H = 3340;
+export const MAP_H = 3870;
 const STEP = 106;
 const faDigits = (n: number) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 
@@ -123,6 +123,26 @@ const FACADES: Record<string, Facade> = {
   balehboron: {
     wall: '#e0b07a', w: 124, h: 60, door: 'gate',
     deco: `<path d="M-60 -66 Q0 -84 60 -66" fill="none" stroke="${INK}" stroke-width="1.2"/>` + Array.from({ length: 7 }, (_, i) => `<circle cx="${-48 + i * 16}" cy="${-70 - Math.sin((i / 6) * Math.PI) * 8}" r="4" fill="${['#ffd36b', '#e0303f', '#5fe0e0'][i % 3]}" ${THIN} stroke-width=".8"/>`).join(''),
+  },
+  gardenhouse: {
+    wall: 'url(#gTerracotta)', roof: 'gable', roofFill: 'url(#gTurq)', door: 'gate', w: 120,
+    deco: [-62, 62].map((x) => `<path d="M${x} 0 V-50" stroke="#d8cbb4" stroke-width="5"/><circle cx="${x}" cy="-60" r="16" fill="url(#gLeaf)" ${O}/>`).join(''),
+  },
+  poolhouse: {
+    wall: '#e8dcc6', roof: 'dome', roofFill: 'url(#gClay)', door: 'arch',
+    deco: [-44, -28, 28, 44].map((x) => `<rect x="${x - 6}" y="-30" width="12" height="12" fill="${x < 0 ? 'url(#gTurq)' : 'url(#gBlue)'}" ${THIN} stroke-width="1"/>`).join(''),
+  },
+  orchard: {
+    wall: '#c69260', h: 54, door: 'gate',
+    deco: [-44, 44].map((x) => `<circle cx="${x}" cy="-66" r="16" fill="url(#gLeaf)" ${O}/>` + [[-6, -70], [5, -62], [0, -74]].map(([dx, dy]) => `<circle cx="${x + dx}" cy="${dy}" r="2.6" fill="url(#gRed)"/>`).join('')).join(''),
+  },
+  mirrorhall: {
+    wall: '#efe3cc', roof: 'gable', roofFill: 'url(#gGold)', door: 'arch',
+    deco: Array.from({ length: 7 }, (_, i) => `<path d="M${-36 + i * 12} -70 l5 4 l-5 4 l-5 -4 Z" fill="#d6ecff" stroke="#9ab" stroke-width=".8"/>`).join(''),
+  },
+  parkopening: {
+    wall: '#8fbf4a', w: 120, h: 50, door: 'gate', sign: 'باغ عمه‌خانم',
+    deco: [-62, 62].map((x) => `<circle cx="${x}" cy="-56" r="18" fill="url(#gLeaf)" ${O}/>`).join(''),
   },
   wedding: {
     wall: 'url(#gWood)', w: 120, h: 70, door: 'gate',

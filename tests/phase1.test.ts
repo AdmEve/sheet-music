@@ -122,6 +122,8 @@ describe('generator catch-up', () => {
     expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genBaby', 'genLamp']);
     s.level = 35;
     expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genSaz']);
+    s.level = 40;
+    expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genTile']);
   });
 });
 

@@ -151,18 +151,22 @@ saves are written into localStorage `mahalle.save.v1`.
       background): 100 energy, 5 gems a day away (max 30) and a chest from Khale Mahin;
       perf re-check at 6× throttle with 25 places (map opens in ~450 ms, no long tasks
       while scrolling)
-
 - [x] Phase 14: Season 6 «خواستگار تبریزی» (`src/art/scenes6.ts`: Aydin's carpet shop in the
       alley, the Tabriz bazaar under its brick vaults, El Goli at night, his grandmother's
       house in the snow and the engagement party; new character Aydin; «ساز» instrument
       chain + luthier's bench at level 35); map of 30 places; Season 7 teased (Morteza's
       inheritance)
+- [x] Phase 15: bug sweep of the session's changes; today's event and its end are cached
+      (the strip asked every second); the CI smoke test now covers the welcome-back gift
+      and rushing an order
+- [x] Phase 16: Season 7 «ارثیه‌ی آقا مرتضی» (`src/art/scenes7.ts`: the Shemiran garden-house
+      with its plane-tree avenue, the tiled pool house, the cherry orchard, the mirror hall
+      and the opening of the public garden; «کاشی» tile chain + glaze box at level 40); map
+      of 35 places; Season 8 teased (Khale Mahin gets a radio show)
 
 Next (in order):
-1. Phase 15: full first-hour playthrough on a fresh save (pacing, tutorial, first offers),
-   bug sweep of the session's changes
-2. Phase 16: Season 7 «ارثیه‌ی آقا مرتضی»
-3. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
+1. Phase 17: Season 8 «رادیو محله» (Khale Mahin on the radio)
+2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)
 

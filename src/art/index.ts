@@ -8,6 +8,7 @@ import { GEN_POST, POST } from './chainsE';
 import { BABY, GEN_BABY } from './chainsF';
 import { GEN_LAMP, LAMP } from './chainsG';
 import { GEN_SAZ, SAZ } from './chainsH';
+import { GEN_TILE, TILE } from './chainsI';
 import {
   ASH, GEN_ASH, GEN_ICECREAM, GEN_KITE, GEN_LAVASHAK, GEN_NOWRUZ, GEN_SCHOOL, GEN_SURI, GEN_YALDA, ICECREAM, KITE, LAVASHAK, NOWRUZ, SCHOOL, SURI, YALDA,
 } from './events';
@@ -24,6 +25,7 @@ const ART: Record<ChainId, string[]> = {
   baby: BABY,
   lamp: LAMP,
   saz: SAZ,
+  tile: TILE,
   genTea: GEN_TEA,
   genBread: GEN_BREAD,
   genGarden: GEN_GARDEN,
@@ -35,6 +37,7 @@ const ART: Record<ChainId, string[]> = {
   genBaby: GEN_BABY,
   genLamp: GEN_LAMP,
   genSaz: GEN_SAZ,
+  genTile: GEN_TILE,
   chest: CHEST,
   coins: COINS,
   energy: ENERGY,
