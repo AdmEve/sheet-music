@@ -183,11 +183,11 @@ const SALON: Record<string, Layer> = {
   neon: (d) =>
     d
       ? `<rect x="110" y="122" width="140" height="0" />` +
-        `<text x="180" y="18" text-anchor="middle" font-family="Vazirmatn, sans-serif" font-weight="900" font-size="20" fill="#ff7a9c" stroke="#fff" stroke-width=".8" style="filter:drop-shadow(0 0 6px #ff7a9c)">آرایشگاه شیرین</text>`
-      : `<text x="180" y="18" text-anchor="middle" font-family="Vazirmatn, sans-serif" font-weight="900" font-size="20" fill="#6a6a7a">آرایشگـ… شیر…</text>`,
+        `<rect x="112" y="-6" width="136" height="30" rx="8" fill="#2a1830" ${O}/><text x="180" y="16" text-anchor="middle" font-family="Vazirmatn, sans-serif" font-weight="900" font-size="18" fill="#ff9ec4" stroke="#fff" stroke-width=".6" style="filter:drop-shadow(0 0 5px #ff7a9c)">آرایشگاه شیرین</text>`
+      : `<rect x="112" y="-6" width="136" height="30" rx="8" fill="#4a4a5a" ${O} transform="rotate(4 180 9)"/><text x="180" y="15" text-anchor="middle" font-family="Vazirmatn, sans-serif" font-weight="900" font-size="16" fill="#8a8a9a" transform="rotate(4 180 9)">آرایشگـ… شیر…</text>`,
   party: (d) =>
     d
-      ? stringLights(2, ['#ff7a9c', '#ffd36b', '#c58bff']) + sparkle(120, 100, 7) + sparkle(250, 90, 6) +
+      ? stringLights(116, ['#ff7a9c', '#ffd36b', '#c58bff']) + sparkle(120, 100, 7) + sparkle(250, 90, 6) +
         [[100, 200], [260, 200]].map(([x, y]) => `<circle cx="${x}" cy="${y - 50}" r="16" fill="url(#gRoseDeep)" ${O}/><path d="M${x} ${y - 34} q4 18 -2 34" fill="none" stroke="${INK}" stroke-width="1.4"/>`).join('')
       : `<rect x="0" y="0" width="360" height="240" fill="#1c1430" opacity=".28"/>`,
 };

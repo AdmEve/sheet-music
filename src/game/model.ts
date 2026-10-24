@@ -60,6 +60,8 @@ export interface GameState {
   ads: { day: string; count: number };
   /** One-time shop offers already bought. */
   bought: string[];
+  /** Coin-shop energy purchases today (price rises with each). */
+  coinEnergy: { day: string; count: number };
 }
 
 export type GameEvent =
@@ -162,6 +164,7 @@ export function newGame(seed: number, now: number): GameState {
     stats: { merges: 0, orders: 0, taps: 0 },
     ads: { day: '', count: 0 },
     bought: [],
+    coinEnergy: { day: '', count: 0 },
   };
   const put = (r: number, c: number, item: Item, lock?: Lock) => {
     s.board[idx(r, c)] = lock ? { item, lock } : { item };
@@ -556,7 +559,7 @@ export function loadState(json: string | null): GameState | null {
     const raw = JSON.parse(json) as Partial<GameState>;
     if (raw.v !== 1 || !Array.isArray(raw.board) || raw.board.length !== CELLS) return null;
     const base = newGame(raw.rng ?? 1, raw.energyAt ?? Date.now());
-    return { ...base, ...raw, stats: { ...base.stats, ...raw.stats }, ads: raw.ads ?? base.ads, bought: raw.bought ?? [] } as GameState;
+    return { ...base, ...raw, stats: { ...base.stats, ...raw.stats }, ads: raw.ads ?? base.ads, bought: raw.bought ?? [], coinEnergy: raw.coinEnergy ?? base.coinEnergy } as GameState;
   } catch {
     return null;
   }
@@ -570,4 +573,36 @@ export function adsLeft(s: GameState, today: string, max: number): number {
 export function countAd(s: GameState, today: string): void {
   if (s.ads.day !== today) s.ads = { day: today, count: 0 };
   s.ads.count++;
+}
+
+// ---------------------------------------------------------------------------- coin shop
+
+export const COIN_CHEST_PRICE = 150;
+export const COIN_ENERGY_AMOUNT = 25;
+export const COIN_ENERGY_MAX_PER_DAY = 4;
+
+export function coinEnergyPrice(s: GameState, today: string): number {
+  const n = s.coinEnergy.day === today ? s.coinEnergy.count : 0;
+  return 100 * 2 ** n;
+}
+
+export function coinEnergyLeft(s: GameState, today: string): number {
+  return COIN_ENERGY_MAX_PER_DAY - (s.coinEnergy.day === today ? s.coinEnergy.count : 0);
+}
+
+export function buyEnergyWithCoins(s: GameState, today: string): boolean {
+  if (coinEnergyLeft(s, today) <= 0) return false;
+  const price = coinEnergyPrice(s, today);
+  if (s.coins < price) return false;
+  s.coins -= price;
+  if (s.coinEnergy.day !== today) s.coinEnergy = { day: today, count: 0 };
+  s.coinEnergy.count++;
+  addEnergy(s, COIN_ENERGY_AMOUNT);
+  return true;
+}
+
+export function buyChestWithCoins(s: GameState): boolean {
+  if (s.coins < COIN_CHEST_PRICE) return false;
+  s.coins -= COIN_CHEST_PRICE;
+  return true;
 }

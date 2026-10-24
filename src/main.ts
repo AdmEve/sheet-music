@@ -1,6 +1,8 @@
 // Boot: load the save (or start a new game), show the splash, then the board.
 
 import './ui/style.css';
+import { App as CapApp } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
 import { DEFS } from './art/defs';
 import { itemArt } from './art/index';
 import { claimDaily, loadState, newGame, tickEnergy } from './game/model';
@@ -44,6 +46,20 @@ async function boot(): Promise<void> {
   }
   app.dirty();
   app.tutorial();
+
+  // Android back: close the top-most window; on the board, send the app to the background.
+  if (Capacitor.isNativePlatform()) {
+    CapApp.addListener('backButton', () => {
+      const dialogue = document.querySelector('.dialogue') as HTMLElement | null;
+      if (dialogue) return dialogue.click();
+      const close = document.querySelector('.overlay:last-of-type .close') as HTMLElement | null;
+      if (close) return close.click();
+      if (document.querySelector('.overlay')) return; // non-closable (level up etc.): use its button
+      const back = document.querySelector('.place .top .chip') as HTMLElement | null;
+      if (back) return back.click();
+      app.saveNow().then(() => CapApp.minimizeApp());
+    });
+  }
 
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') app.saveNow();

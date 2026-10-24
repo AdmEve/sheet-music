@@ -52,16 +52,31 @@ studio + servers), card battler (Pesarkhande owns the theme; PvP needs servers).
   `src/story/` chapters + dialogue, `src/platform/` billing/ads/storage bridges.
 - CI (`.github/workflows/build.yml`) builds the APK and publishes a release.
 
-## State
+## State (updated 2026-10-24)
 
-- [x] Market research + decision
-- [x] Old sheet-music app removed
-- [ ] Merge engine (model + tests)
-- [ ] Item art (SVG) for all chains, reviewed via screenshots
-- [ ] Board UI (drag/merge, generators, orders, energy)
-- [ ] House scenes + renovation tasks + story chapters
-- [ ] Shop, Bazaar billing plugin, rewarded ads plugin
-- [ ] Android project, icon, CI APK build, store listing text
+Done and pushed (CI green, `android-latest` release has an installable APK + AAB):
+
+- [x] Market research + decision (`docs/market-research.md`)
+- [x] Game model + 24 vitest tests (merge, locks, generators, energy, chests, orders, levels,
+      daily gift, coin shop, save migration, story data/progression)
+- [x] Vector art for every item, 8 portraits, 5 place scenes with before/after layers
+- [x] Full UI: HUD, orders, drag-merge board, info bar, alley screen with task list,
+      dialogue, shop (Bazaar packs + coin shop + rewarded ads), energy, bag, level-up,
+      daily gift, settings, tutorial hand, synth SFX, haptics, Android back button
+- [x] Season 1 story: 5 episodes, 27 restoration tasks, all dialogue in Persian
+- [x] Balance pass (`scripts/simulate.ts`): ep1 ≈ first session; season ≈ 1,900 energy
+      (≈ 10 days for a casual free player)
+- [x] Android project, Kotlin plugins (Poolakey 2.3.0 billing, Tapsell Plus 2.3.3 ads),
+      icons, splash, CI signing from secrets, README + Persian store listing
+
+Next (in order):
+1. Store screenshots (1080×1920) with captions → `docs/screenshots/`
+2. Background music loop (synth, Persian mode), toggle in settings
+3. Polish pass on small item art at board size; more merge juice (particles)
+4. Season 2 ("عروسی") content plan; weekly prize event design (needs a small server)
+
+Known limits: local Gradle builds here can hit Maven Central rate limits (429); CI is the
+source of truth for APK builds.
 
 ## Needs from the owner (Amirhossein)
 

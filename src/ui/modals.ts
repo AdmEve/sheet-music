@@ -4,7 +4,8 @@ import { itemArt } from '../art/index';
 import { ICONS } from '../art/icons';
 import { CHAINS, Item, itemName } from '../game/items';
 import {
-  BAG_MAX, DAILY_REWARDS, ENERGY_CAP, addEnergy, adsLeft, bagSlotCost, buyBagSlot, countAd, fromBag, newGame,
+  BAG_MAX, COIN_CHEST_PRICE, COIN_ENERGY_AMOUNT, DAILY_REWARDS, ENERGY_CAP, addEnergy, adsLeft, bagSlotCost, buyBagSlot,
+  buyChestWithCoins, buyEnergyWithCoins, coinEnergyLeft, coinEnergyPrice, countAd, fromBag, newGame,
 } from '../game/model';
 import { adsAvailable, showRewarded } from '../platform/ads';
 import { PRODUCTS, billingAvailable, buy, fetchPrices } from '../platform/billing';
@@ -111,6 +112,30 @@ export class Modals {
         );
       }
       body.append(grid);
+      // Coin shop: gives coins a purpose and a daily energy top-up for non-payers.
+      const coinRow = h('div', { class: 'grid2', style: 'margin-top:10px' },
+        h('div', { class: 'offer' },
+          h('div', { class: 'art', html: svgIcon(itemArt({ chain: 'chest', level: 1 })) }),
+          h('div', { style: 'font-size:12px' }, 'صندوقچه‌ی چوبی'),
+          h('button', { class: 'btn gold', onclick: () => {
+            if (!buyChestWithCoins(s)) return this.app.toast('سکه کافی نداری.');
+            this.app.giveItem({ chain: 'chest', level: 1 });
+            sfx.coin();
+            this.app.renderHud();
+            this.app.dirty();
+            close();
+          } }, faNum(COIN_CHEST_PRICE), h('span', { html: svgIcon(ICONS.coin) }))),
+        h('div', { class: 'offer' },
+          h('div', { class: 'art', html: svgIcon(itemArt({ chain: 'energy', level: 1 })) }),
+          h('div', { style: 'font-size:12px' }, `${fa(COIN_ENERGY_AMOUNT)} انرژی (${fa(coinEnergyLeft(s, today()))} بار دیگه امروز)`),
+          h('button', { class: 'btn gold', disabled: coinEnergyLeft(s, today()) <= 0, onclick: () => {
+            if (!buyEnergyWithCoins(s, today())) return this.app.toast('سکه کافی نداری.');
+            sfx.levelUp();
+            this.app.renderHud();
+            this.app.dirty();
+            close();
+          } }, faNum(coinEnergyPrice(s, today())), h('span', { html: svgIcon(ICONS.coin) }))));
+      body.append(h('p', { style: 'font-weight:900;margin-top:12px' }, 'خرید با سکه'), coinRow);
       if (adsAvailable()) {
         const left = adsLeft(s, today(), MAX_ADS_PER_DAY);
         body.append(h('button', { class: 'btn pink', disabled: left <= 0, onclick: async () => {

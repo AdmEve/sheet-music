@@ -57,6 +57,14 @@ export class PlaceScreen {
         enough ? null : h('p', { class: 'muted' }, `ستاره‌هات: ${fa(s.stars)}. سفارش همسایه‌ها رو تحویل بده تا ستاره جمع کنی.`),
       );
     }
+    const list = h('div', { class: 'tasks' }, ...place.tasks.map((t) => {
+      const done = s.tasksDone.includes(t.id);
+      const cur = p.next?.id === t.id;
+      return h('div', { class: `task${done ? ' done' : cur ? ' cur' : ''}` },
+        h('span', { class: 'mark' }, done ? '✓' : cur ? '◀' : '•'),
+        h('span', { class: 'tt' }, t.title),
+        done ? null : h('span', { class: 'cost' }, fa(t.cost), h('span', { html: svgIcon(ICONS.star) })));
+    }));
     screen.append(
       h('div', { class: 'top' },
         h('button', { class: 'chip', onclick: back }, '→ بازی'),
@@ -65,6 +73,7 @@ export class PlaceScreen {
       scene,
       episodes,
       card,
+      list,
     );
   }
 

@@ -225,3 +225,28 @@ describe('daily gift', () => {
     expect(claimDaily(s, '2026-10-05', '2026-10-04')).toBe(0);
   });
 });
+
+describe('coin shop', () => {
+  it('sells energy at a doubling price, capped per day', async () => {
+    const { buyEnergyWithCoins, coinEnergyPrice, COIN_ENERGY_MAX_PER_DAY } = await import('../src/game/model');
+    const s = emptyGame();
+    s.coins = 100_000;
+    const prices: number[] = [];
+    let bought = 0;
+    while (buyEnergyWithCoins(s, '2026-10-01')) { bought++; prices.push(coinEnergyPrice(s, '2026-10-01')); }
+    expect(bought).toBe(COIN_ENERGY_MAX_PER_DAY);
+    expect(prices[1]).toBe(prices[0] * 2);
+    expect(buyEnergyWithCoins(s, '2026-10-02')).toBe(true);
+  });
+
+  it('old saves without new fields still load', async () => {
+    const { loadState } = await import('../src/game/model');
+    const s = emptyGame();
+    const raw = JSON.parse(JSON.stringify(s));
+    delete raw.ads; delete raw.bought; delete raw.coinEnergy;
+    const loaded = loadState(JSON.stringify(raw))!;
+    expect(loaded.ads).toBeDefined();
+    expect(loaded.coinEnergy).toBeDefined();
+    expect(loadState('not json')).toBeNull();
+  });
+});

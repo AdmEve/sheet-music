@@ -126,7 +126,7 @@ export const PLACES: Place[] = [
     ],
     tasks: [
       {
-        id: 'bakery.flour', title: 'جابه‌جایی کیسه‌های آرد', cost: 2, layer: 'flour',
+        id: 'bakery.flour', title: 'جابه‌جایی کیسه‌های آرد', cost: 5, layer: 'flour',
         after: [
           { who: 'shirin', text: 'نرگـــس! برگشتی و به من نگفتی؟ قهرم باهات.' },
           { who: 'narges', text: 'شیرین! تو رو خدا قهر نکن، کمک لازم دارم.' },
@@ -134,13 +134,13 @@ export const PLACES: Place[] = [
         ],
       },
       {
-        id: 'bakery.pebbles', title: 'شستن ریگ‌های تنور', cost: 2, layer: 'pebbles',
+        id: 'bakery.pebbles', title: 'شستن ریگ‌های تنور', cost: 6, layer: 'pebbles',
         after: [
           { who: 'reza', text: 'سنگک بی‌ریگ داغ، مثل چای بی‌قنده. می‌شه خوردش، ولی دل آدم نمی‌خواد.' },
         ],
       },
       {
-        id: 'bakery.oven', title: 'مرمت تنور', cost: 3, layer: 'oven',
+        id: 'bakery.oven', title: 'مرمت تنور', cost: 7, layer: 'oven',
         after: [
           { who: 'kaveh', text: 'این ترک رو با گِل و کاه سنتی پر کردیم. صد سال دیگه هم دووم میاره.' },
           { who: 'reza', text: 'پسر، دستت درد نکنه. پولشو چطور بدم؟' },
@@ -148,7 +148,7 @@ export const PLACES: Place[] = [
         ],
       },
       {
-        id: 'bakery.counter', title: 'پیشخوان نو', cost: 3, layer: 'counter',
+        id: 'bakery.counter', title: 'پیشخوان نو', cost: 8, layer: 'counter',
         after: [
           { who: 'mahin', text: 'خبر داغ! زن فرخی دیروز اومده بود سنگک بخره. با یه ماشین به این گندگی!' },
           { who: 'narges', text: 'خاله، شما این خبرا رو از کجا میارید؟' },
@@ -156,13 +156,13 @@ export const PLACES: Place[] = [
         ],
       },
       {
-        id: 'bakery.queue', title: 'سایه‌بان صف نون', cost: 4, layer: 'awning',
+        id: 'bakery.queue', title: 'سایه‌بان صف نون', cost: 9, layer: 'awning',
         after: [
           { who: 'morteza', text: 'صف از نونوایی تا بقالی من رسیده. مشتریای منم زیاد شدن… خدا خیرت بده.' },
         ],
       },
       {
-        id: 'bakery.first', title: 'اولین تنور داغ', cost: 4, layer: 'fire',
+        id: 'bakery.first', title: 'اولین تنور داغ', cost: 10, layer: 'fire',
         after: [
           { who: 'reza', text: 'بیعانه‌ی فرخی رو پس دادم. نونوایی مال خودمه. مال محله‌ست.' },
           { who: 'narges', text: 'این اولین سنگک، مال حاج‌بابا. خدا رحمتش کنه.' },
@@ -185,11 +185,11 @@ export const PLACES: Place[] = [
       { who: 'golab', text: 'اول حیاطم رو زنده کن. پیرزن‌ها حرفشونو لای گل‌ها می‌زنن مادر.' },
     ],
     tasks: [
-      { id: 'garden.weeds', title: 'کندن علف‌های هرز', cost: 3, layer: 'weeds', after: [{ who: 'shirin', text: 'ناخنام! ناخنای کاشته‌م! نرگس اینا رو جبران می‌کنی.' }] },
-      { id: 'garden.pool', title: 'پر کردن حوض', cost: 3, layer: 'pool', after: [{ who: 'kaveh', text: 'حوض فیروزه‌ای، حیاط آجری… این خونه یه گنجه. فرخی هم اینو می‌دونه.' }] },
-      { id: 'garden.roses', title: 'کاشتن گل محمدی', cost: 4, layer: 'roses', after: [{ who: 'golab', text: 'بوشو! بوی جوونی منه.' }] },
-      { id: 'garden.bench', title: 'تخت چوبی کنار حوض', cost: 4, layer: 'bench', after: [{ who: 'mahin', text: 'نرگس و کاوه دیشب تا ساعت یازده رو این تخت نشسته بودن. فقط می‌گم.' }, { who: 'narges', text: 'خاله!! داشتیم نقشه می‌کشیدیم!' }, { who: 'mahin', text: 'منم همینو گفتم. نقشه.' }] },
-      { id: 'garden.distill', title: 'دیگ گلاب‌گیری', cost: 5, layer: 'distill', after: [{ who: 'golab', text: 'اولین شیشه گلاب مال توئه. حالا وقتشه نامه رو بخونی.' }] },
+      { id: 'garden.weeds', title: 'کندن علف‌های هرز', cost: 10, layer: 'weeds', after: [{ who: 'shirin', text: 'ناخنام! ناخنای کاشته‌م! نرگس اینا رو جبران می‌کنی.' }] },
+      { id: 'garden.pool', title: 'پر کردن حوض', cost: 12, layer: 'pool', after: [{ who: 'kaveh', text: 'حوض فیروزه‌ای، حیاط آجری… این خونه یه گنجه. فرخی هم اینو می‌دونه.' }] },
+      { id: 'garden.roses', title: 'کاشتن گل محمدی', cost: 14, layer: 'roses', after: [{ who: 'golab', text: 'بوشو! بوی جوونی منه.' }] },
+      { id: 'garden.bench', title: 'تخت چوبی کنار حوض', cost: 16, layer: 'bench', after: [{ who: 'mahin', text: 'نرگس و کاوه دیشب تا ساعت یازده رو این تخت نشسته بودن. فقط می‌گم.' }, { who: 'narges', text: 'خاله!! داشتیم نقشه می‌کشیدیم!' }, { who: 'mahin', text: 'منم همینو گفتم. نقشه.' }] },
+      { id: 'garden.distill', title: 'دیگ گلاب‌گیری', cost: 18, layer: 'distill', after: [{ who: 'golab', text: 'اولین شیشه گلاب مال توئه. حالا وقتشه نامه رو بخونی.' }] },
     ],
     outro: [
       { who: 'narges', text: '«نرگس جان، فرخی پسر شریک قدیمی منه. پدرش این کوچه رو یه بار از من گرفت…»' },
@@ -207,11 +207,11 @@ export const PLACES: Place[] = [
       { who: 'shirin', text: 'آرایشگاه من! فرخی اجاره رو دو برابر کرده. اگه مشتری نیاد، تا عید تعطیلم.' },
     ],
     tasks: [
-      { id: 'salon.mirror', title: 'آینه‌کاری تازه', cost: 4, layer: 'mirror', after: [{ who: 'shirin', text: 'وای! خودمو تو آینه نشناختم. از بس خوشگل شدم.' }] },
-      { id: 'salon.chairs', title: 'صندلی‌های نو', cost: 4, layer: 'chairs', after: [{ who: 'mahin', text: 'من مشتری اولم. رنگ شرابی. مثل جوونیام.' }] },
-      { id: 'salon.curtain', title: 'پرده‌ی ترمه', cost: 5, layer: 'curtain', after: [{ who: 'shirin', text: 'نرگس… بین تو و کاوه چه خبره؟ راستشو بگو.' }, { who: 'narges', text: 'هیچی! …فعلاً.' }] },
-      { id: 'salon.sign', title: 'تابلوی نئونی', cost: 5, layer: 'neon', after: [{ who: 'morteza', text: 'برق این تابلو رو از کجا می‌گیری؟ از کنتور من نباشه!' }] },
-      { id: 'salon.party', title: 'جشن بازگشایی', cost: 6, layer: 'party', after: [{ who: 'shirin', text: 'ده تا نوبت برای فردا! نرگس، نجاتم دادی.' }] },
+      { id: 'salon.mirror', title: 'آینه‌کاری تازه', cost: 18, layer: 'mirror', after: [{ who: 'shirin', text: 'وای! خودمو تو آینه نشناختم. از بس خوشگل شدم.' }] },
+      { id: 'salon.chairs', title: 'صندلی‌های نو', cost: 22, layer: 'chairs', after: [{ who: 'mahin', text: 'من مشتری اولم. رنگ شرابی. مثل جوونیام.' }] },
+      { id: 'salon.curtain', title: 'پرده‌ی ترمه', cost: 26, layer: 'curtain', after: [{ who: 'shirin', text: 'نرگس… بین تو و کاوه چه خبره؟ راستشو بگو.' }, { who: 'narges', text: 'هیچی! …فعلاً.' }] },
+      { id: 'salon.sign', title: 'تابلوی نئونی', cost: 30, layer: 'neon', after: [{ who: 'morteza', text: 'برق این تابلو رو از کجا می‌گیری؟ از کنتور من نباشه!' }] },
+      { id: 'salon.party', title: 'جشن بازگشایی', cost: 34, layer: 'party', after: [{ who: 'shirin', text: 'ده تا نوبت برای فردا! نرگس، نجاتم دادی.' }] },
     ],
     outro: [
       { who: 'mahin', text: 'بچه‌ها! فرخی با دو تا مأمور شهرداری اومده سر کوچه!' },
@@ -228,11 +228,11 @@ export const PLACES: Place[] = [
       { who: 'reza', text: 'نون و چایش با من و نرگس. بازوش با بچه‌های محل.' },
     ],
     tasks: [
-      { id: 'hammam.door', title: 'باز کردن در قفل‌شده', cost: 5, layer: 'door', after: [{ who: 'narges', text: 'کلید حاج‌بابا… کار کرد!' }] },
-      { id: 'hammam.tiles', title: 'شستن کاشی‌های قاجاری', cost: 5, layer: 'tiles', after: [{ who: 'kaveh', text: 'این امضای استاد کاشی‌کاره. سال ۱۲۹۸. این‌جا یه موزه‌ست، نه مخروبه.' }] },
-      { id: 'hammam.pool', title: 'مرمت خزینه', cost: 6, layer: 'pool', after: [{ who: 'golab', text: 'یه چیزی زیر سنگ وسط خزینه‌ست. حاج‌بابا همیشه می‌گفت «گنج زیر آبه».' }] },
-      { id: 'hammam.box', title: 'بیرون آوردن صندوقچه', cost: 6, layer: 'box', after: [{ who: 'narges', text: 'سند اصلی کوچه! به اسم همه‌ی اهالی. هیچ‌کس نمی‌تونه بفروشدش.' }] },
-      { id: 'hammam.lights', title: 'چراغونی برای ثبت میراث', cost: 7, layer: 'lights', after: [{ who: 'farokhi', text: '…حاج‌بابا همیشه یه قدم جلوتر بود. پدرم هم همینو می‌گفت.' }] },
+      { id: 'hammam.door', title: 'باز کردن در قفل‌شده', cost: 30, layer: 'door', after: [{ who: 'narges', text: 'کلید حاج‌بابا… کار کرد!' }] },
+      { id: 'hammam.tiles', title: 'شستن کاشی‌های قاجاری', cost: 36, layer: 'tiles', after: [{ who: 'kaveh', text: 'این امضای استاد کاشی‌کاره. سال ۱۲۹۸. این‌جا یه موزه‌ست، نه مخروبه.' }] },
+      { id: 'hammam.pool', title: 'مرمت خزینه', cost: 42, layer: 'pool', after: [{ who: 'golab', text: 'یه چیزی زیر سنگ وسط خزینه‌ست. حاج‌بابا همیشه می‌گفت «گنج زیر آبه».' }] },
+      { id: 'hammam.box', title: 'بیرون آوردن صندوقچه', cost: 48, layer: 'box', after: [{ who: 'narges', text: 'سند اصلی کوچه! به اسم همه‌ی اهالی. هیچ‌کس نمی‌تونه بفروشدش.' }] },
+      { id: 'hammam.lights', title: 'چراغونی برای ثبت میراث', cost: 54, layer: 'lights', after: [{ who: 'farokhi', text: '…حاج‌بابا همیشه یه قدم جلوتر بود. پدرم هم همینو می‌گفت.' }] },
     ],
     outro: [
       { who: 'farokhi', text: 'لودرها رو برمی‌گردونم. ولی یه شرط دارم.' },

@@ -476,14 +476,16 @@ export class App {
       h('button', { class: 'navbtn', onclick: () => this.modals.bag() }, h('span', { html: svgIcon(ICONS.bag) }), 'کیف',
         bagCount ? h('span', { class: 'badge' }, fa(bagCount)) : null),
       h('button', { class: `navbtn main${ready ? ' ready' : ''}`, id: 'nav-alley', onclick: () => this.openPlace() },
-        h('span', { html: svgIcon(ICONS.alley) }), 'محله', h('span', { class: 'badge' }, fa(this.s.stars), ' ⭐')),
+        h('span', { html: svgIcon(ICONS.alley) }), 'محله', h('span', { class: 'badge' }, p.next ? `${fa(this.s.stars)}/${fa(p.next.cost)}` : fa(this.s.stars), ' ⭐')),
       h('button', { class: 'navbtn', onclick: () => this.modals.shop() }, h('span', { html: svgIcon(ICONS.shop) }), 'فروشگاه'),
     );
   }
 
   async openPlace(): Promise<void> {
+    this.hideHand();
     await this.place.open();
     this.renderAll();
+    this.tutorial();
   }
 
   // ------------------------------------------------------------------ effects
@@ -560,28 +562,61 @@ export class App {
 
   // ------------------------------------------------------------------ tutorial
 
+  private hand: HTMLElement | null = null;
+
+  /** Animated pointing hand for the tutorial: taps at `a`, or drags from `a` to `b`. */
+  private showHand(a: DOMRect, b?: DOMRect): void {
+    this.hideHand();
+    const hand = h('div', { class: 'tut-hand' }, '👆');
+    document.body.append(hand);
+    const at = (r: DOMRect) => `translate(${r.left + r.width / 2 - 14}px, ${r.top + r.height / 2 - 4}px)`;
+    hand.animate(
+      b
+        ? [{ transform: at(a), opacity: 0 }, { transform: at(a), opacity: 1, offset: 0.15 }, { transform: at(b), opacity: 1, offset: 0.75 }, { transform: at(b), opacity: 0 }]
+        : [{ transform: `${at(a)} scale(1)` }, { transform: `${at(a)} scale(.82)`, offset: 0.5 }, { transform: `${at(a)} scale(1)` }],
+      { duration: b ? 1600 : 900, iterations: Infinity },
+    );
+    this.hand = hand;
+  }
+
+  private hideHand(): void {
+    this.hand?.remove();
+    this.hand = null;
+  }
+
   /** Light-touch first-session guidance, driven by what the player has done so far. */
   tutorial(): void {
     const s = this.s;
     const step = (key: string) => markSeen(s, `tut:${key}`);
+    this.hideHand();
+    if (document.querySelector('.overlay, .dialogue, .place')) return;
     if (s.stats.merges === 0) {
       if (step('merge')) this.toast('دو تا «برگ چای» رو روی هم بکش!');
       const pair = s.board.map((c, i) => (c.item && !c.lock && sameItem(c.item, { chain: 'tea', level: 1 }) ? i : -1)).filter((i) => i >= 0);
-      pair.slice(0, 2).forEach((i) => this.cells[i].classList.add('target'));
+      if (pair.length >= 2) this.showHand(this.cells[pair[0]].getBoundingClientRect(), this.cells[pair[1]].getBoundingClientRect());
       return;
     }
-    this.cells.forEach((c) => !this.drag && c.classList.remove('target'));
-    if (s.stats.orders === 0 && s.orders.some((o) => needsMet(s, o).every(Boolean))) {
-      if (step('deliver')) this.toast('سفارش آماده‌ست! دکمه‌ی «تحویل» رو بزن.');
+    if (s.stats.orders === 0) {
+      const btn = this.ordersEl.querySelector('.deliver');
+      if (btn) {
+        if (step('deliver')) this.toast('سفارش آماده‌ست! دکمه‌ی «تحویل» رو بزن.');
+        this.showHand(btn.getBoundingClientRect());
+      }
       return;
     }
-    if (s.stats.orders >= 1 && s.stats.taps === 0) {
-      if (step('generator')) this.toast('قوطی چای رو بزن تا برگ چای بسازه.');
+    if (s.stats.taps === 0) {
+      const gen = s.board.findIndex((c) => c.item?.chain === 'genTea' && !c.lock);
+      if (gen >= 0) {
+        if (step('generator')) this.toast('قوطی چای رو بزن تا برگ چای بسازه.');
+        this.showHand(this.cells[gen].getBoundingClientRect());
+      }
       return;
     }
     const p = progress(s);
-    if (p.next && s.stars >= p.next.cost && s.tasksDone.length === 0 && step('alley')) {
-      this.toast('ستاره داری! دکمه‌ی «محله» رو بزن و قهوه‌خانه رو تعمیر کن.');
+    if (p.next && s.stars >= p.next.cost && s.tasksDone.length === 0) {
+      if (step('alley')) this.toast('ستاره داری! دکمه‌ی «محله» رو بزن و قهوه‌خانه رو تعمیر کن.');
+      const nav = document.getElementById('nav-alley');
+      if (nav) this.showHand(nav.getBoundingClientRect());
     }
   }
 
