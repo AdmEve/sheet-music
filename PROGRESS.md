@@ -101,7 +101,9 @@ season pass ~10%, events run 4–10 at a time, decoration choice drives self-exp
       icon strip above/beside the board
 - [x] Phase 3: season pass «مسیر <ماه>»: one season per Persian month (Jalali calendar
       in `src/game/calendar.ts`), 30 steps, free + golden track (pass_premium), endless chests
-- [ ] Phase 4: events (weekly event, Yalda, Nowruz, alley race)
+- [x] Phase 4: live events (`src/game/events.ts`: weekly kites/lavashak, Yalda, Nowruz;
+      event generator + chain + 12 milestones + trophy) and the alley race vs 4 bots
+      (`src/game/race.ts`, time-based so it works offline)
 - [ ] Phase 5: presentation (decor choice, board frame, celebrations, expressions, map)
 - [ ] Phase 6: save-transfer code, Season 3, e2e smoke test in CI
 

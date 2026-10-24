@@ -348,6 +348,7 @@ export class App {
     const order = this.s.orders.find((o) => o.id === id);
     if (!order || !card) return;
     const prevLevel = this.s.level;
+    const raceWasOpen = !!this.s.race.active && this.s.race.active.finishedAt === null;
     const events = deliver(this.s, id);
     const ev = events.find((e) => e.type === 'deliver') as Extract<GameEvent, { type: 'deliver' }> | undefined;
     if (!ev) return this.fail(events);
@@ -372,6 +373,7 @@ export class App {
     this.floatText(`+${fa(order.stars)} ⭐`, target);
     const lines = THANKS[order.who] ?? THANKS.narges;
     this.speech(lines[Math.floor(Math.random() * lines.length)], target);
+    if (raceWasOpen && this.s.race.active?.finishedAt) this.toast('به خط پایان رسیدی! 🏁 نتیجه‌ی مسابقه رو ببین.');
     await wait(420);
     const added = events.filter((e) => e.type === 'newOrder').map((e) => (e as Extract<GameEvent, { type: 'newOrder' }>).order.id);
     this.renderOrders(added);
