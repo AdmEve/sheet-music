@@ -61,6 +61,9 @@ async function boot(): Promise<void> {
     });
   }
 
+  // Lets the store-screenshot script stage a story line (nothing in the game fires this).
+  document.addEventListener('debug-line', (e) => app.place.dialogue([(e as CustomEvent).detail]));
+
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') app.saveNow();
     else {

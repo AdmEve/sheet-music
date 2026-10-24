@@ -254,6 +254,7 @@ svg { display: block; }
 .place .tasktitle { font-size: 18px; font-weight: 900; text-align: center; }
 .place .muted { text-align: center; color: var(--ink-soft); font-size: 13px; }
 .place { overflow-y: auto; }
+.place > * { flex-shrink: 0; }
 .place .tasks { margin: 0 14px 20px; display: flex; flex-direction: column; gap: 6px; }
 .place .task { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 14px; background: #fff8ea; box-shadow: inset 0 0 0 2px #e6cfa3; font-size: 14px; }
 .place .task .tt { flex: 1; }

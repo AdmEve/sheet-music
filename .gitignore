@@ -9,3 +9,4 @@ android/local.properties
 android/app/src/main/assets/public/
 android/capacitor-cordova-android-plugins/
 android/.idea/
+docs/screenshots/raw-*
