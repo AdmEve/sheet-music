@@ -63,6 +63,15 @@ const finishedTeahouse = () => {
   s.stars = 6;
   return s;
 };
+const weddingState = () => {
+  const s = midGame();
+  const ids = (n: number) => PLACES[n].tasks.map((t) => t.id);
+  s.tasksDone = [0, 1, 2, 3, 4, 5, 6, 7, 8].flatMap(ids).concat(ids(9).slice(0, 4));
+  s.storySeen = [...allSeen, ...PLACES.map((p) => `${p.id}:intro`), ...PLACES.map((p) => `${p.id}:outro`), 'ask:rate'];
+  s.stars = 120;
+  s.level = 11;
+  return s;
+};
 const shots: Shot[] = [
   { name: '1-board', caption: 'وسایل ایرانی رو ادغام کن!', sub: 'از برگ چای تا سماور طلایی', state: midGame() },
   { name: '2-orders', caption: 'سفارش همسایه‌ها رو تحویل بده', sub: 'خاله مهین، اوستا رضا، ننه‌گلاب…', state: midGame(),
@@ -82,6 +91,8 @@ const shots: Shot[] = [
       const cell = await page.$('.cell[data-i="23"]'); await cell.click(); await page.waitForTimeout(200);
       await page.click('.infobar .chip', { force: true }); await page.waitForTimeout(400);
     } },
+  { name: '7-wedding', caption: 'فصل دوم: عروسی! 💍', sub: 'از خواستگاری تا جشن عروسی تو کوچه', state: weddingState(),
+    act: async (page) => { await page.click('#nav-alley', { force: true }); await page.waitForTimeout(500); } },
   { name: '6-farokhi', caption: 'کوچه رو از دست فرخی نجات بده', sub: 'آفلاین، بدون تبلیغ اجباری', state: midGame(),
     act: async (page) => {
       await page.click('#nav-alley', { force: true }); await page.waitForTimeout(400);

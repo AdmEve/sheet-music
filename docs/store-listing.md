@@ -42,6 +42,7 @@
 4. خاله مهین همه‌چی رو می‌دونه!
 5. از استکان تا سماور طلایی
 6. کوچه رو از دست فرخی نجات بده
+7. فصل دوم: عروسی! 💍
 
 **Content rating:** 3+ (no violence, no gambling, all female characters wear hijab).
 
