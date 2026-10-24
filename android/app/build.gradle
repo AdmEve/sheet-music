@@ -32,6 +32,25 @@ android {
             }
         }
     }
+    buildFeatures { buildConfig = true }
+
+    // One codebase, one APK per Iranian store. Each flavor has its own StorePlugin
+    // (src/bazaar, src/myket) and its own billing RSA key, passed in by CI.
+    flavorDimensions = ["store"]
+    productFlavors {
+        bazaar {
+            dimension "store"
+            buildConfigField "String", "STORE_RSA_KEY", "\"${System.getenv("BAZAAR_RSA_KEY") ?: ""}\""
+        }
+        myket {
+            dimension "store"
+            buildConfigField "String", "STORE_RSA_KEY", "\"${System.getenv("MYKET_RSA_KEY") ?: ""}\""
+            manifestPlaceholders = [marketApplicationId: "ir.mservices.market",
+                                    marketBindAddress  : "ir.mservices.market.InAppBillingService.BIND",
+                                    marketPermission   : "ir.mservices.market.BILLING"]
+        }
+    }
+
     buildTypes {
         release {
             signingConfig releaseStore ? signingConfigs.release : signingConfigs.debug
@@ -57,7 +76,8 @@ dependencies {
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
     implementation project(':capacitor-cordova-android-plugins')
-    implementation "com.github.cafebazaar.Poolakey:poolakey:2.3.0"
+    bazaarImplementation "com.github.cafebazaar.Poolakey:poolakey:2.3.0"
+    myketImplementation "com.github.myketstore:myket-billing-client:1.19"
     implementation "ir.tapsell.plus:tapsell-plus-sdk-android:2.3.3"
 }
 

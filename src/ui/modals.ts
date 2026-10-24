@@ -13,7 +13,7 @@ import { PRODUCTS, billingAvailable, buy, consume, fetchPrices } from '../platfo
 import { MAX_ADS_PER_DAY } from '../platform/config';
 import { setHaptics } from '../platform/haptics';
 import { askNotifications } from '../platform/notify';
-import { rateOnBazaar, shareGame } from '../platform/social';
+import { rateOnStore, shareGame } from '../platform/social';
 import { writeSetting } from '../platform/storage';
 import type { App } from './app';
 import { add, clear, dateKey, fa, faNum, faTime, h, svgIcon } from './dom';
@@ -115,7 +115,7 @@ export class Modals {
         const buyBtn = h('button', { class: 'btn', onclick: async () => {
           const r = await buy(p.sku);
           if (!r.ok) {
-            if (r.reason === 'unavailable') this.app.toast('خرید فقط در نسخه‌ی نصب‌شده از بازار فعاله.');
+            if (r.reason === 'unavailable') this.app.toast('خرید فقط در نسخه‌ی نصب‌شده از بازار یا مایکت فعاله.');
             else if (r.reason === 'error') this.app.toast('خرید انجام نشد. دوباره امتحان کن.');
             return;
           }
@@ -168,12 +168,12 @@ export class Modals {
           }
         } }, h('span', { html: svgIcon(ICONS.video) }), `۳ الماس رایگان با دیدن ویدیو (${fa(left)})`));
       }
-      body.append(h('p', { style: 'font-size:11px;color:#7a5a44' }, 'پرداخت امن از طریق کافه‌بازار. خریدها روی همین گوشی ذخیره می‌شن.'));
+      body.append(h('p', { style: 'font-size:11px;color:#7a5a44' }, 'پرداخت امن از طریق فروشگاه (بازار / مایکت). خریدها روی همین گوشی ذخیره می‌شن.'));
     });
   }
 
   /**
-   * Delivers a paid product, saves, and only then consumes it on Bazaar. The token is kept
+   * Delivers a paid product, saves, and only then consumes it in the store. The token is kept
    * until consumption succeeds so startup recovery never grants the same purchase twice.
    */
   async grant(sku: string, token: string): Promise<void> {
@@ -317,8 +317,8 @@ export class Modals {
   async rateAsk(): Promise<void> {
     await this.open('قسمت اول تموم شد! 🎉', (body, close) => {
       body.append(
-        h('p', {}, 'اگه از «محله‌ی ما» خوشت اومده، با یه امتیاز ۵ ستاره تو بازار کمک کن کوچه بیشتر دیده بشه!'),
-        h('button', { class: 'btn gold', onclick: () => { rateOnBazaar(); this.app.s.gems += 5; this.app.renderHud(); this.app.dirty(); close(); } }, '⭐ امتیاز بده (۵ الماس هدیه)'),
+        h('p', {}, 'اگه از «محله‌ی ما» خوشت اومده، با یه امتیاز ۵ ستاره کمک کن کوچه بیشتر دیده بشه!'),
+        h('button', { class: 'btn gold', onclick: () => { rateOnStore(); this.app.s.gems += 5; this.app.renderHud(); this.app.dirty(); close(); } }, '⭐ امتیاز بده (۵ الماس هدیه)'),
         h('button', { class: 'btn pink', onclick: () => { shareGame(); close(); } }, 'دوستاتو دعوت کن'),
         h('button', { class: 'btn plain', onclick: close }, 'بعداً'),
       );
@@ -341,7 +341,7 @@ export class Modals {
         toggle('موسیقی', musicEnabled, (v) => { setMusic(v); writeSetting('music', v ? '1' : '0'); }),
         toggle('صدا', soundOn, (v) => { setSound(v); writeSetting('sound', v ? '1' : '0'); }),
         toggle('لرزش', () => hapticsOn, (v) => { hapticsOn = v; setHaptics(v); writeSetting('haptics', v ? '1' : '0'); }),
-        h('button', { class: 'btn gold', onclick: () => rateOnBazaar() }, '⭐ امتیاز در بازار'),
+        h('button', { class: 'btn gold', onclick: () => rateOnStore() }, '⭐ امتیاز بده'),
         h('button', { class: 'btn pink', onclick: () => shareGame() }, 'دعوت از دوستان'),
         h('p', { style: 'font-size:13px' }, 'محله‌ی ما — نسخه‌ی ', fa(__APP_VERSION__)),
         h('p', { style: 'font-size:12px' }, 'بازی کاملاً آفلاینه و پیشرفتت روی همین گوشی ذخیره می‌شه.'),

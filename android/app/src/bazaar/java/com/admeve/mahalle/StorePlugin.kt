@@ -16,11 +16,12 @@ import ir.cafebazaar.poolakey.request.PurchaseRequest
 import org.json.JSONArray
 
 /**
- * Cafe Bazaar in-app billing (Poolakey) exposed to the web layer as `Bazaar`.
- * Purchases are verified locally with the app's RSA key from the Bazaar developer panel.
+ * Store plugin for the Cafe Bazaar build: in-app billing through Poolakey, exposed to the
+ * web layer as `Store`. Purchases are verified locally with the app's RSA key from the
+ * Bazaar developer panel (BuildConfig.STORE_RSA_KEY, injected by CI).
  */
-@CapacitorPlugin(name = "Bazaar")
-class BazaarPlugin : Plugin() {
+@CapacitorPlugin(name = "Store")
+class StorePlugin : Plugin() {
     private var payment: Payment? = null
     private var connection: Connection? = null
     /** connect() calls waiting for the handshake; all are answered together. */
@@ -33,9 +34,19 @@ class BazaarPlugin : Plugin() {
     }
 
     @PluginMethod
+    fun info(call: PluginCall) {
+        call.resolve(
+            JSObject()
+                .put("store", "bazaar")
+                .put("url", "https://cafebazaar.ir/app/" + context.packageName)
+                .put("billing", BuildConfig.STORE_RSA_KEY.isNotEmpty()),
+        )
+    }
+
+    @PluginMethod
     fun connect(call: PluginCall) {
-        val key = call.getString("rsaKey").orEmpty()
-        if (key.isEmpty()) return call.reject("missing rsaKey")
+        val key = BuildConfig.STORE_RSA_KEY
+        if (key.isEmpty()) return call.resolve(JSObject().put("connected", false))
         if (connection?.getState() == ConnectionState.Connected) {
             return call.resolve(JSObject().put("connected", true))
         }

@@ -66,7 +66,7 @@ export interface GameState {
   ads: { day: string; count: number };
   /** One-time shop offers already bought. */
   bought: string[];
-  /** Bazaar purchase tokens whose reward was granted (consumed or not yet). */
+  /** Store purchase tokens whose reward was granted (consumed or not yet). */
   grantedTokens: string[];
   /** Today's daily quests. */
   quests: QuestDay;

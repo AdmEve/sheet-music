@@ -7,8 +7,9 @@ Each restoration plays the next episode of the neighbourhood drama: season 1 sav
 alley (5 episodes), season 2 «عروسی» follows Narges' wedding (5 episodes).
 
 - Fully **offline**; progress is saved on the phone.
-- Monetization through **Cafe Bazaar in-app billing** (Poolakey) and opt-in **Tapsell
-  rewarded videos**. Both are domestic, so they keep working during international internet cuts.
+- Monetization through store in-app billing (two Android flavors: **Cafe Bazaar** via
+  Poolakey, **Myket** via Myket billing) and opt-in **Tapsell rewarded videos**. All domestic,
+  so they keep working during international internet cuts.
 - Why this game: see [`PROGRESS.md`](PROGRESS.md) and the market map in
   [`docs/market-research.md`](docs/market-research.md).
 
@@ -50,7 +51,7 @@ Code map:
 | `src/art/` | Hand-built SVG art: items, portraits, place scenes, icons |
 | `src/ui/` | Screens, animations, sound, modals |
 | `src/platform/` | Save storage, haptics, Bazaar billing, Tapsell ads |
-| `android/` | Capacitor Android project; native plugins in `app/src/main/java/com/admeve/mahalle/` |
+| `android/` | Capacitor Android project. Store billing plugin per flavor: `app/src/bazaar/…/StorePlugin.kt`, `app/src/myket/…/StorePlugin.kt`; Tapsell plugin in `app/src/main/…` |
 
 ## Publishing on Cafe Bazaar — one-time setup
 
@@ -85,11 +86,13 @@ Code map:
    | `MAHALLE_KEYSTORE_PASSWORD` | keystore password |
    | `MAHALLE_KEY_ALIAS` | `mahalle` |
    | `MAHALLE_KEY_PASSWORD` | key password |
-   | `BAZAAR_RSA_KEY` | RSA key from step 4 |
+   | `BAZAAR_RSA_KEY` | Bazaar RSA key from step 4 |
+   | `MYKET_RSA_KEY` | Myket RSA key (optional, for the Myket build) |
    | `TAPSELL_APP_KEY` | Tapsell app key (optional) |
    | `TAPSELL_REWARDED_ZONE` | Tapsell rewarded zone id (optional) |
 
-8. Push (or run the workflow manually). Upload `Mahalle.apk` from the release to Pishkhan,
+8. Push (or run the workflow manually). Upload `Mahalle.apk` from the release to Pishkhan
+   (and `Mahalle-myket.apk` to the Myket developer panel),
    and use the texts and screenshots in [`docs/store-listing.md`](docs/store-listing.md).
 
 Without the signing secrets, CI signs with a debug key. That's fine for trying the game on

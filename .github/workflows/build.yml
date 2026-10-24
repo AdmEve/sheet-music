@@ -13,11 +13,13 @@ concurrency:
 
 jobs:
   build:
-    name: Test and build Android APK + AAB
+    name: Test and build Android APKs (Bazaar + Myket)
     runs-on: ubuntu-latest
     env:
-      # Store / ad keys (optional). Without them billing and ads stay switched off.
-      VITE_BAZAAR_RSA_KEY: ${{ secrets.BAZAAR_RSA_KEY }}
+      # Store billing keys go into the Android flavors; ad keys into the web build.
+      # All optional: without them billing / ads stay switched off.
+      BAZAAR_RSA_KEY: ${{ secrets.BAZAAR_RSA_KEY }}
+      MYKET_RSA_KEY: ${{ secrets.MYKET_RSA_KEY }}
       VITE_TAPSELL_APP_KEY: ${{ secrets.TAPSELL_APP_KEY }}
       VITE_TAPSELL_REWARDED_ZONE: ${{ secrets.TAPSELL_REWARDED_ZONE }}
       VERSION_CODE: ${{ github.run_number }}
@@ -53,7 +55,7 @@ jobs:
             echo "::warning::No MAHALLE_KEYSTORE_BASE64 secret: build is signed with a debug key (OK for testing, not for Bazaar)."
           fi
 
-      - name: Build APK and AAB
+      - name: Build APKs and AABs
         env:
           MAHALLE_KEYSTORE_PASSWORD: ${{ secrets.MAHALLE_KEYSTORE_PASSWORD }}
           MAHALLE_KEY_ALIAS: ${{ secrets.MAHALLE_KEY_ALIAS }}
@@ -62,15 +64,17 @@ jobs:
           npx cap sync android
           cd android
           chmod +x gradlew
-          ./gradlew --no-daemon assembleRelease bundleRelease
-          cp app/build/outputs/apk/release/app-release.apk ../Mahalle.apk
-          cp app/build/outputs/bundle/release/app-release.aab ../Mahalle.aab
+          ./gradlew --no-daemon assembleBazaarRelease assembleMyketRelease bundleBazaarRelease
+          cp app/build/outputs/apk/bazaar/release/app-bazaar-release.apk ../Mahalle.apk
+          cp app/build/outputs/apk/myket/release/app-myket-release.apk ../Mahalle-myket.apk
+          cp app/build/outputs/bundle/bazaarRelease/app-bazaar-release.aab ../Mahalle.aab
 
       - uses: actions/upload-artifact@v4
         with:
           name: Mahalle-android
           path: |
             Mahalle.apk
+            Mahalle-myket.apk
             Mahalle.aab
 
       - name: Publish "latest" release (download link for your phone)
@@ -78,11 +82,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release delete android-latest --yes --cleanup-tag || true
-          gh release create android-latest Mahalle.apk Mahalle.aab \
+          gh release create android-latest Mahalle.apk Mahalle-myket.apk Mahalle.aab \
             --target "$GITHUB_SHA" \
             --title "محله‌ی ما – latest build (${GITHUB_REF_NAME}, #${{ github.run_number }})" \
             --notes "Install on Android: open this page on your phone, tap **Mahalle.apk**, then open the file and allow installing from this source. New builds install over old ones and keep your progress.
 
-          For Cafe Bazaar upload use the APK signed with your release key (see README).
+          Mahalle.apk is the Cafe Bazaar build, Mahalle-myket.apk the Myket build. Upload each to its store once it is signed with your release key (see docs/LAUNCH-fa.md).
 
           Built from commit ${GITHUB_SHA::7}."
