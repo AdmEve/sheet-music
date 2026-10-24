@@ -14,6 +14,8 @@ alley (5 episodes), season 2 «عروسی» follows Narges' wedding (5 episodes)
 
 ## Play the latest build
 
+Persian step-by-step launch checklist: [`docs/LAUNCH-fa.md`](docs/LAUNCH-fa.md).
+
 Every push builds the game on GitHub Actions. Open the **android-latest** release on your
 phone, download `Mahalle.apk` and install it.
 

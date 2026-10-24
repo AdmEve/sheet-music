@@ -79,10 +79,15 @@ Season 2 «عروسی» is done: 5 episodes (proposal, pastry shop, tailor, sofr
 wedding), Fakhri Khanum, sweets chain + pastry generator (level 7 gift). Balance: both
 seasons ≈ 9,700 energy for a free player (≈ 4–6 weeks casual).
 
+Also: performance pass for low-end phones (memoized HUD/orders/nav; ~40–110 ms per tap at
+6× CPU throttle), season 2 store screenshot, Persian launch checklist (`docs/LAUNCH-fa.md`).
+
 Next (in order):
-1. Small-size art polish pass; more juice on deliveries
-2. Season 3 («نامه‌ای از اون ور دنیا») as a post-launch update
-3. Weekly prize event design (needs a small domestic server) — optional
+1. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
+2. Myket store flavor (Myket billing) for the #2 Iranian store
+3. Small-size art polish pass; more juice on deliveries
+4. Season 3 («نامه‌ای از اون ور دنیا») as a post-launch update
+5. Weekly prize event design (needs a small domestic server) — optional
 
 Known limits: local Gradle builds here can hit Maven Central rate limits (429); CI is the
 source of truth for APK builds.
