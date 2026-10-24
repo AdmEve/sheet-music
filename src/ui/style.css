@@ -79,6 +79,7 @@ svg { display: block; }
 .level-badge {
   width: 40px; height: 40px; border-radius: 50%; flex: none;
   display: grid; place-items: center; font-weight: 900; font-size: 17px; color: #fff;
+  background: var(--gold);
   background: conic-gradient(var(--gold) var(--xp, 0%), #c9b28a 0);
   position: relative;
 }
@@ -245,7 +246,7 @@ svg { display: block; }
 .place { position: fixed; inset: 0; z-index: 70; display: flex; flex-direction: column; background: var(--bg); animation: fade 0.25s; max-width: 560px; margin: 0 auto; padding-top: var(--safe-top); }
 .place .top { display: flex; align-items: center; gap: 8px; padding: 10px; }
 .place .top h2 { flex: 1; margin: 0; font-size: 18px; font-weight: 900; }
-.place .scene { width: 100%; aspect-ratio: 3 / 2; overflow: hidden; border-block: 3px solid #c9a46a; position: relative; }
+.place .scene { width: 100%; height: 66.67vw; max-height: 373px; aspect-ratio: 3 / 2; overflow: hidden; border-block: 3px solid #c9a46a; position: relative; }
 .place .scene svg { width: 100%; height: 100%; }
 .place .scene .flash { position: absolute; inset: 0; background: radial-gradient(circle, #fff 0, rgba(255, 255, 255, 0) 70%); animation: burst 0.8s ease-out forwards; }
 .place .card { margin: 14px; padding: 14px; border-radius: 20px; background: var(--panel); box-shadow: inset 0 0 0 3px #e6cfa3, var(--shadow); }

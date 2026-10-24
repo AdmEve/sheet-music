@@ -16,7 +16,7 @@ import { introKey, markSeen, progress } from '../game/progress';
 import { buzz } from '../platform/haptics';
 import { writeSave } from '../platform/storage';
 import { CAST } from '../story/story';
-import { add, clear, dateKey, fa, faNum, faTime, h, svgIcon, wait } from './dom';
+import { add, animDone, clear, dateKey, fa, faNum, faTime, h, svgIcon, wait } from './dom';
 import { Modals } from './modals';
 import { PlaceScreen } from './place';
 import { sfx } from './sound';
@@ -570,7 +570,7 @@ export class App {
       ],
       { duration: ms, easing: 'ease-in-out' },
     );
-    return anim.finished.then(() => el.remove(), () => el.remove());
+    return animDone(anim, ms).then(() => el.remove());
   }
 
   flyReward(art: string, from: DOMRect, targetId: string, count: number): void {
@@ -595,10 +595,12 @@ export class App {
       const d = 30 + Math.random() * 26;
       const el = h('div', { class: 'spark', style: `left:${at.left + at.width / 2}px;top:${at.top + at.height / 2}px;background:${colors[k % colors.length]}` });
       document.body.append(el);
-      el.animate(
+      const ms = 520 + Math.random() * 200;
+      const anim = el.animate(
         [{ transform: 'translate(-50%,-50%) scale(1)', opacity: 1 }, { transform: `translate(calc(-50% + ${Math.cos(a) * d}px), calc(-50% + ${Math.sin(a) * d}px)) scale(.2)`, opacity: 0 }],
-        { duration: 520 + Math.random() * 200, easing: 'cubic-bezier(.2,.8,.3,1)' },
-      ).finished.then(() => el.remove(), () => el.remove());
+        { duration: ms, easing: 'cubic-bezier(.2,.8,.3,1)' },
+      );
+      animDone(anim, ms).then(() => el.remove());
     }
   }
 

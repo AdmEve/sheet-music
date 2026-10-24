@@ -11,7 +11,7 @@ import { initAds } from './platform/ads';
 import { connectBilling, pendingPurchases, watchBillingConnection } from './platform/billing';
 import { loadSave, loadSetting } from './platform/storage';
 import { App } from './ui/app';
-import { dateKey, h, svgIcon } from './ui/dom';
+import { animDone, dateKey, h, svgIcon } from './ui/dom';
 import { initToggles } from './ui/modals';
 import { setMusic, startMusic, stopMusic } from './ui/sound';
 
@@ -101,7 +101,7 @@ function splash(): Promise<void> {
         h('div', { class: 'tap' }, 'برای شروع بزن')));
     document.body.append(el);
     el.addEventListener('click', () => {
-      el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 250 }).finished.then(() => el.remove());
+      animDone(el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 250 }), 250).then(() => el.remove());
       resolve();
     });
   });

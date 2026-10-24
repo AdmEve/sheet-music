@@ -46,3 +46,11 @@ export const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 
 /** Local calendar day as YYYY-MM-DD: the one key used for daily gifts, quests and caps. */
 export const dateKey = (d: Date = new Date()) => d.toLocaleDateString('en-CA');
+
+/**
+ * Resolves when a Web Animation ends. Older Android WebViews (common in Iran, where Google
+ * Play updates are unavailable) lack Animation.finished, so fall back to a timer.
+ */
+export function animDone(a: Animation, ms: number): Promise<void> {
+  return a.finished ? a.finished.then(() => undefined, () => undefined) : wait(ms + 30);
+}
