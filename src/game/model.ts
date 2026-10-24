@@ -8,6 +8,7 @@ import {
 } from './items';
 import { discover } from './codex';
 import { TimedOffer, fillPiggy } from './offers';
+import { PassState, QUEST_BONUS_POINTS, QUEST_POINTS, addPassPoints, emptyPass } from './pass';
 
 export const COLS = 7;
 export const ROWS = 9;
@@ -88,6 +89,8 @@ export interface GameState {
   offers: TimedOffer[];
   /** Time (ms) the next free video gift appears. */
   giftAt: number;
+  /** This month's season pass. */
+  pass: PassState;
 }
 
 export type GameEvent =
@@ -102,7 +105,7 @@ export type GameEvent =
   | { type: 'collect'; at: number; kind: 'coins' | 'energy'; amount: number }
   | { type: 'chest'; at: number; spawned: { to: number; item: Item }[] }
   | { type: 'sell'; at: number; coins: number }
-  | { type: 'deliver'; order: Order; cells: number[]; piggy: number }
+  | { type: 'deliver'; order: Order; cells: number[]; piggy: number; pass: number }
   | { type: 'levelUp'; level: number; gems: number; gift: Item | null }
   | { type: 'newOrder'; order: Order }
   | { type: 'fail'; reason: FailReason };
@@ -202,6 +205,7 @@ export function newGame(seed: number, now: number): GameState {
     piggy: 0,
     offers: [],
     giftAt: 0,
+    pass: emptyPass(),
   };
   const put = (r: number, c: number, item: Item, lock?: Lock) => {
     s.board[idx(r, c)] = lock ? { item, lock } : { item };
@@ -504,7 +508,8 @@ export function deliver(s: GameState, orderId: number): GameEvent[] {
   s.stats.orders++;
   s.orders = s.orders.filter((o) => o.id !== orderId);
   const piggy = fillPiggy(s);
-  const events: GameEvent[] = [{ type: 'deliver', order, cells, piggy }];
+  const pass = addPassPoints(s, order.stars);
+  const events: GameEvent[] = [{ type: 'deliver', order, cells, piggy, pass }];
   events.push(...gainXp(s, order.stars));
   for (const o of fillOrders(s)) events.push({ type: 'newOrder', order: o });
   return events;
@@ -621,7 +626,7 @@ export function loadState(json: string | null): GameState | null {
       coinEnergy: raw.coinEnergy ?? base.coinEnergy, clock: raw.clock ?? base.clock, quests: raw.quests ?? base.quests,
       grantedTokens: raw.grantedTokens ?? [], refills: raw.refills ?? base.refills,
       found: raw.found ?? [], codexClaimed: raw.codexClaimed ?? [],
-      piggy: raw.piggy ?? 0, offers: raw.offers ?? [], giftAt: raw.giftAt ?? 0,
+      piggy: raw.piggy ?? 0, offers: raw.offers ?? [], giftAt: raw.giftAt ?? 0, pass: raw.pass ?? emptyPass(),
     } as GameState;
     // Saves from before the album: everything the player holds now counts as found.
     if (!raw.found) discover(s);
@@ -800,6 +805,7 @@ export function claimQuest(s: GameState, index: number): boolean {
   const q = s.quests.list[index];
   if (!q || q.claimed || !questDone(s, q)) return false;
   q.claimed = true;
+  addPassPoints(s, QUEST_POINTS);
   s.coins += q.reward.coins ?? 0;
   s.gems += q.reward.gems ?? 0;
   addEnergy(s, q.reward.energy ?? 0);
@@ -810,5 +816,6 @@ export function claimQuest(s: GameState, index: number): boolean {
 export function claimQuestBonus(s: GameState): Item | null {
   if (!allQuestsClaimed(s) || s.quests.bonusClaimed) return null;
   s.quests.bonusClaimed = true;
+  addPassPoints(s, QUEST_BONUS_POINTS);
   return { chain: 'chest', level: 2 };
 }

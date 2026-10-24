@@ -392,3 +392,31 @@ svg { display: block; }
 .btn.big { font-size: 18px; padding: 14px; }
 .piggy-count { display: flex; justify-content: center; align-items: center; gap: 6px; font-weight: 900; font-size: 20px; }
 .piggy-count svg { width: 26px; height: 26px; }
+
+/* ------------------------------------------------------------------ season pass */
+.sidebtn.ready { animation: pulse 1.2s ease-in-out infinite; }
+.sidebtn.ready .lbl { background: var(--green); }
+.pass-top { display: flex; align-items: center; gap: 10px; }
+.pass-top .medal { position: relative; width: 62px; height: 62px; flex: none; }
+.pass-top .medal svg { width: 100%; height: 100%; }
+.pass-top .medal b { position: absolute; left: 50%; top: 62%; transform: translate(-50%, -50%); font-size: 15px; color: var(--accent-dark); }
+.pass-buy { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 14px; background: linear-gradient(#fff3c4, #ffe08a); box-shadow: inset 0 0 0 2px #e7a512; }
+.pass-buy > span svg { width: 42px; height: 42px; }
+.pass-buy .btn { width: auto; margin: 0; padding: 8px 12px; font-size: 14px; white-space: nowrap; }
+.pass-head { display: grid; grid-template-columns: 1fr 34px 1fr; gap: 6px; text-align: center; font-weight: 900; font-size: 13px; margin: 12px 0 6px; }
+.pass-list { display: flex; flex-direction: column; gap: 8px; }
+.prow { display: grid; grid-template-columns: 1fr 34px 1fr; gap: 6px; align-items: center; }
+.pnum { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font-weight: 900; font-size: 14px; background: #ecd7ae; }
+.prow.done .pnum { background: linear-gradient(#ffe08a, #e7a512); }
+.prow.cur .pnum { background: var(--accent); color: #fff; }
+.pcell { position: relative; height: 54px; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 2px #e6cfa3; display: grid; place-items: center; }
+.pcell.prem { background: linear-gradient(#fff8dc, #ffeaa0); box-shadow: inset 0 0 0 2px #e7c35a; }
+.pcell.ready { box-shadow: inset 0 0 0 3px var(--green), 0 0 10px rgba(63, 174, 90, 0.5); animation: pulse 1.2s ease-in-out infinite; }
+.pcell.taken > .preward { opacity: 0.35; }
+.pcell.locked > .preward { filter: grayscale(0.6); opacity: 0.6; }
+.pcell .tick { position: absolute; top: -5px; left: -5px; width: 20px; height: 20px; border-radius: 50%; background: var(--green); color: #fff; font-size: 12px; line-height: 20px; text-align: center; font-weight: 900; }
+.pcell .lock { position: absolute; top: -7px; left: -4px; font-size: 14px; }
+.preward { display: flex; gap: 6px; align-items: center; justify-content: center; }
+.preward .pr { display: inline-flex; align-items: center; gap: 2px; font-weight: 900; font-size: 13px; }
+.preward svg { width: 28px; height: 28px; }
+.prow.endless { margin-top: 4px; }

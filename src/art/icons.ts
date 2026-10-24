@@ -56,5 +56,15 @@ export const ICONS = {
     `<rect x="44" y="32" width="12" height="56" fill="url(#gGold)" ${THIN}/>` +
     `<path d="M50 32 C38 10 20 16 32 32 Z M50 32 C62 10 80 16 68 32 Z" fill="url(#gGold)" ${O}/>` +
     `<path d="M22 54 V80" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".45"/>`,
+  /** Season-pass medal («نشان»): ribbon, gold disc, star. */
+  medal:
+    `<path d="M30 6 L46 46 L36 50 L20 12 Z" fill="url(#gTurq)" ${O}/><path d="M70 6 L54 46 L64 50 L80 12 Z" fill="url(#gRed)" ${O}/>` +
+    `<circle cx="50" cy="62" r="28" fill="url(#gGold)" ${O}/><circle cx="50" cy="62" r="20" fill="none" ${THIN} stroke-width="2" opacity=".5"/>` +
+    `<path d="M50 46 L55 57 L67 58 L58 66 L61 78 L50 72 L39 78 L42 66 L33 58 L45 57 Z" fill="#fff4c2" ${THIN} stroke-width="2"/>` +
+    `<path d="M32 52 Q36 42 46 38" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".6"/>`,
+  crown:
+    `<path d="M14 72 L10 30 L32 50 L50 20 L68 50 L90 30 L86 72 Z" fill="url(#gGold)" ${O}/>` +
+    `<rect x="14" y="70" width="72" height="14" rx="4" fill="url(#gGold)" ${O}/>` +
+    `<circle cx="50" cy="52" r="6" fill="url(#gRed)" ${THIN}/><circle cx="30" cy="62" r="4" fill="url(#gTurq)" ${THIN}/><circle cx="70" cy="62" r="4" fill="url(#gTurq)" ${THIN}/>`,
   sparkles: sparkle(30, 30, 14) + sparkle(70, 60, 10) + sparkle(64, 22, 7),
 };

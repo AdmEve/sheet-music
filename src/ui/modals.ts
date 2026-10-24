@@ -8,6 +8,11 @@ import {
 import {
   OFFER_SKU, OfferId, PIGGY_CAP, PIGGY_MIN, PIGGY_PER_ORDER, activeOffers, breakPiggy, endOffer, firstBonusOpen, openGift, piggyReady, skipGift,
 } from '../game/offers';
+import { monthEnd } from '../game/calendar';
+import {
+  ENDLESS_COST, ENDLESS_REWARD, FREE, PASS_STEPS, PREMIUM, PassReward, QUEST_BONUS_POINTS, QUEST_POINTS, Track, canClaim, claimEndless,
+  claimPass, endlessReady, grantPremium, passClaimable, passName, passProgress,
+} from '../game/pass';
 import { CHAINS, ChainId, GENERATOR_CHAINS, Item, PRODUCT_CHAINS, itemKey, itemName, maxLevel } from '../game/items';
 import {
   BAG_MAX, COIN_CHEST_PRICE, COIN_ENERGY_AMOUNT, DAILY_REWARDS, ENERGY_CAP, addEnergy, adsLeft, bagSlotCost, buyBagSlot,
@@ -302,6 +307,7 @@ export class Modals {
     }
     s.gems += gems;
     if (p.piggy) gems = breakPiggy(s);
+    if (p.pass) grantPremium(s);
     if (p.energy) addEnergy(s, p.energy);
     if (p.chest) this.app.giveItem({ chain: 'chest', level: p.chest });
     if (p.once && !s.bought.includes(p.sku)) s.bought.push(p.sku);
@@ -309,7 +315,7 @@ export class Modals {
     await this.app.saveNow();
     sfx.levelUp();
     this.app.renderAll();
-    this.app.toast(p.piggy ? `${fa(gems)} الماس از قلک! ممنون از حمایتت!` : `${p.title} اضافه شد. ممنون از حمایتت!`);
+    this.app.toast(p.piggy ? `${fa(gems)} الماس از قلک! ممنون از حمایتت!` : p.pass ? 'مسیر طلایی باز شد! جایزه‌هات منتظرتن.' : `${p.title} اضافه شد. ممنون از حمایتت!`);
     await this.finishPurchase(token);
   }
 
@@ -398,6 +404,115 @@ export class Modals {
     });
   }
 
+  /** Icon + amount for a season-pass reward. */
+  private passRewardEl(r: PassReward): HTMLElement {
+    const el = h('div', { class: 'preward' });
+    const bit = (icon: string, text: string) => el.append(h('span', { class: 'pr' }, h('span', { html: svgIcon(icon) }), text));
+    if (r.chest) bit(itemArt({ chain: 'chest', level: r.chest }), '');
+    if (r.gems) bit(ICONS.gem, faNum(r.gems));
+    if (r.coins) bit(ICONS.coin, faNum(r.coins));
+    if (r.energy) bit(ICONS.energy, faNum(r.energy));
+    return el;
+  }
+
+  /** Pays a claimed pass reward on screen (chests go to the board). */
+  private passPaid(r: PassReward, from: DOMRect): void {
+    if (r.chest) this.app.giveItem({ chain: 'chest', level: r.chest });
+    if (r.gems) this.app.flyReward(ICONS.gem, from, 'hud-gems', 3);
+    if (r.coins) this.app.flyReward(ICONS.coin, from, 'hud-coins', 3);
+    if (r.energy) this.app.flyReward(ICONS.energy, from, 'hud-energy', 3);
+    sfx.coin();
+    this.app.renderHud();
+    this.app.dirty();
+  }
+
+  /** The season pass: a 30-step track, free rewards on one side, golden on the other. */
+  pass(): Promise<void> {
+    const s = this.app.s;
+    if (billingAvailable()) fetchPrices().then((pr) => (this.prices = { ...this.prices, ...pr }));
+    const now = new Date();
+    const days = Math.max(1, Math.ceil((monthEnd(now).getTime() - now.getTime()) / 86_400_000));
+    const premGems = PREMIUM.reduce((a, r) => a + (r.gems ?? 0), 0);
+    return this.open(passName(now), (body, close) => {
+      const render = () => {
+        clear(body);
+        const pr = passProgress(s);
+        add(body,
+          h('div', { class: 'pass-top' },
+            h('div', { class: 'medal', html: svgIcon(ICONS.medal) }, h('b', {}, fa(Math.min(pr.step + 1, PASS_STEPS)))),
+            h('div', { style: 'flex:1' },
+              h('div', { style: 'font-weight:900' }, pr.step >= PASS_STEPS ? 'مسیر کامل شد! حالا هر ۲۵۰ نشان یه صندوقچه' : `مرحله‌ی ${fa(pr.step + 1)} از ${fa(PASS_STEPS)}`),
+              h('div', { class: 'bar' }, h('div', { style: `width:${(pr.into / pr.need) * 100}%` })),
+              h('div', { class: 'muted', style: 'font-size:12px' }, `${fa(pr.into)}/${fa(pr.need)} نشان · ${fa(days)} روز تا آخر ماه`))),
+          h('p', { class: 'muted', style: 'font-size:12px;margin:2px 0 8px' }, 'هر ستاره‌ی سفارش یه نشانه. کارهای روزانه هم نشان می‌دن.'),
+          s.pass.premium ? null : h('div', { class: 'pass-buy' },
+            h('span', { html: svgIcon(ICONS.crown) }),
+            h('div', { style: 'flex:1' }, h('b', {}, 'مسیر طلایی'), h('div', { style: 'font-size:12px' }, `${fa(premGems)} الماس و ۸ صندوقچه‌ی ویژه، تا آخر همین ماه`)),
+            h('button', { class: 'btn gold', onclick: async () => { if (await this.purchase('pass_premium')) render(); } }, this.price('pass_premium'))),
+          passClaimable(s) > 1 ? h('button', { class: 'btn', onclick: (e: Event) => {
+            const from = (e.currentTarget as HTMLElement).getBoundingClientRect();
+            const total: PassReward = { coins: 0, gems: 0, energy: 0 };
+            for (let n = 1; n <= PASS_STEPS; n++) {
+              for (const track of ['free', 'prem'] as Track[]) {
+                const got = claimPass(s, track, n);
+                if (!got) continue;
+                total.coins! += got.coins ?? 0;
+                total.gems! += got.gems ?? 0;
+                total.energy! += got.energy ?? 0;
+                if (got.chest) this.app.giveItem({ chain: 'chest', level: got.chest });
+              }
+            }
+            for (let got = claimEndless(s); got; got = claimEndless(s)) if (got.chest) this.app.giveItem({ chain: 'chest', level: got.chest });
+            this.passPaid(total, from);
+            this.app.renderSide();
+            render();
+          } }, `همه‌ی جایزه‌ها رو بگیر (${fa(passClaimable(s))})`) : null,
+          h('div', { class: 'pass-head' }, h('span', {}, 'رایگان'), h('span', {}), h('span', {}, '👑 طلایی')));
+        const list = h('div', { class: 'pass-list' });
+        let current: HTMLElement | null = null;
+        for (let n = 1; n <= PASS_STEPS; n++) {
+          const cell = (track: Track) => {
+            const r = (track === 'free' ? FREE : PREMIUM)[n - 1];
+            const taken = s.pass[track].includes(n);
+            const ready = canClaim(s, track, n);
+            const locked = track === 'prem' && !s.pass.premium;
+            const el = h('button', { class: `pcell ${track}${taken ? ' taken' : ''}${ready ? ' ready' : ''}${locked ? ' locked' : ''}` }, this.passRewardEl(r));
+            if (taken) el.append(h('span', { class: 'tick' }, '✓'));
+            if (locked) el.append(h('span', { class: 'lock' }, '🔒'));
+            el.addEventListener('click', () => {
+              const got = claimPass(s, track, n);
+              if (!got) return this.app.toast(locked ? 'این جایزه مال مسیر طلاییه.' : taken ? 'اینو گرفتی!' : 'هنوز به این مرحله نرسیدی.');
+              this.passPaid(got, el.getBoundingClientRect());
+              el.classList.remove('ready');
+              el.classList.add('taken');
+              el.append(h('span', { class: 'tick' }, '✓'));
+              this.app.renderSide();
+            });
+            return el;
+          };
+          const row = h('div', { class: `prow${n <= pr.step ? ' done' : ''}${n === pr.step + 1 ? ' cur' : ''}` }, cell('free'), h('div', { class: 'pnum' }, fa(n)), cell('prem'));
+          if (n === Math.min(pr.step + 1, PASS_STEPS)) current = row;
+          list.append(row);
+        }
+        const endless = endlessReady(s);
+        list.append(h('div', { class: 'prow endless' },
+          h('div', { class: 'pcell free' }, this.passRewardEl(ENDLESS_REWARD)),
+          h('div', { class: 'pnum' }, '∞'),
+          h('div', { style: 'font-size:12px;flex:1.4' }, `بعد از مرحله‌ی ${fa(PASS_STEPS)}: هر ${fa(ENDLESS_COST)} نشان یه صندوقچه`,
+            endless ? h('button', { class: 'chip green', onclick: (e: Event) => {
+              const got = claimEndless(s);
+              if (got) this.passPaid(got, (e.currentTarget as HTMLElement).getBoundingClientRect());
+              render();
+            } }, `بگیر (${fa(endless)})`) : null)));
+        body.append(list);
+        // Open at the step being worked on.
+        requestAnimationFrame(() => current?.scrollIntoView({ block: 'center' }));
+      };
+      render();
+      void close;
+    });
+  }
+
   bag(): Promise<void> {
     const s = this.app.s;
     return this.open('کیف', (body, close) => {
@@ -482,7 +597,7 @@ export class Modals {
         body.append(h('p', { style: 'font-size:13px' }, 'هر روز سه کار تازه. همه رو انجام بدی، یه صندوقچه‌ی مسی هم جایزه داری!'));
         s.quests.list.forEach((q, k) => {
           const prog = questProgress(s, q);
-          const reward = [q.reward.coins ? `${fa(q.reward.coins)} سکه` : '', q.reward.energy ? `${fa(q.reward.energy)} انرژی` : '', q.reward.gems ? `${fa(q.reward.gems)} الماس` : ''].filter(Boolean).join(' ');
+          const reward = [q.reward.coins ? `${fa(q.reward.coins)} سکه` : '', q.reward.energy ? `${fa(q.reward.energy)} انرژی` : '', q.reward.gems ? `${fa(q.reward.gems)} الماس` : '', s.level >= 2 ? `${fa(QUEST_POINTS)} نشان` : ''].filter(Boolean).join(' · ');
           body.append(h('div', { class: 'quest' },
             h('div', { class: 'qtext' }, `${fa(q.target)} بار ${label[q.kind]}`, h('div', { class: 'qbar' }, h('div', { style: `width:${(prog / q.target) * 100}%` })), h('div', { class: 'qsub' }, `${fa(prog)} / ${fa(q.target)} · جایزه: ${reward}`)),
             q.claimed
@@ -504,7 +619,7 @@ export class Modals {
             this.app.renderAll();
             this.app.dirty();
             render();
-          } }, 'جایزه‌ی ویژه: صندوقچه‌ی مسی 🎁'));
+          } }, `جایزه‌ی ویژه: صندوقچه‌ی مسی 🎁${s.level >= 2 ? ` + ${fa(QUEST_BONUS_POINTS)} نشان` : ''}`));
         }
       };
       render();

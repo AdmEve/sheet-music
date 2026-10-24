@@ -20,6 +20,8 @@ export interface Product {
   hidden?: boolean;
   /** Pays out the piggy bank instead of fixed gems. */
   piggy?: boolean;
+  /** Unlocks this month's premium season-pass track. */
+  pass?: boolean;
 }
 
 export const PRODUCTS: Product[] = [
@@ -31,6 +33,7 @@ export const PRODUCTS: Product[] = [
   { sku: 'offer_energy', title: 'بسته‌ی انرژی', gems: 20, energy: 250, fallbackPrice: '۱۹٬۰۰۰ تومان', hidden: true },
   { sku: 'offer_chapter', title: 'جشن قسمت تازه', gems: 80, energy: 100, chest: 3, fallbackPrice: '۴۹٬۰۰۰ تومان', hidden: true },
   { sku: 'piggy_bank', title: 'قلک', gems: 0, fallbackPrice: '۳۹٬۰۰۰ تومان', hidden: true, piggy: true },
+  { sku: 'pass_premium', title: 'مسیر طلایی', gems: 0, fallbackPrice: '۷۹٬۰۰۰ تومان', hidden: true, pass: true },
 ];
 
 interface StorePlugin {

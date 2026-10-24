@@ -6,6 +6,7 @@ import { ICONS } from '../art/icons';
 import { O, THIN } from '../art/kit';
 import { portrait } from '../art/portraits';
 import { codexClaimable, discover } from '../game/codex';
+import { ensurePass, passClaimable, passProgress, passUnlocked, PASS_STEPS } from '../game/pass';
 import { OFFER_SKU, OfferId, PIGGY_CAP, activeOffers, giftReady, offerOnLevel, piggyFull, piggyUnlocked } from '../game/offers';
 import { CHAINS, Item, canMerge, isGenerator, itemName, maxLevel, sameItem } from '../game/items';
 import {
@@ -132,6 +133,7 @@ export class App {
     const gift = giftReady(s, now) && adsAvailable() && adsLeft(s, dateKey(), MAX_ADS_PER_DAY) > 0;
     const labels: [string, string, string][] = [
       ...offers.map((o): [string, string, string] => [`side-${o.id}`, faClock(o.until - now, true), 'offer']),
+      ...(passUnlocked(s) ? [['side-pass', `${fa(Math.min(passProgress(s).step, PASS_STEPS))}/${fa(PASS_STEPS)}`, passClaimable(s) ? 'ready' : ''] as [string, string, string]] : []),
       ...(piggyUnlocked(s) ? [['side-piggy', piggyFull(s) ? 'پر شد!' : `${fa(s.piggy)}/${fa(PIGGY_CAP)}`, piggyFull(s) ? 'full' : ''] as [string, string, string]] : []),
       ...(gift ? [['side-gift', 'هدیه', 'gift'] as [string, string, string]] : []),
     ];
@@ -148,10 +150,11 @@ export class App {
     clear(this.sideEl);
     const open: Record<string, () => Promise<void>> = {
       'side-piggy': () => this.modals.piggy(),
+      'side-pass': () => this.modals.pass(),
       'side-gift': () => this.modals.gift(),
       ...Object.fromEntries(offers.map((o) => [`side-${o.id}`, () => this.modals.offer(o.id)])),
     };
-    const icon = (id: string) => id === 'side-gift' ? ICONS.gift : bundleArt(id === 'side-piggy' ? 'piggy_bank' : OFFER_SKU[id.slice(5) as OfferId]);
+    const icon = (id: string) => id === 'side-gift' ? ICONS.gift : id === 'side-pass' ? ICONS.medal : bundleArt(id === 'side-piggy' ? 'piggy_bank' : OFFER_SKU[id.slice(5) as OfferId]);
     for (const [id, text, cls] of labels) {
       this.sideEl.append(h('button', { class: `sidebtn ${cls}`, id, onclick: () => open[id]().then(() => this.renderAll()) },
         h('span', { html: svgIcon(icon(id)) }), h('span', { class: 'lbl' }, text)));
@@ -206,7 +209,18 @@ export class App {
       this.dirty();
     }
     this.maybeHint();
+    this.checkSeason();
     this.renderSide();
+  }
+
+  /** A new Persian month starts a new pass; rewards left on the old one are paid out. */
+  checkSeason(): void {
+    const r = ensurePass(this.s, new Date());
+    if (!r.rolled && !r.chests.length) return;
+    for (const level of r.chests) this.giveItem({ chain: 'chest', level });
+    if (r.rolled) this.toast('ماه نو، مسیر نو! جایزه‌های جامونده‌ی ماه قبل اضافه شد.');
+    this.renderAll();
+    this.dirty();
   }
 
   // ------------------------------------------------------------------ idle merge hint
@@ -302,6 +316,7 @@ export class App {
     this.flyReward(ICONS.coin, target, 'hud-coins', Math.min(6, 2 + Math.floor(order.coins / 20)));
     this.flyReward(ICONS.star, target, 'nav-alley', Math.min(5, order.stars + 1));
     if (ev.piggy) this.flyReward(ICONS.gem, target, 'side-piggy', 1);
+    if (ev.pass) this.flyReward(ICONS.medal, target, 'side-pass', Math.min(3, ev.pass));
     this.floatText(`+${fa(order.stars)} ⭐`, target);
     const lines = THANKS[order.who] ?? THANKS.narges;
     this.speech(lines[Math.floor(Math.random() * lines.length)], target);

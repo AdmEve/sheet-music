@@ -99,7 +99,8 @@ season pass ~10%, events run 4–10 at a time, decoration choice drives self-exp
 - [x] Phase 2: piggy bank «قلک», starter pack pop-up (48 h at level 3), episode bundle
       (24 h), first-purchase double gems, energy rescue bundle, free video gift;
       icon strip above/beside the board
-- [ ] Phase 3: season pass «مسیر فصل»
+- [x] Phase 3: season pass «مسیر <ماه>»: one season per Persian month (Jalali calendar
+      in `src/game/calendar.ts`), 30 steps, free + golden track (pass_premium), endless chests
 - [ ] Phase 4: events (weekly event, Yalda, Nowruz, alley race)
 - [ ] Phase 5: presentation (decor choice, board frame, celebrations, expressions, map)
 - [ ] Phase 6: save-transfer code, Season 3, e2e smoke test in CI
