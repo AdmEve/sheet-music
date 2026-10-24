@@ -36,6 +36,11 @@ jobs:
       - run: npm test
       - run: npm run build
 
+      - name: Browser smoke test (plays the opening, opens every live-ops window)
+        run: |
+          npx playwright install --with-deps chromium
+          npm run smoke
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
