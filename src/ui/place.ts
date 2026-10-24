@@ -100,6 +100,7 @@ export class PlaceScreen {
     await this.dialogue(r.task.after);
     if (r.placeFinished) {
       if (markSeen(s, outroKey(r.place.id))) await this.dialogue(r.place.outro);
+      if (r.place.id === PLACES[0].id && markSeen(s, 'ask:rate')) await this.app.modals.rateAsk();
       if (r.nextPlace && markSeen(s, introKey(r.nextPlace.id))) {
         this.render(screen, back);
         await wait(400);

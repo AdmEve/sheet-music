@@ -1,5 +1,7 @@
 package com.admeve.mahalle
 
+import android.content.Intent
+import android.net.Uri
 import com.getcapacitor.JSObject
 import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
@@ -95,6 +97,22 @@ class BazaarPlugin : Plugin() {
                 call.resolve(JSObject().put("purchases", arr))
             }
             queryFailed { call.reject(it.message ?: "query failed") }
+        }
+    }
+
+    /** Opens Bazaar's rating/comment screen for this app. */
+    @PluginMethod
+    fun rate(call: PluginCall) {
+        try {
+            val intent = Intent(Intent.ACTION_EDIT).apply {
+                data = Uri.parse("bazaar://details?id=" + context.packageName)
+                setPackage("com.farsitel.bazaar")
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            context.startActivity(intent)
+            call.resolve()
+        } catch (e: Exception) {
+            call.reject("bazaar not installed")
         }
     }
 

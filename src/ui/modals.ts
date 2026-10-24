@@ -11,6 +11,8 @@ import { adsAvailable, showRewarded } from '../platform/ads';
 import { PRODUCTS, billingAvailable, buy, fetchPrices } from '../platform/billing';
 import { MAX_ADS_PER_DAY } from '../platform/config';
 import { setHaptics } from '../platform/haptics';
+import { askNotifications } from '../platform/notify';
+import { rateOnBazaar, shareGame } from '../platform/social';
 import { writeSetting } from '../platform/storage';
 import type { App } from './app';
 import { add, clear, fa, faNum, faTime, h, svgIcon } from './dom';
@@ -244,6 +246,19 @@ export class Modals {
     }, false);
   }
 
+  /** After the first episode: rating, sharing and the notification permission. */
+  async rateAsk(): Promise<void> {
+    await this.open('قسمت اول تموم شد! 🎉', (body, close) => {
+      body.append(
+        h('p', {}, 'اگه از «محله‌ی ما» خوشت اومده، با یه امتیاز ۵ ستاره تو بازار کمک کن کوچه بیشتر دیده بشه!'),
+        h('button', { class: 'btn gold', onclick: () => { rateOnBazaar(); this.app.s.gems += 5; this.app.renderHud(); this.app.dirty(); close(); } }, '⭐ امتیاز بده (۵ الماس هدیه)'),
+        h('button', { class: 'btn pink', onclick: () => { shareGame(); close(); } }, 'دوستاتو دعوت کن'),
+        h('button', { class: 'btn plain', onclick: close }, 'بعداً'),
+      );
+    });
+    await askNotifications();
+  }
+
   settings(): Promise<void> {
     return this.open('تنظیمات', (body, close) => {
       const toggle = (label: string, get: () => boolean, set: (v: boolean) => void) => {
@@ -258,6 +273,8 @@ export class Modals {
       body.append(
         toggle('صدا', soundOn, (v) => { setSound(v); writeSetting('sound', v ? '1' : '0'); }),
         toggle('لرزش', () => hapticsOn, (v) => { hapticsOn = v; setHaptics(v); writeSetting('haptics', v ? '1' : '0'); }),
+        h('button', { class: 'btn gold', onclick: () => rateOnBazaar() }, '⭐ امتیاز در بازار'),
+        h('button', { class: 'btn pink', onclick: () => shareGame() }, 'دعوت از دوستان'),
         h('p', { style: 'font-size:13px' }, 'محله‌ی ما — نسخه‌ی ', fa(__APP_VERSION__)),
         h('p', { style: 'font-size:12px' }, 'بازی کاملاً آفلاینه و پیشرفتت روی همین گوشی ذخیره می‌شه.'),
         h('button', { class: 'btn plain', onclick: async () => {

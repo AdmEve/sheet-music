@@ -5,7 +5,8 @@ import { App as CapApp } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { DEFS } from './art/defs';
 import { itemArt } from './art/index';
-import { claimDaily, loadState, newGame, tickEnergy } from './game/model';
+import { ENERGY_CAP, ENERGY_REGEN_MS, claimDaily, loadState, newGame, tickEnergy } from './game/model';
+import { clearReminders, scheduleReminders } from './platform/notify';
 import { initAds } from './platform/ads';
 import { connectBilling, recoverPending } from './platform/billing';
 import { loadSave, loadSetting } from './platform/storage';
@@ -65,8 +66,12 @@ async function boot(): Promise<void> {
   document.addEventListener('debug-line', (e) => app.place.dialogue([(e as CustomEvent).detail]));
 
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') app.saveNow();
-    else {
+    if (document.visibilityState === 'hidden') {
+      app.saveNow();
+      const s = app.s;
+      scheduleReminders(s.energy >= ENERGY_CAP ? null : s.energyAt + (ENERGY_CAP - s.energy) * ENERGY_REGEN_MS);
+    } else {
+      clearReminders();
       tickEnergy(app.s, Date.now());
       app.renderHud();
     }
