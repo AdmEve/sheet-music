@@ -1,11 +1,11 @@
 // The alley map: the whole street in one picture (viewBox 360 × MAP_H). The places of the
-// story stand along a winding cobbled alley, episode 1 at the bottom, the wedding at the
+// story stand along a winding cobbled alley, episode 1 at the bottom, the latest at the
 // top. Restored places are in colour, the one being worked on has scaffolding and a pin,
 // the rest wait in grey.
 
 import { INK, O, THIN, sparkle } from './kit';
 
-export const MAP_H = 2240;
+export const MAP_H = 2810;
 const STEP = 106;
 const faDigits = (n: number) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 
@@ -83,6 +83,27 @@ const FACADES: Record<string, Facade> = {
     wall: '#e0b07a', w: 124, h: 60, door: 'gate',
     deco: `<path d="M-60 -66 Q0 -84 60 -66" fill="none" stroke="url(#gLeaf)" stroke-width="4"/>` + Array.from({ length: 7 }, (_, i) => `<circle cx="${-48 + i * 16}" cy="${-70 - Math.sin((i / 6) * Math.PI) * 8}" r="4" fill="url(#gRose)" ${THIN} stroke-width=".8"/>`).join(''),
   },
+  gate: {
+    wall: '#cf9e6c', w: 104, h: 86, door: 'gate',
+    deco: `<rect x="-34" y="-74" width="68" height="12" rx="2" fill="url(#gBlue)" ${THIN}/><path d="M-26 -68 H26" stroke="#f6c945" stroke-width="1.4" stroke-dasharray="3 2"/>` +
+      `<rect x="34" y="-50" width="20" height="9" rx="2" fill="url(#gBlue)" ${THIN} stroke-width="1"/>`,
+  },
+  rooftop: {
+    wall: '#d9a873', h: 66, door: 'arch',
+    deco: `<path d="M-64 -86 H64" ${O} stroke="url(#gBlue)" stroke-width="3"/>` + Array.from({ length: 9 }, (_, i) => `<path d="M${-64 + i * 16} -86 V-72" stroke="${INK}" stroke-width="2"/>`).join('') +
+      [-40, 40].map((x) => `<circle cx="${x}" cy="-80" r="4" fill="#e0303f" ${THIN} stroke-width="1"/>`).join(''),
+  },
+  cistern: {
+    wall: '#c9a26b', roof: 'dome', roofFill: 'url(#gClay)', door: 'gate',
+    deco: [-52, 52].map((x) => `<rect x="${x - 9}" y="-118" width="18" height="44" fill="url(#gClay)" ${O}/>` + [0, 1].map((k) => `<rect x="${x - 5 + k * 6}" y="-112" width="4" height="16" rx="1" fill="#3b2a20"/>`).join('')).join(''),
+  },
+  museum: { wall: '#f2e6cc', roof: 'gable', roofFill: 'url(#gNavy)', door: 'arch', sign: 'موزه‌ی محله' },
+  heritage: {
+    wall: 'url(#gTerracotta)', w: 120, h: 76, door: 'gate',
+    deco: `<path d="M-60 -82 Q0 -64 60 -82" fill="none" stroke="${INK}" stroke-width="1.2"/>` +
+      Array.from({ length: 8 }, (_, i) => `<path d="M${-54 + i * 15} ${-80 + Math.sin((i / 7) * Math.PI) * 9} l5 0 l-2.5 8 Z" fill="${['#2a9d4a', '#fffdf6', '#e0303f'][i % 3]}" stroke="${INK}" stroke-width=".8"/>`).join('') +
+      `<rect x="-14" y="-62" width="28" height="12" rx="2" fill="url(#gBrass)" ${THIN}/>`,
+  },
   wedding: {
     wall: 'url(#gWood)', w: 120, h: 70, door: 'gate',
     deco: Array.from({ length: 9 }, (_, i) => `<circle cx="${-56 + i * 14}" cy="${-72 + Math.sin(i / 8 * Math.PI) * -8}" r="3.2" fill="${['#ffd36b', '#ff7a9c', '#5fe0e0'][i % 3]}" ${THIN} stroke-width=".8"/>`).join(''),
@@ -130,7 +151,7 @@ export function mapSvg(ids: string[], names: string[], states: MapState[]): stri
     `<rect x="-40" y="-10" width="80" height="12" rx="3" fill="none" ${O}/>` +
     `<rect x="-36" y="-40" width="72" height="22" rx="5" fill="url(#gWood)" ${O}/><path d="M0 -18 V-10" ${O} stroke-width="3"/>` +
     `<text x="0" y="-25" text-anchor="middle" font-family="Vazirmatn, sans-serif" font-weight="800" font-size="10" fill="#fff8ea">ادامه دارد…</text></g>`;
-  s += Array.from({ length: 13 }, (_, i) => [i % 2 ? 334 : 26, MAP_H - 70 - i * 170]).map(([x, y]) => tree(x, y, 0.9)).join('');
+  s += Array.from({ length: Math.floor(MAP_H / 170) - 1 }, (_, i) => [i % 2 ? 334 : 26, MAP_H - 70 - i * 170]).map(([x, y]) => tree(x, y, 0.9)).join('');
   ids.forEach((id, k) => {
     const p = plot(k);
     const f = FACADES[id] ?? FACADES.teahouse;

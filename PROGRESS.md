@@ -133,8 +133,14 @@ saves are written into localStorage `mahalle.save.v1`.
       (rosewater shelf, fountain, goldfish), salon (counters, checkered floor, cake) and
       hammam (inscription band, light shafts, towels, steam) scenes
 
+- [x] Phase 12: Season 5 «طرح تعریض خیابان» (`src/art/scenes5.ts`: the alley gate, the
+      teahouse rooftop at night, a Qajar cistern in cutaway, the neighbourhood museum and
+      the national-registration street party; «چراغ» lamp chain + coppersmith's anvil at
+      level 30); the map holds 25 places; Season 6 teased (Shirin's suitor from Tabriz)
+
 Next (in order):
-1. Phase 12: Season 5 «طرح تعریض خیابان»
+1. Phase 13: polish pass (store screenshots for the new seasons, perf re-check with 25
+   scenes, full first-hour playthrough)
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)

@@ -118,6 +118,8 @@ describe('generator catch-up', () => {
     expect(given).toContain('genSweets');
     expect(given).not.toContain('genGarden'); // still in its crate on the board
     expect(ensureGenerators(s)).toEqual([]);
+    s.level = 31;
+    expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genBaby', 'genLamp']);
   });
 });
 

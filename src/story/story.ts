@@ -598,6 +598,115 @@ export const PLACES: Place[] = [
       { who: 'farokhi', text: 'این دفعه من طرف شمام. فصل بعد…' },
     ],
   },
+  // ------------------------------------------------------------------ season 5: طرح تعریض خیابان
+  {
+    id: 'gate',
+    name: 'سردر کوچه',
+    intro: [
+      { who: 'farokhi', text: 'با شهرداری حرف زدم. فقط یه راه داریم: ثابت کنیم این کوچه تاریخیه. میراث فرهنگی باید ثبتش کنه.' },
+      { who: 'kaveh', text: 'زیر گچ‌های سردر کوچه یه کتیبه هست. پدربزرگم می‌گفت تاریخ ساخت کوچه روشه.' },
+      { who: 'mahin', text: 'پس چرا تا حالا کسی درش نیاورده؟!' },
+      { who: 'golab', text: 'چون تا حالا کسی نمی‌خواست کوچه‌ی ما رو خراب کنه، مادر.' },
+    ],
+    tasks: [
+      { id: 'gate.arch', title: 'طاق آجری سردر', cost: 148, layer: 'arch', after: [{ who: 'kaveh', text: 'آجرها رو یکی‌یکی تمیز کردیم. ملاتش هنوز سالمه. قدیمیا کارشون رو بلد بودن.' }] },
+      { id: 'gate.katibeh', title: 'کتیبه‌ی کاشی', cost: 150, layer: 'katibeh', after: [{ who: 'bahman', text: '«بنا شد این گذر به سال هزار و دویست و هشتاد و پنج»… صد و بیست سال!', mood: 'surprised' }, { who: 'farokhi', text: 'این همون چیزیه که لازم داشتیم!', mood: 'happy' }] },
+      { id: 'gate.door', title: 'در و کوبه‌ها', cost: 152, layer: 'door', after: [{ who: 'golab', text: 'کوبه‌ی سنگین برای مردها، حلقه‌ی سبک برای زن‌ها. صاحبخونه از صداش می‌فهمید کی پشت دره.' }] },
+      { id: 'gate.plate', title: 'پلاک «کوچه‌ی حاج‌بابا»', cost: 154, layer: 'plate', after: [{ who: 'reza', text: 'پلاک آبی نو. حالا اسم حاج‌بابا رو هر کی رد شه می‌خونه.' }] },
+      { id: 'gate.lamp', title: 'چراغ سردر', cost: 156, layer: 'lamp', after: [{ who: 'shirin', text: 'شب‌ها از سر خیابون پیداست! انگار کوچه داره صدامون می‌کنه.' }] },
+    ],
+    outro: [
+      { who: 'farokhi', text: 'میراث جواب داد: «یه سردر برای ثبت کافی نیست. باید کل محله رو ببینیم.»', mood: 'sad' },
+      { who: 'narges', text: 'پس کل محله رو نشونشون می‌دیم. امشب همه بیاید پشت‌بوم قهوه‌خونه. طومار امضا می‌کنیم!' },
+    ],
+  },
+  {
+    id: 'rooftop',
+    name: 'پشت‌بوم قهوه‌خونه',
+    intro: [
+      { who: 'morteza', text: 'پشت‌بوم؟ از اون بالا آدم می‌افته! … خب، من میام. فقط برای امضا.' },
+      { who: 'reza', text: 'قدیما تابستونا همه رو پشت‌بوم می‌خوابیدن. زیر ستاره‌ها.' },
+      { who: 'kaveh', text: 'اول نرده‌ها رو درست کنیم. با یه نوزاد تو جمع، شوخی نداریم.' },
+    ],
+    tasks: [
+      { id: 'roof.rail', title: 'نرده‌ی پشت‌بوم', cost: 154, layer: 'rail', after: [{ who: 'kaveh', text: 'نرده‌ها محکمه. حتی آقا مرتضی هم می‌تونه بهش تکیه بده.' }, { who: 'morteza', text: 'یعنی چی «حتی»؟!', mood: 'angry' }] },
+      { id: 'roof.kilim', title: 'گلیم و پشتی', cost: 156, layer: 'kilim', after: [{ who: 'fakhri', text: 'گلیم قشقایی جهیزیه‌ی من بود. امشب مال همه‌ی محله‌ست.' }] },
+      { id: 'roof.samovar', title: 'سماور زغالی', cost: 158, layer: 'samovar', after: [{ who: 'reza', text: 'سماور زغالی حاج‌بابا! چایش طعم پنجاه سال پیش رو می‌ده.' }] },
+      { id: 'roof.pots', title: 'گلدون‌های شمعدونی', cost: 160, layer: 'pots', after: [{ who: 'golab', text: 'شمعدونی رو پشت‌بوم بذاری، تا پاییز گل می‌ده. مثل این محله؛ سرسخته.' }] },
+      { id: 'roof.scroll', title: 'طومار امضاها', cost: 162, layer: 'scroll', after: [{ who: 'mahin', text: 'سیصد و دوازده امضا! کل محله‌های بغل هم امضا کردن. خبرش رو خودم پخش کردم!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'reza', text: 'یه لحظه ساکت! … صدای آب نمیاد؟ از زیر پامون؟', mood: 'surprised' },
+      { who: 'kaveh', text: 'زیر قهوه‌خونه یه پله‌ست که به زیر خیابون می‌ره… یه آب‌انبار قدیمی!', mood: 'surprised' },
+      { who: 'farokhi', text: 'اگه آب‌انبار زیر خیابون باشه… هیچ بیلی نمی‌تونه بهش دست بزنه!' },
+    ],
+  },
+  {
+    id: 'cistern',
+    name: 'آب‌انبار قدیمی',
+    intro: [
+      { who: 'kaveh', text: 'چهل پله پایین می‌ره. گنبدش سالمه، ولی پر از خاک و آشغاله.' },
+      { who: 'bahman', text: 'بچه که بودیم داداش می‌گفت زیر کوچه یه دریاچه‌ست. فکر می‌کردم قصه‌ست!' },
+      { who: 'narges', text: 'پس قصه‌های حاج‌بابا راست بود. بریم پایین!' },
+    ],
+    tasks: [
+      { id: 'cis.stairs', title: 'پلکان آب‌انبار', cost: 160, layer: 'stairs', after: [{ who: 'reza', text: 'چهل پله، شمردم! به هر پله یه صلوات… نفسم برید.' }] },
+      { id: 'cis.dome', title: 'گنبد و نورگیر', cost: 162, layer: 'dome', after: [{ who: 'kaveh', text: 'نور از نورگیر می‌افته رو آب. این‌ها رو دویست سال پیش حساب کردن.' }] },
+      { id: 'cis.badgir', title: 'بادگیرها', cost: 164, layer: 'badgir', after: [{ who: 'bahman', text: 'بادگیر آب رو خنک نگه می‌داشت. یخچال بی‌برق، کار اجداد ما!' }] },
+      { id: 'cis.tap', title: 'شیر برنجی', cost: 166, layer: 'tap', after: [{ who: 'golab', text: 'مادرم با کوزه از همین شیر آب می‌آورد. صداش هنوز تو گوشمه.' }] },
+      { id: 'cis.lights', title: 'چراغ‌های آب‌انبار', cost: 168, layer: 'lights', after: [{ who: 'shirin', text: 'وای… آب برق می‌زنه. اینجا قشنگ‌ترین جای تهرانه!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'farokhi', text: 'خبر رسید: «آب‌انبار دوره‌ی قاجار زیر معبر. طرح تعریض تا بررسی کامل متوقف شد.»', mood: 'happy' },
+      { who: 'mahin', text: 'متوقف شد! نه لغو؟', mood: 'surprised' },
+      { who: 'farokhi', text: 'برای لغو، کارشناس‌ها باید ببینن این محله چقدر تاریخ داره. یه جا لازم داریم که همه‌ش رو نشون بده.' },
+    ],
+  },
+  {
+    id: 'museum',
+    name: 'موزه‌ی محله',
+    intro: [
+      { who: 'farokhi', text: 'طبقه‌ی همکف پاساژ من خالیه. اونجا موزه‌ی محله رو می‌سازیم.' },
+      { who: 'golab', text: 'تو پاساژت؟ همون که می‌خواستی جای کوچه‌ی ما بسازی؟', mood: 'surprised' },
+      { who: 'farokhi', text: 'آدم عوض می‌شه، خانم. این محله منو عوض کرد.' },
+      { who: 'narges', text: 'پس هرکی هر چی قدیمی داره، بیاره!' },
+    ],
+    tasks: [
+      { id: 'mus.cases', title: 'ویترین‌های شیشه‌ای', cost: 166, layer: 'cases', after: [{ who: 'morteza', text: 'اولین ترازوی بقالی‌م رو دادم. یه عمر باهاش… درست وزن کردم!' }] },
+      { id: 'mus.photos', title: 'عکس‌های قدیمی محله', cost: 168, layer: 'photos', after: [{ who: 'mahin', text: 'این منم، چهل سال پیش! قبل از این‌که بفهمم خبرنگارم.' }] },
+      { id: 'mus.samovar', title: 'سماور حاج‌بابا', cost: 170, layer: 'samovar', after: [{ who: 'bahman', text: 'داداش هر صبح اول این سماور رو روشن می‌کرد، بعد سلام می‌کرد.' }] },
+      { id: 'mus.model', title: 'ماکت کوچه', cost: 172, layer: 'model', after: [{ who: 'kaveh', text: 'همه‌ی خونه‌ها، با مقیاس یک به پنجاه. سه ماه شب‌بیداری کشید.' }, { who: 'narges', text: 'و یه گهواره‌ی کوچیک تو حیاط ننه‌گلاب!', mood: 'happy' }] },
+      { id: 'mus.ribbon', title: 'روبان افتتاح', cost: 174, layer: 'ribbon', after: [{ who: 'golab', text: 'قیچی رو بدید دست گلاب کوچولو. این موزه مال نسل اونه.' }] },
+    ],
+    outro: [
+      { who: 'farokhi', text: 'کارشناس‌های میراث سه ساعت تو موزه موندن. سه ساعت!' },
+      { who: 'kaveh', text: 'و…؟' },
+      { who: 'farokhi', text: 'کوچه‌ی حاج‌بابا ثبت ملی شد. طرح تعریض لغو شد!', mood: 'happy' },
+      { who: 'mahin', text: 'جشن! باید کل شهر خبردار بشه!', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'heritage',
+    name: 'جشن ثبت ملی',
+    intro: [
+      { who: 'reza', text: 'امشب نون سنگک مجانیه، برای کل شهر!' },
+      { who: 'morteza', text: 'شربتم مجانیه… فقط امشب. فردا دوباره حساب‌کتاب!' },
+      { who: 'narges', text: 'یه میز بلند وسط کوچه، از سردر تا آب‌انبار. همه با هم شام می‌خوریم.' },
+    ],
+    tasks: [
+      { id: 'her.flags', title: 'پرچم‌ها و ریسه‌ها', cost: 172, layer: 'flags', after: [{ who: 'shirin', text: 'سبز و سفید و قرمز، از این سر کوچه تا اون سر!' }] },
+      { id: 'her.table', title: 'میز شام کوچه', cost: 174, layer: 'table', after: [{ who: 'fakhri', text: 'چهل متر میز، صد و بیست صندلی. فکر کنم کمه.' }, { who: 'golab', text: 'زمین که هست، فخری‌جان. قدیما همه رو زمین می‌نشستن.' }] },
+      { id: 'her.stage', title: 'سن و نوازنده‌ها', cost: 176, layer: 'stage', after: [{ who: 'bahman', text: 'تار داداش رو آوردم. چهل ساله دستم بهش نخورده… ولی امشب می‌زنم.' }] },
+      { id: 'her.plaque', title: 'لوح ثبت ملی', cost: 178, layer: 'plaque', after: [{ who: 'farokhi', text: '«کوچه‌ی حاج‌بابا، ثبت‌شده در فهرست آثار ملی». روی سردر نصبش کنیم.' }] },
+      { id: 'her.photo', title: 'عکس یادگاری محله', cost: 180, layer: 'photo', after: [{ who: 'narges', text: 'همه بیاید تو عکس! حاج‌بابا… اینم از کوچه‌ات. نجاتش دادیم.', mood: 'happy' }, { who: 'golab', text: 'اون از بالا داره می‌خنده، مادر. مطمئنم.', mood: 'sad' }] },
+    ],
+    outro: [
+      { who: 'mahin', text: 'خبر داغ! … نه، این دفعه جدیه.', mood: 'surprised' },
+      { who: 'mahin', text: 'برای شیرین خواستگار اومده. از تبریز!', mood: 'happy' },
+      { who: 'shirin', text: 'خاله!!! قرار بود به کسی نگی!', mood: 'angry' },
+      { who: 'narges', text: 'شیرین؟! … فصل بعد، باید همه‌چی رو برام تعریف کنی!', mood: 'happy' },
+    ],
+  },
 ];
 
 export function findTask(id: string): { place: Place; task: Task; index: number } | null {
