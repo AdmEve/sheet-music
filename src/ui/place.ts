@@ -3,6 +3,7 @@
 import { ICONS } from '../art/icons';
 import { portrait } from '../art/portraits';
 import { sceneSvg } from '../art/places';
+import { offerOnEpisode } from '../game/offers';
 import { completeNextTask, introKey, markSeen, outroKey, progress } from '../game/progress';
 import { buzz } from '../platform/haptics';
 import { CAST, Line, PLACES, Place } from '../story/story';
@@ -118,6 +119,11 @@ export class PlaceScreen {
         this.render(screen, back);
         await wait(400);
         await this.dialogue(r.nextPlace.intro);
+      }
+      // From episode 2 on, a finished episode starts a 24 h celebration bundle.
+      if (r.place.id !== PLACES[0].id) {
+        offerOnEpisode(s, Date.now());
+        await this.app.modals.offer('chapter');
       }
       this.app.dirty();
     }

@@ -6,19 +6,21 @@ import { ICONS } from '../art/icons';
 import { O, THIN } from '../art/kit';
 import { portrait } from '../art/portraits';
 import { codexClaimable, discover } from '../game/codex';
+import { OFFER_SKU, OfferId, PIGGY_CAP, activeOffers, giftReady, offerOnLevel, piggyFull, piggyUnlocked } from '../game/offers';
 import { CHAINS, Item, canMerge, isGenerator, itemName, maxLevel, sameItem } from '../game/items';
 import {
-  CELLS, ENERGY_CAP, GameEvent, GameState, Order, bubbleGemCost, buySheet, deliver, drop, findHint, msToNextEnergy, needsMet,
+  CELLS, ENERGY_CAP, GameEvent, GameState, Order, adsLeft, bubbleGemCost, buySheet, deliver, drop, findHint, msToNextEnergy, needsMet,
   placeItem, popBubble, questsClaimable, refreshQuests, sellValue, sell, sheetGemCost, tap, tickBubbles, tickEnergy, toBag,
   xpForLevel,
 } from '../game/model';
 import { adsAvailable } from '../platform/ads';
+import { MAX_ADS_PER_DAY } from '../platform/config';
 import { introKey, markSeen, progress } from '../game/progress';
 import { buzz } from '../platform/haptics';
 import { writeSave } from '../platform/storage';
 import { CAST, THANKS } from '../story/story';
-import { add, animDone, clear, dateKey, fa, faNum, faTime, h, svgIcon, wait } from './dom';
-import { Modals } from './modals';
+import { add, animDone, clear, dateKey, fa, faClock, faNum, faTime, h, svgIcon, wait } from './dom';
+import { Modals, bundleArt } from './modals';
 import { PlaceScreen } from './place';
 import { sfx } from './sound';
 
@@ -43,6 +45,8 @@ export class App {
   private cells: HTMLElement[] = [];
   private info!: HTMLElement;
   private navEl!: HTMLElement;
+  private sideEl!: HTMLElement;
+  private playEl!: HTMLElement;
   selected: number | null = null;
   private drag: { from: number; x: number; y: number; id: number; ghost: HTMLElement | null } | null = null;
   private saveTimer = 0;
@@ -66,9 +70,11 @@ export class App {
     this.boardEl = h('div', { class: 'board' });
     this.info = h('div', { class: 'infobar' });
     this.navEl = h('nav', { class: 'nav' });
+    this.sideEl = h('div', { class: 'side' });
     this.cells = Array.from({ length: CELLS }, (_, i) => h('div', { class: 'cell', 'data-i': i }));
     this.boardEl.append(...this.cells);
-    this.root.append(this.hud, this.ordersEl, h('div', { class: 'board-wrap' }, this.boardEl), this.info, this.navEl);
+    this.playEl = h('div', { class: 'play' }, this.sideEl, h('div', { class: 'board-wrap' }, this.boardEl));
+    this.root.append(this.hud, this.ordersEl, this.playEl, this.info, this.navEl);
     this.fit();
     window.addEventListener('resize', () => this.fit());
     this.boardEl.addEventListener('pointerdown', (e) => this.onDown(e));
@@ -79,12 +85,26 @@ export class App {
     setInterval(() => this.tick(), 1000);
   }
 
-  /** Cell size: fill the width, but leave room for HUD, orders, info and nav. */
+  /**
+   * Cell size: fill the width, but leave room for HUD, orders, info and nav. The icon strip
+   * (offers, piggy bank…) sits above the board, or beside it when the screen is short and
+   * a row of icons would cost the board more than a column does.
+   */
   private fit(): void {
     const w = Math.min(window.innerWidth, 560);
     const hgt = window.innerHeight;
-    const cell = Math.floor(Math.max(36, Math.min((w - 28) / 7, (hgt - 300) / 9)));
-    document.documentElement.style.setProperty('--cell', `${cell}px`);
+    const strip = this.sideEl.childElementCount ? 50 : 0;
+    let cell = Math.min((w - 28) / 7, (hgt - 300 - strip) / 9);
+    let beside = false;
+    if (strip) {
+      const besideCell = Math.min((w - 28 - 54) / 7, (hgt - 300) / 9);
+      if (besideCell > cell) {
+        cell = besideCell;
+        beside = true;
+      }
+    }
+    this.playEl.classList.toggle('beside', beside);
+    document.documentElement.style.setProperty('--cell', `${Math.floor(Math.max(34, cell))}px`);
   }
 
   renderAll(): void {
@@ -93,6 +113,50 @@ export class App {
     for (let i = 0; i < CELLS; i++) this.renderCell(i);
     this.renderInfo();
     this.renderNav();
+    this.renderSide();
+  }
+
+  // ------------------------------------------------------------------ icon strip
+
+  private sideKey = '';
+
+  /**
+   * Round buttons for whatever is running: timed offers, the piggy bank, the free gift.
+   * Rebuilt only when the set of buttons changes; countdowns and counts are updated in
+   * place so a tap that lands during a refresh is never lost.
+   */
+  renderSide(): void {
+    const s = this.s;
+    const now = Date.now();
+    const offers = activeOffers(s, now);
+    const gift = giftReady(s, now) && adsAvailable() && adsLeft(s, dateKey(), MAX_ADS_PER_DAY) > 0;
+    const labels: [string, string, string][] = [
+      ...offers.map((o): [string, string, string] => [`side-${o.id}`, faClock(o.until - now, true), 'offer']),
+      ...(piggyUnlocked(s) ? [['side-piggy', piggyFull(s) ? 'پر شد!' : `${fa(s.piggy)}/${fa(PIGGY_CAP)}`, piggyFull(s) ? 'full' : ''] as [string, string, string]] : []),
+      ...(gift ? [['side-gift', 'هدیه', 'gift'] as [string, string, string]] : []),
+    ];
+    const key = labels.map(([id, , cls]) => `${id}:${cls}`).join('|');
+    if (key === this.sideKey) {
+      for (const [id, text] of labels) {
+        const lbl = document.getElementById(id)?.querySelector('.lbl');
+        if (lbl && lbl.textContent !== text) lbl.textContent = text;
+      }
+      return;
+    }
+    const countBefore = this.sideEl.childElementCount;
+    this.sideKey = key;
+    clear(this.sideEl);
+    const open: Record<string, () => Promise<void>> = {
+      'side-piggy': () => this.modals.piggy(),
+      'side-gift': () => this.modals.gift(),
+      ...Object.fromEntries(offers.map((o) => [`side-${o.id}`, () => this.modals.offer(o.id)])),
+    };
+    const icon = (id: string) => id === 'side-gift' ? ICONS.gift : bundleArt(id === 'side-piggy' ? 'piggy_bank' : OFFER_SKU[id.slice(5) as OfferId]);
+    for (const [id, text, cls] of labels) {
+      this.sideEl.append(h('button', { class: `sidebtn ${cls}`, id, onclick: () => open[id]().then(() => this.renderAll()) },
+        h('span', { html: svgIcon(icon(id)) }), h('span', { class: 'lbl' }, text)));
+    }
+    if ((countBefore === 0) !== (this.sideEl.childElementCount === 0)) this.fit();
   }
 
   // ------------------------------------------------------------------ HUD
@@ -142,6 +206,7 @@ export class App {
       this.dirty();
     }
     this.maybeHint();
+    this.renderSide();
   }
 
   // ------------------------------------------------------------------ idle merge hint
@@ -236,6 +301,7 @@ export class App {
     card.classList.add('leaving');
     this.flyReward(ICONS.coin, target, 'hud-coins', Math.min(6, 2 + Math.floor(order.coins / 20)));
     this.flyReward(ICONS.star, target, 'nav-alley', Math.min(5, order.stars + 1));
+    if (ev.piggy) this.flyReward(ICONS.gem, target, 'side-piggy', 1);
     this.floatText(`+${fa(order.stars)} ⭐`, target);
     const lines = THANKS[order.who] ?? THANKS.narges;
     this.speech(lines[Math.floor(Math.random() * lines.length)], target);
@@ -248,7 +314,12 @@ export class App {
     this.busy = false;
     this.dirty();
     for (const e of events) if (e.type === 'levelUp') await this.modals.levelUp(e.level, e.gems, e.gift);
-    if (this.s.level !== prevLevel) this.renderAll();
+    if (this.s.level !== prevLevel) {
+      const offer = offerOnLevel(this.s, this.s.level, Date.now());
+      this.renderAll();
+      if (offer) await this.modals.offer(offer.id);
+      this.renderAll();
+    }
     this.discoverNew();
     this.tutorial();
   }

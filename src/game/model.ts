@@ -7,6 +7,7 @@ import {
   itemValue, maxLevel, sameItem, spawnWeights,
 } from './items';
 import { discover } from './codex';
+import { TimedOffer, fillPiggy } from './offers';
 
 export const COLS = 7;
 export const ROWS = 9;
@@ -81,6 +82,12 @@ export interface GameState {
   found: string[];
   /** Album cards (item keys, `all:<chain>` bonuses) whose reward was taken. */
   codexClaimed: string[];
+  /** Gems saved in the piggy bank (paid out by a purchase). */
+  piggy: number;
+  /** Timed bundles currently on offer. */
+  offers: TimedOffer[];
+  /** Time (ms) the next free video gift appears. */
+  giftAt: number;
 }
 
 export type GameEvent =
@@ -95,7 +102,7 @@ export type GameEvent =
   | { type: 'collect'; at: number; kind: 'coins' | 'energy'; amount: number }
   | { type: 'chest'; at: number; spawned: { to: number; item: Item }[] }
   | { type: 'sell'; at: number; coins: number }
-  | { type: 'deliver'; order: Order; cells: number[] }
+  | { type: 'deliver'; order: Order; cells: number[]; piggy: number }
   | { type: 'levelUp'; level: number; gems: number; gift: Item | null }
   | { type: 'newOrder'; order: Order }
   | { type: 'fail'; reason: FailReason };
@@ -192,6 +199,9 @@ export function newGame(seed: number, now: number): GameState {
     refills: { day: '', count: 0 },
     found: [],
     codexClaimed: [],
+    piggy: 0,
+    offers: [],
+    giftAt: 0,
   };
   const put = (r: number, c: number, item: Item, lock?: Lock) => {
     s.board[idx(r, c)] = lock ? { item, lock } : { item };
@@ -493,7 +503,8 @@ export function deliver(s: GameState, orderId: number): GameEvent[] {
   s.stars += order.stars;
   s.stats.orders++;
   s.orders = s.orders.filter((o) => o.id !== orderId);
-  const events: GameEvent[] = [{ type: 'deliver', order, cells }];
+  const piggy = fillPiggy(s);
+  const events: GameEvent[] = [{ type: 'deliver', order, cells, piggy }];
   events.push(...gainXp(s, order.stars));
   for (const o of fillOrders(s)) events.push({ type: 'newOrder', order: o });
   return events;
@@ -610,6 +621,7 @@ export function loadState(json: string | null): GameState | null {
       coinEnergy: raw.coinEnergy ?? base.coinEnergy, clock: raw.clock ?? base.clock, quests: raw.quests ?? base.quests,
       grantedTokens: raw.grantedTokens ?? [], refills: raw.refills ?? base.refills,
       found: raw.found ?? [], codexClaimed: raw.codexClaimed ?? [],
+      piggy: raw.piggy ?? 0, offers: raw.offers ?? [], giftAt: raw.giftAt ?? 0,
     } as GameState;
     // Saves from before the album: everything the player holds now counts as found.
     if (!raw.found) discover(s);

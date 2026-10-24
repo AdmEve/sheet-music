@@ -66,6 +66,9 @@ Code map:
    | `gems_medium` | 160 gems | 69,000 T |
    | `gems_large` | 420 gems | 149,000 T |
    | `gems_huge` | 1000 gems | 299,000 T |
+   | `offer_energy` | 250 energy + 20 gems (shown when energy runs out) | 19,000 T |
+   | `offer_chapter` | 80 gems + 100 energy + golden chest (24 h after each episode) | 49,000 T |
+   | `piggy_bank` | breaks the piggy bank: all gems saved in it (60–150) | 39,000 T |
 
    The game shows the price Bazaar returns, so you can change prices in Pishkhan any time.
 4. Copy the app's **RSA public key** (Pishkhan → In-app billing).

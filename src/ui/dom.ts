@@ -30,6 +30,15 @@ export function faTime(ms: number): string {
   return fa(`${m}:${String(s % 60).padStart(2, '0')}`);
 }
 
+/** Countdown for offers: 1:05:09 above an hour (1:05 when `short`), else 5:09. */
+export function faClock(ms: number, short = false): string {
+  const s = Math.max(0, Math.ceil(ms / 1000));
+  const hh = Math.floor(s / 3600);
+  if (hh < 1) return faTime(ms);
+  const mm = String(Math.floor((s % 3600) / 60)).padStart(2, '0');
+  return fa(short ? `${hh}:${mm}` : `${hh}:${mm}:${String(s % 60).padStart(2, '0')}`);
+}
+
 export const svgIcon = (inner: string, cls = '') =>
   `<svg class="${cls}" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
 

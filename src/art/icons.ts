@@ -40,5 +40,21 @@ export const ICONS = {
     `<path d="M50 28 C40 20 26 20 16 25 L16 78 C26 73 40 74 50 82 Z M50 28 C60 20 74 20 84 25 L84 78 C74 73 60 74 50 82 Z" fill="url(#gPaper)" ${THIN}/>` +
     `<rect x="22" y="34" width="20" height="18" rx="3" fill="url(#gTurq)" ${THIN}/><rect x="58" y="34" width="20" height="18" rx="3" fill="url(#gGold)" ${THIN}/>` +
     `<rect x="22" y="56" width="20" height="14" rx="3" fill="#f3b3c4" ${THIN}/><rect x="58" y="56" width="20" height="14" rx="3" fill="#bfe3a6" ${THIN}/>`,
+  /** Clay piggy bank («قلک سفالی»): round pot, knob on top, coin slot, turquoise band. */
+  piggy:
+    `<ellipse cx="50" cy="90" rx="30" ry="5" fill="#000" opacity=".15"/>` +
+    `<circle cx="50" cy="22" r="8" fill="url(#gTerracotta)" ${O}/>` +
+    `<path d="M50 26 C24 26 12 44 12 60 C12 78 28 90 50 90 C72 90 88 78 88 60 C88 44 76 26 50 26 Z" fill="url(#gTerracotta)" ${O}/>` +
+    `<path d="M15 66 Q50 82 85 66" fill="none" stroke="url(#gTurq)" stroke-width="7"/>` +
+    `<path d="M15 66 Q50 82 85 66" fill="none" ${THIN} stroke-width="1.5" opacity=".5"/>` +
+    [24, 37, 50, 63, 76].map((x) => `<circle cx="${x}" cy="${x === 50 ? 76 : x === 37 || x === 63 ? 74 : 70}" r="2.4" fill="#fff8e6"/>`).join('') +
+    `<rect x="39" y="36" width="22" height="6" rx="3" fill="#5e2a12"/>` +
+    `<path d="M26 54 Q28 42 38 36" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".45"/>`,
+  gift:
+    `<rect x="16" y="44" width="68" height="44" rx="6" fill="url(#gRed)" ${O}/>` +
+    `<rect x="11" y="32" width="78" height="16" rx="5" fill="url(#gRed)" ${O}/>` +
+    `<rect x="44" y="32" width="12" height="56" fill="url(#gGold)" ${THIN}/>` +
+    `<path d="M50 32 C38 10 20 16 32 32 Z M50 32 C62 10 80 16 68 32 Z" fill="url(#gGold)" ${O}/>` +
+    `<path d="M22 54 V80" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".45"/>`,
   sparkles: sparkle(30, 30, 14) + sparkle(70, 60, 10) + sparkle(64, 22, 7),
 };

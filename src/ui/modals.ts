@@ -5,6 +5,9 @@ import { ICONS } from '../art/icons';
 import {
   CHAIN_BONUS_GEMS, CODEX_CHAINS, Reward, chainComplete, chainKey, claimAllCodex, claimCodex, codexClaimable, codexReward, isFound,
 } from '../game/codex';
+import {
+  OFFER_SKU, OfferId, PIGGY_CAP, PIGGY_MIN, PIGGY_PER_ORDER, activeOffers, breakPiggy, endOffer, firstBonusOpen, openGift, piggyReady, skipGift,
+} from '../game/offers';
 import { CHAINS, ChainId, GENERATOR_CHAINS, Item, PRODUCT_CHAINS, itemKey, itemName, maxLevel } from '../game/items';
 import {
   BAG_MAX, COIN_CHEST_PRICE, COIN_ENERGY_AMOUNT, DAILY_REWARDS, ENERGY_CAP, addEnergy, adsLeft, bagSlotCost, buyBagSlot,
@@ -19,10 +22,18 @@ import { askNotifications } from '../platform/notify';
 import { rateOnStore, shareGame } from '../platform/social';
 import { writeSetting } from '../platform/storage';
 import type { App } from './app';
-import { add, clear, dateKey, fa, faNum, faTime, h, svgIcon } from './dom';
+import { add, clear, dateKey, fa, faClock, faNum, faTime, h, svgIcon } from './dom';
 import { musicEnabled, setMusic, setSound, sfx, soundOn } from './sound';
 
 const today = () => dateKey();
+
+/** Picture for each paid bundle: starter = golden chest, episode party = box of sweets. */
+export function bundleArt(sku: string): string {
+  if (sku === 'offer_energy') return itemArt({ chain: 'energy', level: 3 });
+  if (sku === 'offer_chapter') return itemArt({ chain: 'sweets', level: 8 });
+  if (sku === 'piggy_bank') return ICONS.piggy;
+  return itemArt({ chain: 'chest', level: 3 });
+}
 
 let hapticsOn = true;
 export const initToggles = (sound: boolean, haptics: boolean, music: boolean) => {
@@ -74,6 +85,7 @@ export class Modals {
 
   energy(): Promise<void> {
     const s = this.app.s;
+    if (billingAvailable()) fetchPrices().then((p) => (this.prices = { ...this.prices, ...p }));
     return this.open('انرژی', (body, close) => {
       const left = adsLeft(s, today(), MAX_ADS_PER_DAY);
       add(body,
@@ -87,6 +99,7 @@ export class Modals {
           this.app.dirty();
           close();
         } }, `+${fa(ENERGY_CAP)} انرژی با ${fa(refillPrice(s, today()))}`, h('span', { html: svgIcon(ICONS.gem) })),
+        s.energy < 20 ? this.offerCard('offer_energy', close) : null,
         adsAvailable()
           ? h('button', { class: 'btn pink', disabled: left <= 0, onclick: async () => {
               close();
@@ -107,28 +120,25 @@ export class Modals {
     if (billingAvailable()) fetchPrices().then((p) => (this.prices = { ...this.prices, ...p }));
     return this.open('فروشگاه', (body, close) => {
       const grid = h('div', { class: 'grid2' });
+      // Timed bundles first, then the one-time starter pack, then the gem shelf.
+      for (const o of activeOffers(s, Date.now())) {
+        if (o.id !== 'starter') grid.append(this.offerCard(OFFER_SKU[o.id], close, o.until));
+      }
+      const first = firstBonusOpen(s);
       for (const p of PRODUCTS) {
-        if (p.once && s.bought.includes(p.sku)) continue;
-        const price = this.prices[p.sku] ?? p.fallbackPrice;
-        const art = p.once ? itemArt({ chain: 'chest', level: 3 }) : ICONS.gem;
-        const parts = [`${fa(p.gems)} الماس`, p.energy ? `${fa(p.energy)} انرژی` : '', p.chest ? 'صندوقچه‌ی طلایی' : ''].filter(Boolean).join(' + ');
-        const buyBtn = h('button', { class: 'btn', onclick: async () => {
-          const r = await buy(p.sku);
-          if (!r.ok) {
-            if (r.reason === 'unavailable') this.app.toast('خرید فقط در نسخه‌ی نصب‌شده از بازار یا مایکت فعاله.');
-            else if (r.reason === 'error') this.app.toast('خرید انجام نشد. دوباره امتحان کن.');
-            return;
-          }
-          close();
-          await this.grant(p.sku, r.token);
-        } }, price);
-        grid.append(
-          p.once
-            ? h('div', { class: 'offer special' },
-                h('div', { class: 'art', html: svgIcon(art) }),
-                h('div', { style: 'flex:1' }, h('span', { class: 'tag' }, 'فقط یک بار'), h('div', { class: 'amount' }, p.title), h('div', { style: 'font-size:12px' }, parts), buyBtn))
-            : h('div', { class: 'offer' }, h('div', { class: 'art', html: svgIcon(art) }), h('div', { class: 'amount' }, faNum(p.gems)), h('div', { style: 'font-size:12px' }, p.title), buyBtn),
-        );
+        if (p.hidden || (p.once && s.bought.includes(p.sku))) continue;
+        if (p.once) {
+          const timed = activeOffers(s, Date.now()).find((o) => OFFER_SKU[o.id] === p.sku);
+          grid.append(this.offerCard(p.sku, close, timed?.until));
+          continue;
+        }
+        grid.append(h('div', { class: 'offer' },
+          first ? h('span', { class: 'ribbon' }, '×۲ اولین خرید') : null,
+          h('div', { class: 'art', html: svgIcon(ICONS.gem) }),
+          first ? h('s', { class: 'was' }, faNum(p.gems)) : null,
+          h('div', { class: 'amount' }, faNum(first ? p.gems * 2 : p.gems)),
+          h('div', { style: 'font-size:12px' }, p.title),
+          h('button', { class: 'btn', onclick: () => this.purchase(p.sku, close) }, this.price(p.sku))));
       }
       body.append(grid);
       // Coin shop: gives coins a purpose and a daily energy top-up for non-payers.
@@ -172,6 +182,110 @@ export class Modals {
     });
   }
 
+  private price(sku: string): string {
+    return this.prices[sku] ?? PRODUCTS.find((p) => p.sku === sku)?.fallbackPrice ?? '';
+  }
+
+  /** Runs a store purchase; on success closes the window and grants the product. */
+  async purchase(sku: string, close?: () => void): Promise<boolean> {
+    const r = await buy(sku);
+    if (!r.ok) {
+      if (r.reason === 'unavailable') this.app.toast('خرید فقط در نسخه‌ی نصب‌شده از بازار یا مایکت فعاله.');
+      else if (r.reason === 'error') this.app.toast('خرید انجام نشد. دوباره امتحان کن.');
+      return false;
+    }
+    close?.();
+    await this.grant(sku, r.token);
+    return true;
+  }
+
+  /** What a bundle contains, as icon + amount chips. */
+  private contents(sku: string): HTMLElement {
+    const p = PRODUCTS.find((x) => x.sku === sku)!;
+    const chip = (icon: string, text: string) => h('span', { class: 'got' }, h('span', { html: svgIcon(icon) }), text);
+    return h('div', { class: 'contents' },
+      p.gems ? chip(ICONS.gem, faNum(p.gems)) : null,
+      p.energy ? chip(ICONS.energy, faNum(p.energy)) : null,
+      p.chest ? chip(itemArt({ chain: 'chest', level: p.chest }), 'صندوقچه') : null);
+  }
+
+  /** A wide bundle card (shop, energy window, offer pop-up). */
+  private offerCard(sku: string, close: () => void, until?: number): HTMLElement {
+    const p = PRODUCTS.find((x) => x.sku === sku)!;
+    return h('div', { class: 'offer special' },
+      h('div', { class: 'art', html: svgIcon(bundleArt(sku)) }),
+      h('div', { style: 'flex:1;min-width:0' },
+        h('span', { class: 'tag' }, until ? `⏳ ${faClock(until - Date.now())}` : p.once ? 'فقط یک بار' : 'پیشنهاد ویژه'),
+        h('div', { class: 'amount' }, p.title),
+        this.contents(sku),
+        h('button', { class: 'btn', onclick: () => this.purchase(sku, close) }, this.price(sku))));
+  }
+
+  /** Pop-up for a timed bundle (starter pack after level 3, celebration after episodes). */
+  offer(id: OfferId): Promise<void> {
+    const s = this.app.s;
+    const sku = OFFER_SKU[id];
+    const o = activeOffers(s, Date.now()).find((x) => x.id === id);
+    if (!o) return Promise.resolve();
+    if (billingAvailable()) fetchPrices().then((pr) => (this.prices = { ...this.prices, ...pr }));
+    const p = PRODUCTS.find((x) => x.sku === sku)!;
+    return this.open(p.title, (body, close) => {
+      const timer = h('div', { class: 'timer' }, `⏳ ${faClock(o.until - Date.now())} مونده`);
+      const t = window.setInterval(() => {
+        if (!timer.isConnected) return clearInterval(t);
+        timer.textContent = `⏳ ${faClock(o.until - Date.now())} مونده`;
+      }, 1000);
+      add(body,
+        h('div', { class: 'offer-hero', html: svgIcon(bundleArt(sku)) }),
+        h('p', {}, id === 'starter'
+          ? 'یه هدیه‌ی خوش‌آمد از طرف همسایه‌ها! فقط یک بار و فقط تا آخر این زمان.'
+          : 'یه قسمت دیگه تموم شد! به افتخارش، این بسته فقط تا فردا همین موقع.'),
+        this.contents(sku),
+        timer,
+        h('button', { class: 'btn gold big', onclick: () => this.purchase(sku, close) }, this.price(sku)),
+        h('button', { class: 'btn plain', onclick: close }, 'بعداً'));
+    });
+  }
+
+  piggy(): Promise<void> {
+    const s = this.app.s;
+    if (billingAvailable()) fetchPrices().then((pr) => (this.prices = { ...this.prices, ...pr }));
+    return this.open('قلک', (body, close) => {
+      add(body,
+        h('div', { class: `offer-hero${s.piggy >= PIGGY_CAP ? ' shake-slow' : ''}`, html: svgIcon(ICONS.piggy) }),
+        h('div', { class: 'piggy-count' }, h('span', { html: svgIcon(ICONS.gem) }), `${fa(s.piggy)} / ${fa(PIGGY_CAP)}`),
+        h('div', { class: 'bar' }, h('div', { style: `width:${(s.piggy / PIGGY_CAP) * 100}%` })),
+        h('p', { style: 'font-size:13px' }, s.piggy >= PIGGY_CAP
+          ? 'قلک پر شد! تا نشکنیش، دیگه الماسی توش نمی‌ره.'
+          : `هر سفارشی که تحویل بدی، ${fa(PIGGY_PER_ORDER)} الماس می‌ره تو قلک. هر وقت خواستی بشکنش و همه رو بردار.`),
+        h('button', { class: 'btn gold big', disabled: !piggyReady(s), onclick: () => this.purchase('piggy_bank', close) },
+          piggyReady(s) ? `شکستن قلک · ${this.price('piggy_bank')}` : `از ${fa(PIGGY_MIN)} الماس به بعد می‌شه شکستش`));
+    });
+  }
+
+  /** The occasional free gift: one video opens it. */
+  gift(): Promise<void> {
+    const s = this.app.s;
+    return this.open('هدیه‌ی همسایه‌ها', (body, close) => {
+      add(body,
+        h('div', { class: 'offer-hero', html: svgIcon(ICONS.gift) }),
+        h('p', {}, 'همسایه‌ها برات یه هدیه گذاشتن دم در! یه ویدیوی کوتاه ببین و بازش کن.'),
+        h('button', { class: 'btn pink big', onclick: async () => {
+          close();
+          if (!(await this.rewarded())) return;
+          const r = openGift(s, Date.now(), Math.random());
+          const from = document.getElementById('side-gift')?.getBoundingClientRect() ?? new DOMRect(innerWidth / 2, innerHeight / 2, 0, 0);
+          if ('energy' in r) { addEnergy(s, r.energy); this.app.flyReward(ICONS.energy, from, 'hud-energy', 4); this.app.toast(`${fa(r.energy)} انرژی هدیه گرفتی!`); }
+          if ('gems' in r) { s.gems += r.gems; this.app.flyReward(ICONS.gem, from, 'hud-gems', 3); this.app.toast(`${fa(r.gems)} الماس هدیه گرفتی!`); }
+          if ('chest' in r) { this.app.giveItem({ chain: 'chest', level: r.chest }); this.app.toast('یه صندوقچه هدیه گرفتی!'); }
+          sfx.levelUp();
+          this.app.renderAll();
+          this.app.dirty();
+        } }, h('span', { html: svgIcon(ICONS.video) }), 'باز کن'),
+        h('button', { class: 'btn plain', onclick: () => { skipGift(s, Date.now()); this.app.dirty(); close(); } }, 'نه، ممنون'));
+    });
+  }
+
   /**
    * Delivers a paid product, saves, and only then consumes it in the store. The token is kept
    * until consumption succeeds so startup recovery never grants the same purchase twice.
@@ -181,14 +295,21 @@ export class Modals {
     const p = PRODUCTS.find((x) => x.sku === sku);
     if (!p || s.grantedTokens.includes(token)) return;
     s.grantedTokens.push(token);
-    s.gems += p.gems;
+    let gems = p.gems;
+    if (p.sku.startsWith('gems_') && firstBonusOpen(s)) {
+      gems *= 2;
+      s.bought.push('first');
+    }
+    s.gems += gems;
+    if (p.piggy) gems = breakPiggy(s);
     if (p.energy) addEnergy(s, p.energy);
     if (p.chest) this.app.giveItem({ chain: 'chest', level: p.chest });
     if (p.once && !s.bought.includes(p.sku)) s.bought.push(p.sku);
+    for (const id of Object.keys(OFFER_SKU) as OfferId[]) if (OFFER_SKU[id] === p.sku) endOffer(s, id);
     await this.app.saveNow();
     sfx.levelUp();
     this.app.renderAll();
-    this.app.toast(`${p.title} اضافه شد. ممنون از حمایتت!`);
+    this.app.toast(p.piggy ? `${fa(gems)} الماس از قلک! ممنون از حمایتت!` : `${p.title} اضافه شد. ممنون از حمایتت!`);
     await this.finishPurchase(token);
   }
 

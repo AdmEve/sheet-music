@@ -16,6 +16,10 @@ export interface Product {
   once?: boolean;
   /** Consumable unless false. */
   consumable?: boolean;
+  /** Sold from its own window (offer pop-up, piggy bank), not the shop shelf. */
+  hidden?: boolean;
+  /** Pays out the piggy bank instead of fixed gems. */
+  piggy?: boolean;
 }
 
 export const PRODUCTS: Product[] = [
@@ -24,6 +28,9 @@ export const PRODUCTS: Product[] = [
   { sku: 'gems_medium', title: 'کیسه الماس', gems: 160, fallbackPrice: '۶۹٬۰۰۰ تومان' },
   { sku: 'gems_large', title: 'صندوق الماس', gems: 420, fallbackPrice: '۱۴۹٬۰۰۰ تومان' },
   { sku: 'gems_huge', title: 'گنج الماس', gems: 1000, fallbackPrice: '۲۹۹٬۰۰۰ تومان' },
+  { sku: 'offer_energy', title: 'بسته‌ی انرژی', gems: 20, energy: 250, fallbackPrice: '۱۹٬۰۰۰ تومان', hidden: true },
+  { sku: 'offer_chapter', title: 'جشن قسمت تازه', gems: 80, energy: 100, chest: 3, fallbackPrice: '۴۹٬۰۰۰ تومان', hidden: true },
+  { sku: 'piggy_bank', title: 'قلک', gems: 0, fallbackPrice: '۳۹٬۰۰۰ تومان', hidden: true, piggy: true },
 ];
 
 interface StorePlugin {
@@ -41,6 +48,14 @@ interface StorePlugin {
 /** The one registration of the native store plugin (registering twice breaks it). */
 export const Store = registerPlugin<StorePlugin>('Store');
 let connected = false;
+/** Browser testing only: localStorage `mahalle.fakeStore = 1` approves every purchase. */
+const fake = !Capacitor.isNativePlatform() && (() => {
+  try {
+    return localStorage.getItem('mahalle.fakeStore') === '1';
+  } catch {
+    return false;
+  }
+})();
 let storeInfo: { store: 'bazaar' | 'myket'; url: string; billing: boolean } | null = null;
 
 /** Which store this build is for, and whether billing is configured. */
@@ -57,7 +72,7 @@ export async function getStoreInfo(): Promise<{ store: 'bazaar' | 'myket' | 'web
 }
 
 export function billingAvailable(): boolean {
-  return Capacitor.isNativePlatform() && (storeInfo?.billing ?? true);
+  return fake || (Capacitor.isNativePlatform() && (storeInfo?.billing ?? true));
 }
 
 export async function connectBilling(): Promise<boolean> {
@@ -90,6 +105,7 @@ export type PurchaseResult =
 export async function buy(sku: string): Promise<PurchaseResult> {
   const product = PRODUCTS.find((p) => p.sku === sku);
   if (!product) return { ok: false, reason: 'error' };
+  if (fake) return { ok: true, product, token: `fake-${sku}-${Date.now()}` };
   if (!connected && !(await connectBilling())) return { ok: false, reason: 'unavailable' };
   try {
     const r = await Store.purchase({ sku, payload: `${sku}:${Date.now()}` });
@@ -103,6 +119,7 @@ export async function buy(sku: string): Promise<PurchaseResult> {
 
 /** Consumes a purchase whose reward is already granted and saved. Safe to retry later. */
 export async function consume(token: string): Promise<boolean> {
+  if (fake) return true;
   if (!connected) return false;
   try {
     await Store.consume({ purchaseToken: token });
