@@ -88,11 +88,29 @@ privacy page (`docs/privacy-fa.md`). Charm: neighbours' thank-you bubbles on del
 Myket: second store flavor done (`android/app/src/myket`, Myket billing 1.19); CI publishes
 `Mahalle.apk` (Bazaar) and `Mahalle-myket.apk`.
 
+## AAA upgrade (started 2026-10-24) — plan in `docs/AAA-ROADMAP.md`
+
+The owner asked for a "perfect AAA product" as a long project. The roadmap came from a
+teardown of Gossip Harbor / Travel Town / Merge Mansion: offers are ~62% of revenue,
+season pass ~10%, events run 4–10 at a time, decoration choice drives self-expression.
+
+- [x] Phase 1: album «کلکسیون» (discovery rewards, chain bonuses), idle merge hint,
+      escalating gem refill (10/20/40/60/80), profile screen on the level badge
+- [x] Phase 2: piggy bank «قلک», starter pack pop-up (48 h at level 3), episode bundle
+      (24 h), first-purchase double gems, energy rescue bundle, free video gift;
+      icon strip above/beside the board
+- [ ] Phase 3: season pass «مسیر فصل»
+- [ ] Phase 4: events (weekly event, Yalda, Nowruz, alley race)
+- [ ] Phase 5: presentation (decor choice, board frame, celebrations, expressions, map)
+- [ ] Phase 6: save-transfer code, Season 3, e2e smoke test in CI
+
+QA in a browser: localStorage `mahalle.fakeAds=1` / `mahalle.fakeStore=1` fake the video
+and store (browser builds only). A QA harness lives in the session scratchpad; staged
+saves are written into localStorage `mahalle.save.v1`.
+
 Next (in order):
-1. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
-2. Small-size art polish pass; more juice on deliveries
-3. Season 3 («نامه‌ای از اون ور دنیا») as a post-launch update
-4. Weekly prize event design (needs a small domestic server) — optional
+1. Continue the AAA phases above
+2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 Known limits: local Gradle builds here can hit Maven Central rate limits (429); CI is the
 source of truth for APK builds.
