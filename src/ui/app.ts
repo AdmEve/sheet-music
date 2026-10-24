@@ -77,7 +77,8 @@ export class App {
     this.sideEl = h('div', { class: 'side' });
     this.cells = Array.from({ length: CELLS }, (_, i) => h('div', { class: 'cell', 'data-i': i }));
     this.boardEl.append(...this.cells);
-    this.playEl = h('div', { class: 'play' }, this.sideEl, h('div', { class: 'board-wrap' }, this.boardEl));
+    const corners = ['tl', 'tr', 'bl', 'br'].map((c) => h('i', { class: `corner ${c}` }));
+    this.playEl = h('div', { class: 'play' }, this.sideEl, h('div', { class: 'board-wrap' }, this.boardEl, ...corners));
     this.root.append(this.hud, this.ordersEl, this.playEl, this.info, this.navEl);
     this.fit();
     window.addEventListener('resize', () => this.fit());
