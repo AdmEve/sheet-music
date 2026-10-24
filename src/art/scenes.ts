@@ -164,11 +164,26 @@ const rose = (x: number, y: number, s: number) =>
   [0, 72, 144, 216, 288].map((a) => `<ellipse cx="0" cy="-6" rx="5" ry="7" transform="rotate(${a})" fill="url(#gRose)" ${THIN} stroke-width="1"/>`).join('') +
   `<circle r="4" fill="url(#gRoseDeep)"/></g>`;
 
+const fish = (x: number, y: number, flip = false) =>
+  `<g transform="translate(${x} ${y}) scale(${flip ? -1 : 1} 1)"><path d="M-7 0 C-3 -5 5 -5 7 0 C5 5 -3 5 -7 0 Z M-7 0 L-12 -4 L-12 4 Z" fill="#ff7a2a" ${THIN} stroke-width="1"/></g>`;
+
+const rosewater = (x: number, y: number) =>
+  `<path d="M${x - 5} ${y} h10 l3 6 v18 h-16 v-18 Z" fill="url(#gGlass)" ${THIN}/><rect x="${x - 6}" y="${y + 10}" width="12" height="12" fill="url(#gRose)" opacity=".8"/>` +
+  `<rect x="${x - 3}" y="${y - 6}" width="6" height="6" fill="url(#gCopper)" ${THIN} stroke-width="1"/>`;
+
+/** A mulberry tree behind the courtyard wall and the wall's tiled cap. */
+const gardenBack =
+  `<circle cx="70" cy="30" r="34" fill="url(#gLeafDark)" ${THIN}/><circle cx="40" cy="44" r="24" fill="url(#gLeaf)" ${THIN}/><circle cx="104" cy="40" r="24" fill="url(#gLeaf)" ${THIN}/>` +
+  `<circle cx="300" cy="36" r="28" fill="url(#gLeaf)" ${THIN}/><circle cx="330" cy="44" r="20" fill="url(#gLeafDark)" ${THIN}/>` +
+  `<rect y="40" width="360" height="8" fill="url(#gTerracotta)" ${THIN}/>` +
+  Array.from({ length: 18 }, (_, i) => `<path d="M${i * 20 + 4} 48 l6 6 l6 -6" fill="url(#gTurq)" stroke="${INK}" stroke-width="1"/>`).join('');
+
 const GARDEN: Record<string, Layer> = {
   weeds: (d) =>
     d
       ? `<rect x="0" y="170" width="360" height="70" fill="#c69260"/>` +
-        Array.from({ length: 12 }, (_, i) => `<path d="M${i * 30} 170 L${i * 30 - 20} 240" stroke="#8f6a3a" stroke-width="1.4" opacity=".5"/>`).join('')
+        Array.from({ length: 12 }, (_, i) => `<path d="M${i * 30} 170 L${i * 30 - 20} 240" stroke="#8f6a3a" stroke-width="1.4" opacity=".5"/>`).join('') +
+        geranium(104, 170, 0.8) + geranium(256, 170, 0.8)
       : Array.from({ length: 30 }, (_, i) => {
           const x = (i * 47) % 360, y = 176 + ((i * 29) % 60);
           return `<path d="M${x} ${y} l-6 -18 M${x} ${y} l4 -22 M${x} ${y} l10 -14" stroke="#5d7a2c" stroke-width="2.4" stroke-linecap="round"/>`;
@@ -176,26 +191,46 @@ const GARDEN: Record<string, Layer> = {
   pool: (d) =>
     `<ellipse cx="180" cy="200" rx="80" ry="22" fill="url(#gTurq)" ${O}/>` +
     `<ellipse cx="180" cy="200" rx="66" ry="15" fill="${d ? '#7fd6e6' : '#8a7a5a'}" ${THIN}/>` +
-    (d ? `<path d="M150 196 q10 -4 20 0 M190 204 q10 -4 20 0" fill="none" stroke="#fff" stroke-width="2" opacity=".8"/>${rose(170, 200, 0.6)}` : `<path d="M140 200 l20 4 M200 196 l14 6" stroke="${INK}" stroke-width="1.6" opacity=".5"/>`),
+    (d
+      ? `<path d="M150 196 q10 -4 20 0 M190 204 q10 -4 20 0" fill="none" stroke="#fff" stroke-width="2" opacity=".8"/>${rose(150, 204, 0.5)}` +
+        fish(206, 198) + fish(160, 194, true) +
+        // A small fountain in the middle of the pool.
+        `<rect x="176" y="194" width="8" height="8" rx="2" fill="url(#gTurq)" ${THIN}/><path class="steam" d="M180 194 V184 M180 186 q-8 0 -11 9 M180 186 q8 0 11 9" fill="none" stroke="#e8f8ff" stroke-width="2.6" stroke-linecap="round"/>`
+      : `<path d="M140 200 l20 4 M200 196 l14 6" stroke="${INK}" stroke-width="1.6" opacity=".5"/>`),
   roses: (d) =>
     d
       ? [30, 70, 290, 330].map((x) => `<path d="M${x} 170 V120" stroke="#4f8a2a" stroke-width="3"/>` + rose(x - 8, 128, 1) + rose(x + 8, 140, 0.9) + rose(x, 112, 1)).join('')
       : [30, 70, 290, 330].map((x) => `<path d="M${x} 170 q-6 -20 4 -36" fill="none" stroke="#8a7a5a" stroke-width="3"/>`).join(''),
-  bench: (d) => (d ? takht(110, 150, 140) : plank(250, 220, 70, -20)),
+  bench: (d) =>
+    d
+      ? takht(110, 150, 140) + `<ellipse cx="180" cy="146" rx="22" ry="5" fill="url(#gBrass)" ${THIN}/>` +
+        `<g transform="translate(170 136) scale(.3)">${estekan(0, 0, 1, true, false)}</g><g transform="translate(184 136) scale(.3)">${estekan(0, 0, 1, true, false)}</g>`
+      : plank(250, 220, 70, -20),
   distill: (d) =>
     d
-      ? `<g transform="translate(300 60)"><path d="M-24 60 C-30 30 -20 10 0 10 C20 10 30 30 24 60 Z" fill="url(#gCopper)" ${O}/><path d="M0 10 C10 -10 40 -6 44 20 L44 60" fill="none" ${O} stroke="url(#gCopper)" stroke-width="5"/><rect x="34" y="60" width="20" height="26" rx="6" fill="url(#gGlass)" ${O}/><rect x="36" y="72" width="16" height="12" fill="url(#gRose)" opacity=".8"/></g>` + sparkle(340, 40, 6)
+      ? `<rect x="128" y="74" width="104" height="7" rx="2" fill="url(#gWood)" ${O}/>` + [140, 158, 176, 194, 212].map((x) => rosewater(x, 50)).join('') +
+        `<path d="M134 81 l6 10 M226 81 l-6 10" ${THIN}/>` +
+        `<g transform="translate(300 60)"><path d="M-24 60 C-30 30 -20 10 0 10 C20 10 30 30 24 60 Z" fill="url(#gCopper)" ${O}/><path d="M0 10 C10 -10 40 -6 44 20 L44 60" fill="none" ${O} stroke="url(#gCopper)" stroke-width="5"/><rect x="34" y="60" width="20" height="26" rx="6" fill="url(#gGlass)" ${O}/><rect x="36" y="72" width="16" height="12" fill="url(#gRose)" opacity=".8"/></g>` + sparkle(340, 40, 6)
       : '',
 };
 
 // ------------------------------------------------------------------ salon
 
+const bottle = (x: number, y: number, fill: string) =>
+  `<rect x="${x - 3}" y="${y - 12}" width="6" height="12" rx="2" fill="${fill}" ${THIN} stroke-width="1"/><rect x="${x - 1.5}" y="${y - 16}" width="3" height="4" fill="#fffdf6" ${THIN} stroke-width=".8"/>`;
+
 const SALON: Record<string, Layer> = {
   mirror: (d) =>
     d
-      ? [60, 180, 300].map((x) => `<rect x="${x - 34}" y="30" width="68" height="84" rx="34" fill="url(#gSky)" ${O}/><rect x="${x - 38}" y="26" width="76" height="92" rx="38" fill="none" stroke="url(#gGold)" stroke-width="5"/><path d="M${x - 18} 50 l12 -12 M${x - 20} 64 l20 -20" stroke="#fff" stroke-width="3" opacity=".7"/>`).join('')
+      ? [60, 180, 300].map((x) => `<rect x="${x - 34}" y="30" width="68" height="84" rx="34" fill="url(#gSky)" ${O}/><rect x="${x - 38}" y="26" width="76" height="92" rx="38" fill="none" stroke="url(#gGold)" stroke-width="5"/><path d="M${x - 18} 50 l12 -12 M${x - 20} 64 l20 -20" stroke="#fff" stroke-width="3" opacity=".7"/>` +
+          `<rect x="${x - 40}" y="118" width="80" height="7" rx="2" fill="url(#gWood)" ${THIN}/>` + bottle(x - 30, 118, 'url(#gRose)') + bottle(x - 22, 118, 'url(#gSky)') + bottle(x + 26, 118, 'url(#gYellow)') +
+          `<path d="M${x + 6} 116 h12" stroke="${INK}" stroke-width="3" stroke-linecap="round"/>`).join('')
       : [60, 180, 300].map((x) => `<rect x="${x - 34}" y="30" width="68" height="84" rx="34" fill="#7a8a90" ${O}/><path d="M${x - 20} 40 l30 50 M${x + 10} 36 l-24 60" stroke="${INK}" stroke-width="1.6"/>`).join(''),
   chairs: (d) =>
+    (d ? Array.from({ length: 40 }, (_, i) => {
+      const r = Math.floor(i / 10), c = i % 10;
+      return (r + c) % 2 ? '' : `<path d="M${c * 36 - r * 6} ${170 + r * 18} h36 l-6 18 h-36 Z" fill="#fffdf6" opacity=".55"/>`;
+    }).join('') : '') +
     [60, 180, 300].map((x) =>
       d
         ? `<rect x="${x - 22}" y="128" width="44" height="40" rx="12" fill="url(#gRoseDeep)" ${O}/><rect x="${x - 26}" y="160" width="52" height="16" rx="6" fill="url(#gRose)" ${O}/><path d="M${x} 176 V206 M${x - 18} 210 h36" ${O} stroke="url(#gSteel)" stroke-width="5"/>`
@@ -214,11 +249,22 @@ const SALON: Record<string, Layer> = {
   party: (d) =>
     d
       ? stringLights(116, ['#ff7a9c', '#ffd36b', '#c58bff']) + sparkle(120, 100, 7) + sparkle(250, 90, 6) +
+        Array.from({ length: 18 }, (_, i) => `<rect x="${(i * 61) % 350 + 4}" y="${130 + ((i * 37) % 100)}" width="5" height="3" rx="1" fill="${['#ff7a9c', '#ffd36b', '#5fe0e0', '#c58bff'][i % 4]}" transform="rotate(${(i * 47) % 180} ${(i * 61) % 350 + 6} ${131 + ((i * 37) % 100)})"/>`).join('') +
+        // A celebration cake on a little table between the chairs.
+        `<rect x="112" y="206" width="24" height="5" rx="2" fill="url(#gWood)" ${THIN}/><path d="M124 211 V232 M116 232 h16" ${THIN} stroke-width="2.4"/>` +
+        `<rect x="114" y="192" width="20" height="14" rx="3" fill="#fffdf6" ${THIN}/><path d="M114 197 q5 4 10 0 q5 4 10 0" fill="none" stroke="#ff7a9c" stroke-width="2"/><path d="M124 192 v-6" stroke="#ffd36b" stroke-width="2"/>` +
         [[100, 200], [260, 200]].map(([x, y]) => `<circle cx="${x}" cy="${y - 50}" r="16" fill="url(#gRoseDeep)" ${O}/><path d="M${x} ${y - 34} q4 18 -2 34" fill="none" stroke="${INK}" stroke-width="1.4"/>`).join('')
       : `<rect x="0" y="0" width="360" height="240" fill="#1c1430" opacity=".28"/>`,
 };
 
 // ------------------------------------------------------------------ hammam
+
+/** Round glass skylights (nurgir) in the dome. */
+const SKYLIGHTS = [[60, 22], [120, 10], [180, 6], [240, 10], [300, 22]];
+
+const towel = (x: number, y: number, a: string) =>
+  `<path d="M${x} ${y} h18 v30 l-3 4 l-3 -4 l-3 4 l-3 -4 l-3 4 l-3 -4 Z" fill="#fffdf6" ${THIN} stroke-width="1.2"/>` +
+  [6, 14, 22].map((dy) => `<path d="M${x} ${y + dy} h18" stroke="${a}" stroke-width="3"/>`).join('');
 
 const HAMMAM: Record<string, Layer> = {
   door: (d) => (d ? latticeDoor(146, 50, 68, 120) : boardedDoor(146, 50, 68, 120) + `<rect x="170" y="120" width="20" height="16" rx="3" fill="#7a7a7a" ${O}/><path d="M174 120 v-8 a6 6 0 0 1 12 0 v8" fill="none" ${O}/>`),
@@ -227,14 +273,29 @@ const HAMMAM: Record<string, Layer> = {
       const x = i < 4 ? 8 + i * 32 : 228 + (i - 4) * 32;
       return [0, 1, 2, 3].map((r) => `<rect x="${x}" y="${40 + r * 30}" width="28" height="28" rx="2" fill="${d ? (r + i) % 2 ? 'url(#gTurq)' : 'url(#gBlue)' : '#7a7a6a'}" ${THIN}/>` +
         (d ? `<circle cx="${x + 14}" cy="${54 + r * 30}" r="5" fill="#fff" opacity=".85"/>` : '')).join('');
-    }).join(''),
+    }).join('') +
+    // An inscription band (katibeh) above the tile panels.
+    (d ? `<rect x="0" y="28" width="360" height="10" fill="url(#gNavy)" ${THIN}/>` +
+        Array.from({ length: 24 }, (_, i) => `<path d="M${6 + i * 15} 35 q3 -6 6 0 t6 0" fill="none" stroke="#f6c945" stroke-width="1.2"/>`).join('')
+      : `<rect x="0" y="28" width="360" height="10" fill="#8a8070" ${THIN}/>`),
   pool: (d) =>
-    `<rect x="70" y="186" width="220" height="40" rx="8" fill="url(#gTurq)" ${O}/><rect x="80" y="192" width="200" height="28" rx="6" fill="${d ? '#7fd6e6' : '#4a4a3a'}" ${THIN}/>`,
+    `<rect x="70" y="186" width="220" height="40" rx="8" fill="url(#gTurq)" ${O}/><rect x="80" y="192" width="200" height="28" rx="6" fill="${d ? '#7fd6e6' : '#4a4a3a'}" ${THIN}/>` +
+    (d
+      ? `<path class="steam" d="M110 188 q-6 -10 0 -20 q6 -10 0 -18 M250 188 q-6 -10 0 -20 q6 -10 0 -18" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/>` +
+        // Copper bowls (tas) on the rim and striped towels (long) on a rail.
+        `<path d="M276 186 a12 7 0 0 0 24 0 Z" fill="url(#gCopper)" ${THIN}/><path d="M60 186 a10 6 0 0 0 20 0 Z" fill="url(#gCopper)" ${THIN}/>` +
+        `<path d="M300 164 H352" ${O} stroke-width="4"/>` + towel(306, 164, '#e0303f') + towel(328, 164, '#3a76c4')
+      : ''),
   box: (d) =>
     d
       ? glow(180, 200, 40, 0.8) + `<g transform="translate(160 178) scale(.4)"><path d="M16 50 L84 50 L82 84 L18 84 Z" fill="url(#gGold)" ${O}/><path d="M14 50 C14 24 86 24 86 50 Z" fill="url(#gGold)" ${O}/></g>` + sparkle(214, 176, 6)
       : '',
-  lights: (d) => (d ? stringLights(4, ['#ffd36b', '#5fe0e0']) + glow(180, 100, 120, 0.25) : `<rect x="0" y="0" width="360" height="240" fill="#0e0a1e" opacity=".45"/>`),
+  lights: (d) =>
+    d
+      ? SKYLIGHTS.map(([x, y]) => `<path d="M${x - 5} ${y} L${x + 5} ${y} L${x + 26} 236 L${x - 26} 236 Z" fill="#fff6c8" opacity=".18"/>`).join('') +
+        stringLights(4, ['#ffd36b', '#5fe0e0']) + glow(180, 100, 120, 0.25)
+      : SKYLIGHTS.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="5" fill="#4a4a5a" ${THIN} stroke-width="1"/>`).join('') +
+        `<rect x="0" y="0" width="360" height="240" fill="#0e0a1e" opacity=".45"/>`,
 };
 
 export interface SceneDef {
@@ -247,7 +308,7 @@ export interface SceneDef {
 export const SCENES1: Record<string, SceneDef> = {
   teahouse: { base: brickWall() + floor(), order: ['door', 'dust', 'sign', 'samovar', 'takht', 'lights'], layers: TEAHOUSE },
   bakery: { base: brickWall('#e8c99a', '#c4a070') + floor('#a98a6a'), order: ['oven', 'pebbles', 'counter', 'flour', 'awning', 'fire'], layers: BAKERY },
-  garden: { base: `<rect width="360" height="170" fill="url(#gSky)"/>` + brickWall('#d9a873', '#b5804d', 120) + `<rect y="120" width="360" height="50" fill="#c69260"/>` + floor('#b98652'), order: ['weeds', 'pool', 'roses', 'bench', 'distill'], layers: GARDEN },
+  garden: { base: `<rect width="360" height="170" fill="url(#gSky)"/>` + gardenBack + `<g transform="translate(0 48)">${brickWall('#d9a873', '#b5804d', 72)}</g>` + `<rect y="120" width="360" height="50" fill="#c69260"/>` + floor('#b98652'), order: ['weeds', 'pool', 'roses', 'bench', 'distill'], layers: GARDEN },
   salon: { base: `<rect width="360" height="170" fill="#ffe0ef"/>` + Array.from({ length: 12 }, (_, i) => `<path d="M${i * 32} 0 V170" stroke="#ffc2d8" stroke-width="10"/>`).join('') + floor('#d8c0c8'), order: ['curtain', 'mirror', 'chairs', 'neon', 'party'], layers: SALON },
   hammam: { base: `<rect width="360" height="190" fill="#e8dcc6"/><path d="M0 40 Q180 -30 360 40" fill="#d8c8aa" ${O}/>` + floor('#c9b48f', 190), order: ['tiles', 'door', 'pool', 'box', 'lights'], layers: HAMMAM },
 };

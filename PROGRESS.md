@@ -127,11 +127,15 @@ saves are written into localStorage `mahalle.save.v1`.
       nursery, naming party; «سیسمونی» chain + knitting basket at level 25), map of 20 places
       with a «ادامه دارد…» barrier teasing Season 5 (the street-widening plan)
 
+- [x] Phase 11: Chaharshanbe Suri (week ending on the last Wednesday of the year) and
+      «بوی ماه مهر» back-to-school events with their own chains; short leftover weeks fold
+      into the next one; timers survive the phone's clock being set back; richer garden
+      (rosewater shelf, fountain, goldfish), salon (counters, checkered floor, cake) and
+      hammam (inscription band, light shafts, towels, steam) scenes
+
 Next (in order):
-1. Phase 11: more calendar events (Chaharshanbe Suri, Mehregan),
-   richer garden/salon/hammam scenes
-2. Phase 12: Season 5 «طرح تعریض خیابان»
-3. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
+1. Phase 12: Season 5 «طرح تعریض خیابان»
+2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)
 
