@@ -250,3 +250,37 @@ describe('coin shop', () => {
     expect(loadState('not json')).toBeNull();
   });
 });
+
+describe('bubbles', () => {
+  it('sometimes spawns a bubble copy on high merges, which expires or pops', async () => {
+    const { BUBBLE_MS, popBubble, tickBubbles } = await import('../src/game/model');
+    const s = emptyGame();
+    s.clock = T0;
+    let bubbleAt = -1;
+    for (let k = 0; k < 400 && bubbleAt < 0; k++) {
+      s.board = Array.from({ length: CELLS }, () => ({ item: null }));
+      s.board[0] = { item: { chain: 'tea', level: 4 } };
+      s.board[1] = { item: { chain: 'tea', level: 4 } };
+      const ev = drop(s, 0, 1);
+      const b = ev.find((e) => e.type === 'bubble') as { at: number } | undefined;
+      if (b) bubbleAt = b.at;
+    }
+    expect(bubbleAt).toBeGreaterThanOrEqual(0);
+    expect(s.board[bubbleAt]).toMatchObject({ item: { chain: 'tea', level: 5 }, lock: 'bubble' });
+    // locked: cannot be merged onto or dragged
+    s.board[30] = { item: { chain: 'tea', level: 5 } };
+    expect(drop(s, 30, bubbleAt)).toEqual([{ type: 'fail', reason: 'locked' }]);
+    expect(drop(s, bubbleAt, 31)).toEqual([]);
+    // pop with gems
+    s.gems = 0;
+    expect(popBubble(s, bubbleAt)).toEqual([{ type: 'fail', reason: 'notEnoughGems' }]);
+    s.gems = 100;
+    expect(popBubble(s, bubbleAt)[0].type).toBe('bubblePop');
+    expect(s.board[bubbleAt].lock).toBeUndefined();
+    // expiry
+    s.board[40] = { item: { chain: 'tea', level: 5 }, lock: 'bubble', until: T0 + BUBBLE_MS };
+    expect(tickBubbles(s, T0 + 1000)).toEqual([]);
+    expect(tickBubbles(s, T0 + BUBBLE_MS + 1)).toEqual([40]);
+    expect(s.board[40].item).toBeNull();
+  });
+});

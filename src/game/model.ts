@@ -16,12 +16,18 @@ export const MAX_ORDERS = 3;
 
 /** box: closed crate, contents hidden; opens (becomes `sheet`) when a merge happens next to it.
  *  sheet: item visible under a dust sheet; merge an identical item onto it to free it. */
-export type Lock = 'box' | 'sheet';
+export type Lock = 'box' | 'sheet' | 'bubble';
 
 export interface Cell {
   item: Item | null;
   lock?: Lock;
+  /** For bubbles: time (ms) when it floats away. */
+  until?: number;
 }
+
+export const BUBBLE_MS = 60_000;
+export const BUBBLE_CHANCE = 0.08;
+export const BUBBLE_MIN_LEVEL = 4;
 
 export interface Need extends Item {}
 
@@ -60,6 +66,8 @@ export interface GameState {
   ads: { day: string; count: number };
   /** One-time shop offers already bought. */
   bought: string[];
+  /** Last time (ms) the UI told the model; used for bubble expiry. */
+  clock: number;
   /** Coin-shop energy purchases today (price rises with each). */
   coinEnergy: { day: string; count: number };
 }
@@ -70,6 +78,8 @@ export type GameEvent =
   | { type: 'move'; from: number; to: number }
   | { type: 'swap'; a: number; b: number }
   | { type: 'unlock'; at: number }
+  | { type: 'bubble'; at: number; item: Item }
+  | { type: 'bubblePop'; at: number }
   | { type: 'boxOpen'; at: number }
   | { type: 'collect'; at: number; kind: 'coins' | 'energy'; amount: number }
   | { type: 'chest'; at: number; spawned: { to: number; item: Item }[] }
@@ -165,6 +175,7 @@ export function newGame(seed: number, now: number): GameState {
     ads: { day: '', count: 0 },
     bought: [],
     coinEnergy: { day: '', count: 0 },
+    clock: now,
   };
   const put = (r: number, c: number, item: Item, lock?: Lock) => {
     s.board[idx(r, c)] = lock ? { item, lock } : { item };
@@ -319,7 +330,7 @@ export function drop(s: GameState, from: number, to: number): GameEvent[] {
   const a = s.board[from];
   const b = s.board[to];
   if (!a.item || a.lock) return [];
-  if (b.lock === 'box') return [{ type: 'fail', reason: 'locked' }];
+  if (b.lock === 'box' || b.lock === 'bubble') return [{ type: 'fail', reason: 'locked' }];
 
   if (b.item && canMerge(a.item, b.item)) {
     const wasSheet = b.lock === 'sheet';
@@ -331,6 +342,13 @@ export function drop(s: GameState, from: number, to: number): GameEvent[] {
     if (wasSheet) events.push({ type: 'unlock', at: to });
     events.push({ type: 'merge', at: to, item, from });
     events.push(...openBoxesAround(s, to));
+    if (item.level >= BUBBLE_MIN_LEVEL && !CHAINS[item.chain].collectible && rand(s) < BUBBLE_CHANCE) {
+      const at = nearestEmpty(s, to);
+      if (at !== null) {
+        s.board[at] = { item: { ...item }, lock: 'bubble', until: s.clock + BUBBLE_MS };
+        events.push({ type: 'bubble', at, item: { ...item } });
+      }
+    }
     return events;
   }
   if (b.lock === 'sheet') return [{ type: 'fail', reason: 'locked' }];
@@ -559,7 +577,7 @@ export function loadState(json: string | null): GameState | null {
     const raw = JSON.parse(json) as Partial<GameState>;
     if (raw.v !== 1 || !Array.isArray(raw.board) || raw.board.length !== CELLS) return null;
     const base = newGame(raw.rng ?? 1, raw.energyAt ?? Date.now());
-    return { ...base, ...raw, stats: { ...base.stats, ...raw.stats }, ads: raw.ads ?? base.ads, bought: raw.bought ?? [], coinEnergy: raw.coinEnergy ?? base.coinEnergy } as GameState;
+    return { ...base, ...raw, stats: { ...base.stats, ...raw.stats }, ads: raw.ads ?? base.ads, bought: raw.bought ?? [], coinEnergy: raw.coinEnergy ?? base.coinEnergy, clock: raw.clock ?? base.clock } as GameState;
   } catch {
     return null;
   }
@@ -605,4 +623,34 @@ export function buyChestWithCoins(s: GameState): boolean {
   if (s.coins < COIN_CHEST_PRICE) return false;
   s.coins -= COIN_CHEST_PRICE;
   return true;
+}
+
+// ---------------------------------------------------------------------------- bubbles
+
+/** Advances the clock; bubbles past their time float away. Returns the cells cleared. */
+export function tickBubbles(s: GameState, now: number): number[] {
+  s.clock = now;
+  const gone: number[] = [];
+  s.board.forEach((c, i) => {
+    if (c.lock === 'bubble' && (c.until ?? 0) <= now) {
+      s.board[i] = { item: null };
+      gone.push(i);
+    }
+  });
+  return gone;
+}
+
+export const bubbleGemCost = (it: Item) => Math.max(3, Math.ceil(itemValue(it) / 2));
+
+/** Frees a bubble, paid with gems (`free` when a rewarded video was watched). */
+export function popBubble(s: GameState, at: number, free = false): GameEvent[] {
+  const c = s.board[at];
+  if (c.lock !== 'bubble' || !c.item) return [];
+  if (!free) {
+    const cost = bubbleGemCost(c.item);
+    if (s.gems < cost) return [{ type: 'fail', reason: 'notEnoughGems' }];
+    s.gems -= cost;
+  }
+  s.board[at] = { item: c.item };
+  return [{ type: 'bubblePop', at }];
 }

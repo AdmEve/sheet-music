@@ -7,20 +7,21 @@ import { O, THIN } from '../art/kit';
 import { portrait } from '../art/portraits';
 import { CHAINS, Item, canMerge, isGenerator, itemName, maxLevel, sameItem } from '../game/items';
 import {
-  CELLS, ENERGY_CAP, GameEvent, GameState, Order, buySheet, deliver, drop, msToNextEnergy, needsMet,
-  sellValue, sell, sheetGemCost, tap, tickEnergy, toBag, xpForLevel,
+  CELLS, ENERGY_CAP, GameEvent, GameState, Order, bubbleGemCost, buySheet, deliver, drop, msToNextEnergy, needsMet,
+  popBubble, sellValue, sell, sheetGemCost, tap, tickBubbles, tickEnergy, toBag, xpForLevel,
 } from '../game/model';
+import { adsAvailable, showRewarded } from '../platform/ads';
 import { introKey, markSeen, progress } from '../game/progress';
 import { buzz } from '../platform/haptics';
 import { writeSave } from '../platform/storage';
 import { CAST } from '../story/story';
-import { clear, fa, faNum, faTime, h, svgIcon, wait } from './dom';
+import { add, clear, fa, faNum, faTime, h, svgIcon, wait } from './dom';
 import { Modals } from './modals';
 import { PlaceScreen } from './place';
 import { sfx } from './sound';
 
 const SHEET_COVER = svgIcon(
-  `<path d="M6 18 C20 4 80 4 94 18 C98 40 96 70 92 92 C70 98 30 98 8 92 C4 70 2 40 6 18 Z" fill="#fbf7ee" fill-opacity=".72" stroke="#c9b9a0" stroke-width="2"/>` +
+  `<path d="M6 18 C20 4 80 4 94 18 C98 40 96 70 92 92 C70 98 30 98 8 92 C4 70 2 40 6 18 Z" fill="#fbf7ee" fill-opacity=".55" stroke="#c9b9a0" stroke-width="2"/>` +
     `<path d="M22 14 C30 40 26 70 30 94 M70 12 C64 40 72 66 66 94" fill="none" stroke="#d8cbb4" stroke-width="2"/>`,
   'sheet-cover',
 );
@@ -117,6 +118,19 @@ export class App {
     tickEnergy(this.s, Date.now());
     if (this.s.energy !== before) this.dirty();
     this.renderHud();
+    const gone = tickBubbles(this.s, Date.now());
+    for (const i of gone) {
+      this.renderCell(i);
+      if (this.selected === i) this.select(null);
+    }
+    if (gone.length) this.dirty();
+    this.s.board.forEach((c, i) => {
+      if (c.lock === 'bubble') {
+        const t = this.cells[i].querySelector('.bubble-time');
+        if (t) t.textContent = fa(Math.max(0, Math.ceil(((c.until ?? 0) - Date.now()) / 1000)));
+      }
+    });
+    if (this.selected !== null && this.s.board[this.selected].lock === 'bubble') this.renderInfo();
   }
 
   // ------------------------------------------------------------------ orders
@@ -215,6 +229,9 @@ export class App {
     const node = h('div', { class: cls.join(' '), html: svgIcon(itemArt(it)) });
     el.append(node);
     if (cell.lock === 'sheet') el.insertAdjacentHTML('beforeend', SHEET_COVER);
+    if (cell.lock === 'bubble') {
+      el.append(h('div', { class: 'bubble' }), h('div', { class: 'bubble-time' }, fa(Math.max(0, Math.ceil(((cell.until ?? 0) - Date.now()) / 1000)))));
+    }
   }
 
   private cellAt(x: number, y: number): number | null {
@@ -322,6 +339,7 @@ export class App {
           node?.classList.add('pop');
           this.cells[e.at].append(h('div', { class: 'merge-burst' }));
           setTimeout(() => this.cells[e.at].querySelector('.merge-burst')?.remove(), 500);
+          this.sparkles(this.cells[e.at].getBoundingClientRect(), e.item.level >= 6 ? 12 : 6);
           if (e.item.level === maxLevel(e.item.chain)) sfx.bigMerge();
           else sfx.merge(e.item.level);
           buzz(e.item.level >= 6 ? 'medium' : 'light');
@@ -341,6 +359,18 @@ export class App {
           break;
         case 'unlock':
           this.renderCell(e.at);
+          sfx.unlock();
+          ordersChanged = true;
+          break;
+        case 'bubble':
+          this.renderCell(e.at);
+          this.cells[e.at].querySelector('.bubble')?.classList.add('pop');
+          if (markSeen(this.s, 'tut:bubble')) this.toast('یه حباب! تا یه دقیقه وقت داری آزادش کنی.');
+          break;
+        case 'bubblePop':
+          this.renderCell(e.at);
+          this.cells[e.at].querySelector('.item')?.classList.add('pop');
+          this.sparkles(this.cells[e.at].getBoundingClientRect(), 10);
           sfx.unlock();
           ordersChanged = true;
           break;
@@ -434,6 +464,16 @@ export class App {
     const levelText = `سطح ${fa(it.level)} از ${fa(maxLevel(it.chain))}`;
     let hint = levelText;
     const actions: HTMLElement[] = [];
+    if (cell.lock === 'bubble') {
+      const secs = Math.max(0, Math.ceil(((cell.until ?? 0) - Date.now()) / 1000));
+      add(this.info, thumb, h('div', { class: 'text' }, h('div', { class: 'name' }, `حباب: ${itemName(it)}`), h('div', { class: 'hint' }, `${fa(secs)} ثانیه دیگه می‌پره!`)),
+        h('button', { class: 'chip pink', onclick: () => this.handle(popBubble(this.s, i), i) }, fa(bubbleGemCost(it)), h('span', { html: svgIcon(ICONS.gem) })),
+        adsAvailable() ? h('button', { class: 'chip green', onclick: async () => {
+          if (await showRewarded()) this.handle(popBubble(this.s, i, true), i);
+          else this.toast('ویدیو در دسترس نیست.');
+        } }, h('span', { html: svgIcon(ICONS.video) })) : null);
+      return;
+    }
     if (cell.lock === 'sheet') {
       hint = `زیر پارچه. یه «${itemName(it)}» دیگه روش بکش تا آزاد بشه.`;
       const cost = sheetGemCost(it);
@@ -532,6 +572,21 @@ export class App {
         void target.offsetWidth;
         target.classList.add('bump');
       }), k * 70);
+    }
+  }
+
+  /** Little stars bursting out of a merge. */
+  sparkles(at: DOMRect, count: number): void {
+    const colors = ['#ffd36b', '#ff7a9c', '#5fe0e0', '#fff'];
+    for (let k = 0; k < count; k++) {
+      const a = (k / count) * Math.PI * 2 + Math.random() * 0.5;
+      const d = 30 + Math.random() * 26;
+      const el = h('div', { class: 'spark', style: `left:${at.left + at.width / 2}px;top:${at.top + at.height / 2}px;background:${colors[k % colors.length]}` });
+      document.body.append(el);
+      el.animate(
+        [{ transform: 'translate(-50%,-50%) scale(1)', opacity: 1 }, { transform: `translate(calc(-50% + ${Math.cos(a) * d}px), calc(-50% + ${Math.sin(a) * d}px)) scale(.2)`, opacity: 0 }],
+        { duration: 520 + Math.random() * 200, easing: 'cubic-bezier(.2,.8,.3,1)' },
+      ).finished.then(() => el.remove(), () => el.remove());
     }
   }
 
