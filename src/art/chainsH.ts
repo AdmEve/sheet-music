@@ -29,7 +29,7 @@ export const SAZ: string[] = [
   shadow(50, 92, 22) + `<path d="M28 26 C28 52 42 56 44 66 L40 88 L60 88 L56 66 C58 56 72 52 72 26 Z" fill="url(#gWood)" ${O}/>` +
     `<ellipse cx="50" cy="26" rx="22" ry="7" fill="url(#gCream)" ${O}/><path d="M34 44 Q50 52 66 44 M42 74 H58" fill="none" stroke="#6b3a1a" stroke-width="2"/>` + shine(38, 40, 3, 8, 10, 0.5),
   // 5 کمانچه (spike fiddle with its bow)
-  shadow(50, 92, 22) + `<path d="M50 6 V20" ${O} stroke-width="4"/><path d="M50 20 V56" stroke="url(#gWoodDark)" stroke-width="6"/>` +
+  shadow(50, 92, 22) + `<path d="M50 6 V20" ${O} stroke-width="4"/><path d="M50 20 V56" stroke="#6b3a1a" stroke-width="6"/>` +
     `<circle cx="50" cy="64" r="15" fill="url(#gWood)" ${O}/>` + drumSkin(50, 66, 9) + `<path d="M50 79 V92" ${O} stroke-width="3"/>` +
     `<path d="M47 16 V72 M53 16 V72" stroke="#f6e3b0" stroke-width=".7"/>` +
     `<path d="M18 46 Q50 34 84 52" fill="none" ${O} stroke-width="2.4"/><path d="M20 48 Q50 38 82 54" fill="none" stroke="#f6e3b0" stroke-width="1"/>`,

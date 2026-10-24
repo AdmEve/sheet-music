@@ -8,7 +8,8 @@ alley (5 episodes), season 2 «عروسی» follows Narges' wedding, season 3 «
 دنیا» brings Uncle Bahman home, season 4 «یه نفر تو راهه» waits for the baby and season 5
 «طرح تعریض خیابان» saves the alley from the bulldozers for good and season 6 «خواستگار تبریزی»
 takes the neighbours to Tabriz for Shirin's engagement; in season 7 «ارثیه‌ی آقا مرتضی» the
-stingy grocer inherits a Qajar garden-house and opens it to everyone (5 episodes each).
+stingy grocer inherits a Qajar garden-house and opens it to everyone; season 8 «رادیو محله» puts
+Khale Mahin on the radio and the alley in a football final (5 episodes each).
 
 - Fully **offline**; progress is saved on the phone.
 - Monetization through store in-app billing (two Android flavors: **Cafe Bazaar** via

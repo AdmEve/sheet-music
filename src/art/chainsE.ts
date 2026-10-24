@@ -32,7 +32,7 @@ const desk = (w: number, top: string) =>
 export const POST: string[] = [
   // 1 مداد
   shadow(50, 80, 26) + g(`<rect x="-30" y="-6" width="52" height="12" rx="2" fill="url(#gYellow)" ${O}/><path d="M22 -6 L36 0 L22 6 Z" fill="#f2d2a2" ${O}/><path d="M32 -2 L36 0 L32 2 Z" fill="${INK}"/>` +
-    `<rect x="-36" y="-6" width="8" height="12" rx="2" fill="url(#gRose)" ${O}/><path d="M-28 -6 V6" stroke="url(#gSilver)" stroke-width="3"/><path d="M-24 -2 H20" stroke="#fff" stroke-width="1.6" opacity=".6"/>`, 'translate(50 60) rotate(-25)'),
+    `<rect x="-36" y="-6" width="8" height="12" rx="2" fill="url(#gRose)" ${O}/><path d="M-28 -6 V6" stroke="#c9ced4" stroke-width="3"/><path d="M-24 -2 H20" stroke="#fff" stroke-width="1.6" opacity=".6"/>`, 'translate(50 60) rotate(-25)'),
   // 2 کاغذ نامه
   shadow(50, 86, 26) + `<path d="M26 18 L74 18 L74 84 L26 84 Z" fill="#fffdf6" ${O} transform="rotate(-6 50 50)"/>` +
     Array.from({ length: 7 }, (_, i) => `<path d="M32 ${30 + i * 8} Q50 ${28 + i * 8} 68 ${30 + i * 8}" fill="none" stroke="#7a8aa8" stroke-width="1.4" transform="rotate(-6 50 50)"/>`).join(''),

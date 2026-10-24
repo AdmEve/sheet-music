@@ -168,8 +168,14 @@ saves are written into localStorage `mahalle.save.v1`.
       players with 12 generators can thin the board out — bag slots become worth buying;
       top-level items say they are for the album and can be sold
 
+- [x] Phase 17: Season 8 «رادیو محله» (`src/art/scenes8.ts`: the radio studio, the dirt pitch
+      behind the cistern, the stands, the «جام محلات» final under floodlights and the
+      victory parade; «فوتبال» chain + sports bag at level 45); map of 40 places; Season 9
+      teased (a Nowruz trip north for Golab's wish). Balance bot fixed: it counted a need
+      as met when one of two was on the board, and sells top-level items
+
 Next (in order):
-1. Phase 17: Season 8 «رادیو محله» (Khale Mahin on the radio)
+1. Phase 18: Season 9 «سفر شمال»
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)

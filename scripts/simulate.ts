@@ -2,7 +2,7 @@
 // generator taps (energy) and orders it took. Usage: npx tsx scripts/simulate.ts [games]
 
 import { CHAINS, GENERATOR_CHAINS, Item, canMerge, isGenerator, maxLevel, sameItem } from '../src/game/items';
-import { CELLS, GameState, deliver, drop, findForOrder, newGame, sell, tap, tickBubbles } from '../src/game/model';
+import { CELLS, GameState, deliver, drop, findForOrder, needsMet, newGame, sell, tap, tickBubbles } from '../src/game/model';
 import { completeNextTask, progress } from '../src/game/progress';
 import { PLACES } from '../src/story/story';
 
@@ -51,7 +51,8 @@ function step(s: GameState, now: number): boolean {
   const empty = s.board.filter((c) => !c.item && !c.lock).length;
   if (best && (best[2] >= 3 || empty < 8)) { const ev = drop(s, best[0], best[1]); if (process.env.SIMDEBUG) console.log('merge', best, JSON.stringify(ev)); return true; }
   // 4. tap the generator for a chain whose needed item is still missing from the board
-  const missing = s.orders.flatMap((o) => o.needs.filter((n) => !s.board.some((c) => !c.lock && c.item && sameItem(c.item, n))));
+  // What the board still lacks, counting each need (two of an item need two on the board).
+  const missing = s.orders.flatMap((o) => { const met = needsMet(s, o); return o.needs.filter((_, k) => !met[k]); });
   const wanted = new Map<string, number>();
   for (const n of missing) wanted.set(n.chain, (wanted.get(n.chain) ?? 0) + 1);
   const gens = free.filter((i) => !s.board[i].lock && s.board[i].item && GENERATOR_CHAINS.includes(s.board[i].item!.chain));

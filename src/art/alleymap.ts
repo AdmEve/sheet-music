@@ -5,7 +5,7 @@
 
 import { INK, O, THIN, sparkle } from './kit';
 
-export const MAP_H = 3870;
+export const MAP_H = 4400;
 const STEP = 106;
 const faDigits = (n: number) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 
@@ -143,6 +143,27 @@ const FACADES: Record<string, Facade> = {
   parkopening: {
     wall: '#8fbf4a', w: 120, h: 50, door: 'gate', sign: 'باغ عمه‌خانم',
     deco: [-62, 62].map((x) => `<circle cx="${x}" cy="-56" r="18" fill="url(#gLeaf)" ${O}/>`).join(''),
+  },
+  radio: {
+    wall: '#d8e4d4', door: 'arch', sign: 'رادیو محله',
+    deco: `<path d="M44 -74 V-110 M36 -102 L52 -102 M38 -94 L50 -94" ${O} stroke-width="2"/><circle cx="44" cy="-112" r="3" fill="#e0303f" ${THIN}/>`,
+  },
+  pitch: {
+    wall: '#c9a26b', h: 40, w: 136, door: 'gate',
+    deco: `<path d="M-50 -40 V-60 H-30 V-40 M50 -40 V-60 H30 V-40" fill="none" stroke="#fffdf6" stroke-width="3"/><circle cx="0" cy="-50" r="7" fill="#fffdf6" ${THIN}/>`,
+  },
+  stands: {
+    wall: '#9aa4ae', roof: 'flat', door: 'gate', w: 132,
+    deco: ['#e0303f', '#f6c945', '#14879a'].map((c, i) => `<rect x="-60" y="${-70 + i * 8}" width="120" height="6" fill="${c}"/>`).join(''),
+  },
+  final: {
+    wall: '#3f8a3a', h: 46, w: 136, door: 'gate',
+    deco: [-60, 60].map((x) => `<path d="M${x} -46 V-96" stroke="#8a96a4" stroke-width="3"/><rect x="${x - 10}" y="-104" width="20" height="10" rx="2" fill="#fff6c8" ${THIN}/>`).join(''),
+  },
+  victory: {
+    wall: '#e0b07a', w: 124, h: 60, door: 'gate',
+    deco: `<path d="M-14 -62 H14 C14 -46 6 -42 0 -40 C-6 -42 -14 -46 -14 -62 Z" fill="url(#gGold)" ${THIN}/>` +
+      Array.from({ length: 7 }, (_, i) => `<circle cx="${-48 + i * 16}" cy="${-70 - Math.sin((i / 6) * Math.PI) * 8}" r="4" fill="${['#2a9d4a', '#fffdf6', '#e0303f'][i % 3]}" ${THIN} stroke-width=".8"/>`).join(''),
   },
   wedding: {
     wall: 'url(#gWood)', w: 120, h: 70, door: 'gate',

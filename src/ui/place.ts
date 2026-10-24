@@ -69,8 +69,8 @@ export class PlaceScreen {
       );
     } else if (!p.next || !p.place) {
       card.append(
-        h('div', { class: 'tasktitle' }, 'فصل هفتم تموم شد! 🎉'),
-        h('p', { class: 'muted' }, 'آقا مرتضی باغ عمه‌ش رو به همه بخشید. ولی خاله مهین و رادیو… فصل هشتم به‌زودی با آپدیت بعدی میاد.'),
+        h('div', { class: 'tasktitle' }, 'فصل هشتم تموم شد! 🎉'),
+        h('p', { class: 'muted' }, 'کوچه‌ی حاج‌بابا قهرمان جام محلات شد! ولی آرزوی ننه‌گلاب… فصل نهم، سفر شمال، به‌زودی با آپدیت بعدی میاد.'),
         h('button', { class: 'btn', onclick: back }, 'برگرد به بازی'),
       );
     } else {

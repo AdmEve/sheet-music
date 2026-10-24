@@ -194,7 +194,7 @@ const MUSEUM: Record<string, Layer> = {
 };
 
 const museumBase = () =>
-  `<rect width="360" height="170" fill="#f2e6cc"/><rect y="120" width="360" height="50" fill="#7a2a2a"/><path d="M0 120 H360" stroke="url(#gGold)" stroke-width="4"/>` +
+  `<rect width="360" height="170" fill="#f2e6cc"/><rect y="120" width="360" height="50" fill="#7a2a2a"/><path d="M0 120 H360" stroke="#e9b949" stroke-width="4"/>` +
   floor('#a5703e');
 
 // ------------------------------------------------------------------ جشن ثبت ملی (night street party)
