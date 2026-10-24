@@ -89,7 +89,9 @@ export class App {
     this.boardEl.addEventListener('pointermove', (e) => this.onMove(e));
     this.boardEl.addEventListener('pointerup', (e) => this.onUp(e));
     this.boardEl.addEventListener('pointercancel', () => this.cancelDrag());
-    this.announcements.push(...ensureGenerators(this.s).map((it) => `«${itemName(it)}» به صفحه اضافه شد!`));
+    this.announcements.push(...ensureGenerators(this.s).map((it) => this.s.board.some((c) => c.item?.chain === it.chain)
+      ? `«${itemName(it)}» به صفحه اضافه شد!`
+      : `«${itemName(it)}» تو کیفته. یه جا براش باز کن و بیارش رو صفحه!`));
     this.renderAll();
     setInterval(() => this.tick(), 1000);
   }
