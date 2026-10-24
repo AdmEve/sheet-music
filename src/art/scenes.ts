@@ -1,7 +1,7 @@
 // Place illustrations (viewBox 0 0 360 240). Every restoration task has a layer that is
 // drawn "before" until the task is done and "after" once it is.
 
-import { INK, O, THIN, estekan, samovar, sparkle } from './kit';
+import { INK, O, THIN, estekan, samovar, sparkle, teapot } from './kit';
 
 export type Layer = (done: boolean) => string;
 
@@ -31,7 +31,7 @@ export const plank = (x: number, y: number, w: number, rot: number) =>
   `<rect x="${x}" y="${y}" width="${w}" height="9" rx="2" fill="#a77a4f" ${THIN} transform="rotate(${rot} ${x} ${y})"/>`;
 
 export const glow = (x: number, y: number, r: number, op = 0.55) =>
-  `<circle cx="${x}" cy="${y}" r="${r}" fill="url(#rGlow)" opacity="${op}"/>`;
+  `<circle class="glowp" cx="${x}" cy="${y}" r="${r}" fill="url(#rGlow)" opacity="${op}"/>`;
 
 export const stringLights = (y: number, colors = ['#ffd36b', '#ff7a9c', '#5fe0e0', '#9be36b']) =>
   `<path d="M0 ${y} Q90 ${y + 22} 180 ${y} T360 ${y}" fill="none" stroke="${INK}" stroke-width="1.5"/>` +
@@ -39,7 +39,7 @@ export const stringLights = (y: number, colors = ['#ffd36b', '#ff7a9c', '#5fe0e0
     const x = 14 + i * 27;
     const t = (x % 180) / 180;
     const yy = y + Math.sin(t * Math.PI) * 11 + 3;
-    return `<circle cx="${x}" cy="${yy}" r="8" fill="url(#rGlow)" opacity=".7"/><circle cx="${x}" cy="${yy}" r="3.6" fill="${colors[i % colors.length]}" ${THIN} stroke-width="1"/>`;
+    return `<circle cx="${x}" cy="${yy}" r="8" fill="url(#rGlow)" opacity=".7"/><circle class="bulb" style="animation-delay:${(i % 5) * 0.3}s" cx="${x}" cy="${yy}" r="3.6" fill="${colors[i % colors.length]}" ${THIN} stroke-width="1"/>`;
   }).join('');
 
 /** Wooden lattice (gereh-chini) double door. */
@@ -66,6 +66,25 @@ export const takht = (x: number, y: number, w: number) =>
   Array.from({ length: Math.floor((w - 8) / 10) }, (_, i) => `<path d="M${x + 9 + i * 10} ${y - 6} l4 8" stroke="#f6c945" stroke-width="1.4"/>`).join('') +
   `<rect x="${x + 8}" y="${y - 26}" width="26" height="22" rx="8" fill="url(#gCarpet)" ${THIN}/><rect x="${x + w - 34}" y="${y - 26}" width="26" height="22" rx="8" fill="url(#gNavy)" ${THIN}/>`;
 
+/** Terracotta pot of red geraniums. */
+export const geranium = (x: number, y: number, s = 1) =>
+  `<g transform="translate(${x} ${y}) scale(${s})">` +
+  `<path d="M-12 -18 C-20 -26 -14 -34 -6 -30 M12 -18 C20 -26 14 -34 6 -30" fill="none" stroke="#3f8a2a" stroke-width="2.4"/>` +
+  [[-8, -30], [0, -36], [8, -30], [-4, -24], [5, -23]].map(([a, b]) => `<circle cx="${a}" cy="${b}" r="4.4" fill="#e0303f" ${THIN} stroke-width="1"/>`).join('') +
+  `<path d="M-12 -14 L12 -14 L9 0 L-9 0 Z" fill="url(#gTerracotta)" ${O}/><rect x="-14" y="-17" width="28" height="5" rx="2" fill="url(#gTerracotta)" ${THIN}/></g>`;
+
+/** Hanging brass lantern (fanus) on a chain from the ceiling. */
+export const lantern = (x: number, len = 22) =>
+  `<path d="M${x} 0 V${len}" stroke="${INK}" stroke-width="1.6" stroke-dasharray="3 2"/>` +
+  `<path d="M${x - 8} ${len + 4} L${x + 8} ${len + 4} L${x + 6} ${len + 24} L${x - 6} ${len + 24} Z" fill="#ffe7a0" ${THIN}/>` +
+  `<path d="M${x - 9} ${len + 4} Q${x} ${len - 6} ${x + 9} ${len + 4} Z M${x - 7} ${len + 24} H${x + 7} V${len + 28} H${x - 7} Z" fill="url(#gBrass)" ${THIN}/>` +
+  `<circle class="glowp" cx="${x}" cy="${len + 14}" r="18" fill="url(#rGlow)" opacity=".7"/>`;
+
+/** Flat sangak loaf, pebble-dimpled, hanging or lying (w × h box at x, y). */
+export const sangak = (x: number, y: number, w: number, h: number) =>
+  `<path d="M${x} ${y + h * 0.1} Q${x + w / 2} ${y - h * 0.08} ${x + w} ${y + h * 0.1} L${x + w - 3} ${y + h} Q${x + w / 2} ${y + h * 1.08} ${x + 3} ${y + h} Z" fill="url(#gCrust)" ${THIN}/>` +
+  Array.from({ length: 8 }, (_, i) => `<ellipse cx="${x + 6 + (i % 4) * (w - 12) / 3}" cy="${y + h * (i < 4 ? 0.35 : 0.7)}" rx="2.2" ry="1.6" fill="#8f4f17" opacity=".6"/>`).join('');
+
 export const sign = (x: number, y: number, text: string, hanging: boolean) =>
   hanging
     ? `<path d="M${x + 20} ${y - 14} L${x + 30} ${y} M${x + 130} ${y - 14} L${x + 120} ${y}" stroke="${INK}" stroke-width="2"/>` +
@@ -82,18 +101,22 @@ const TEAHOUSE: Record<string, Layer> = {
         `<circle cx="178" cy="50" r="11" fill="#c9a07a" ${THIN}/><path d="M168 47 q10 6 20 0" fill="none" stroke="#3b2216" stroke-width="3" stroke-linecap="round"/><path d="M164 80 q14 -18 28 0" fill="#5a4a3a"/>`
       : cobweb(0, 0, 1.4) + cobweb(360, 0, 1.2, true) + dustPile(80, 214) + dustPile(270, 222) + dustPile(190, 230) +
         `<rect x="0" y="0" width="360" height="240" fill="#6b5a4a" opacity=".25"/>`,
-  door: (d) => (d ? latticeDoor(20, 64, 70, 106) : boardedDoor(20, 64, 70, 106)),
+  door: (d) => (d ? latticeDoor(20, 64, 70, 106) + geranium(104, 170, 0.9) + geranium(10, 172, 0.7) : boardedDoor(20, 64, 70, 106)),
   samovar: (d) =>
     d
-      ? glow(300, 120, 50, 0.6) + `<g transform="translate(262 72) scale(.78)">${samovar('url(#gBrass)')}</g>` +
-        `<path d="M300 66 q-8 -10 0 -20 q8 -10 0 -20" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".8"/>`
+      ? `<rect x="96" y="104" width="52" height="6" rx="2" fill="url(#gWoodDark)" ${O}/>` +
+        [106, 122, 138].map((x) => `<g transform="translate(${x} 92) scale(.3)">${estekan(0, 0, 1, true, false)}</g>`).join('') +
+        `<g transform="translate(232 150) scale(.42)">${teapot(0, 0, 1)}</g>` +
+        glow(300, 120, 50, 0.6) + `<g transform="translate(262 72) scale(.78)">${samovar('url(#gBrass)')}</g>` +
+        `<path class="steam" d="M300 66 q-8 -10 0 -20 q8 -10 0 -20" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".8"/>`
       : `<g transform="translate(262 72) scale(.78)" opacity=".75" style="filter:grayscale(1)">${samovar('url(#gSteel)')}</g>`,
   takht: (d) =>
     d
-      ? takht(104, 168, 130) + `<g transform="translate(140 152) scale(.4)">${estekan(0, 0, 1, true)}</g><g transform="translate(196 152) scale(.4)">${estekan(0, 0, 1, true)}</g>`
+      ? `<path d="M84 214 L270 214 L284 236 L70 236 Z" fill="url(#gCarpet)" ${O}/><path d="M92 218 L262 218 L272 232 L82 232 Z" fill="none" stroke="#f6e3b0" stroke-width="1.6" stroke-dasharray="6 4"/>` +
+        takht(104, 168, 130) + `<g transform="translate(140 152) scale(.4)">${estekan(0, 0, 1, true)}</g><g transform="translate(196 152) scale(.4)">${estekan(0, 0, 1, true)}</g>`
       : plank(110, 200, 80, 8) + plank(160, 214, 70, -12) + plank(120, 222, 60, 3),
   sign: (d) => sign(110, 6, 'قهوه‌خانه‌ی حاج‌بابا', d),
-  lights: (d) => (d ? stringLights(4) + `<rect x="0" y="0" width="360" height="240" fill="#ffcf7a" opacity=".12"/>` : `<rect x="0" y="0" width="360" height="240" fill="#1c1430" opacity=".28"/>`),
+  lights: (d) => (d ? stringLights(4) + lantern(98, 30) + lantern(274, 26) + `<rect x="0" y="0" width="360" height="240" fill="#ffcf7a" opacity=".12"/>` : `<rect x="0" y="0" width="360" height="240" fill="#1c1430" opacity=".28"/>`),
 };
 
 // ------------------------------------------------------------------ bakery
@@ -113,11 +136,12 @@ const BAKERY: Record<string, Layer> = {
   oven: (d) =>
     `<path d="M120 170 L120 70 C120 30 240 30 240 70 L240 170 Z" fill="url(#gClay)" ${O}/>` +
     `<path d="M150 170 L150 120 C150 92 210 92 210 120 L210 170 Z" fill="#3b1d10" ${O}/>` +
-    (d ? '' : `<path d="M140 50 l14 22 l-6 12 l12 20 M228 76 l-10 16 l8 10" fill="none" stroke="${INK}" stroke-width="2.5"/>`),
+    (d ? `<path d="M262 40 L246 170" stroke="#8b5328" stroke-width="5" stroke-linecap="round"/><path d="M262 40 L246 170" ${THIN} stroke-width="1" opacity=".4"/>` +
+        `<path d="M252 18 L276 22 L270 46 L254 42 Z" fill="url(#gWood)" ${O}/>` : `<path d="M140 50 l14 22 l-6 12 l12 20 M228 76 l-10 16 l8 10" fill="none" stroke="${INK}" stroke-width="2.5"/>`),
   counter: (d) =>
     d
       ? `<rect x="0" y="170" width="110" height="50" fill="url(#gWood)" ${O}/><rect x="-4" y="164" width="118" height="10" rx="2" fill="url(#gWoodDark)" ${O}/>` +
-        `<rect x="14" y="146" width="80" height="18" rx="9" fill="url(#gBread)" ${O}/>`
+        `<rect x="14" y="146" width="80" height="18" rx="9" fill="url(#gBread)" ${O}/>` + sangak(20, 132, 64, 12) + sangak(26, 120, 56, 11)
       : `<rect x="0" y="186" width="90" height="34" fill="#7a6a5a" ${O} transform="rotate(-4 45 200)"/>`,
   awning: (d) =>
     d
@@ -127,7 +151,9 @@ const BAKERY: Record<string, Layer> = {
   fire: (d) =>
     d
       ? glow(180, 140, 70, 0.7) + `<path d="M160 170 C158 150 172 140 180 124 C190 142 204 150 200 170 Z" fill="url(#gFire)"/>` +
-        `<rect x="250" y="176" width="100" height="16" rx="8" fill="url(#gBread)" ${O}/>` + sparkle(330, 60, 7) + sparkle(30, 90, 6)
+        `<rect x="250" y="176" width="100" height="16" rx="8" fill="url(#gBread)" ${O}/>` +
+        `<path d="M272 46 H352" ${O} stroke-width="4"/>` + [276, 302, 328].map((x) => `<path d="M${x + 10} 46 V50" ${THIN}/>` + sangak(x, 50, 22, 40)).join('') +
+        sparkle(330, 50, 7) + sparkle(30, 90, 6)
       : `<rect x="0" y="0" width="360" height="240" fill="#1c1430" opacity=".3"/>`,
 };
 

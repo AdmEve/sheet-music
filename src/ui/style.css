@@ -542,3 +542,18 @@ svg { display: block; }
 @keyframes pinBob { 50% { transform: translateY(-6px); } }
 textarea.code { width: 100%; font: 11px/1.4 monospace; direction: ltr; border: 0; border-radius: 12px; padding: 8px; background: #fff; box-shadow: inset 0 0 0 2px #e6cfa3; color: var(--ink); resize: none; user-select: text; -webkit-user-select: text; }
 textarea.code::placeholder { font-family: 'Vazirmatn', sans-serif; font-size: 13px; direction: rtl; }
+
+/* ------------------------------------------------------------------ living scenes */
+/* Only inside place scenes: animating many SVG nodes on the board would cost frames on old phones. */
+.scene .bulb { animation: bulb 1.6s ease-in-out infinite; }
+@keyframes bulb { 50% { opacity: 0.4; } }
+.scene .glowp { animation: glowp 3.2s ease-in-out infinite; }
+@keyframes glowp { 50% { opacity: 0.25; } }
+.scene .spk, .wipe .spk { transform-box: fill-box; transform-origin: center; animation: spk 2.4s ease-in-out infinite; }
+.scene .spk:nth-of-type(2n) { animation-delay: 1.1s; }
+@keyframes spk { 50% { transform: scale(0.45) rotate(45deg); opacity: 0.6; } }
+.scene .steam { animation: steam 2.6s ease-in-out infinite; }
+@keyframes steam { 0% { transform: translateY(6px); opacity: 0; } 40% { opacity: 0.9; } 100% { transform: translateY(-12px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .scene .bulb, .scene .glowp, .scene .spk, .scene .steam, .wipe .spk { animation: none; }
+}

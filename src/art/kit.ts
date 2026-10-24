@@ -12,7 +12,7 @@ export const shine = (cx: number, cy: number, rx: number, ry: number, rot = -25,
   `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" transform="rotate(${rot} ${cx} ${cy})" fill="#fff" opacity="${op}"/>`;
 
 export const sparkle = (x: number, y: number, s = 6, fill = '#fff') =>
-  `<path d="M${x} ${y - s} L${x + s * 0.28} ${y - s * 0.28} L${x + s} ${y} L${x + s * 0.28} ${y + s * 0.28} L${x} ${y + s} L${x - s * 0.28} ${y + s * 0.28} L${x - s} ${y} L${x - s * 0.28} ${y - s * 0.28} Z" fill="${fill}" stroke="${INK}" stroke-width="1.2" stroke-linejoin="round"/>`;
+  `<path class="spk" d="M${x} ${y - s} L${x + s * 0.28} ${y - s * 0.28} L${x + s} ${y} L${x + s * 0.28} ${y + s * 0.28} L${x} ${y + s} L${x - s * 0.28} ${y + s * 0.28} L${x - s} ${y} L${x - s * 0.28} ${y - s * 0.28} Z" fill="${fill}" stroke="${INK}" stroke-width="1.2" stroke-linejoin="round"/>`;
 
 export const g = (inner: string, t = '') => `<g${t ? ` transform="${t}"` : ''}>${inner}</g>`;
 
