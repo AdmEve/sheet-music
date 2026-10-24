@@ -46,7 +46,7 @@ await page.screenshot({ path: `${out}/a-merged.png` });
 // 2) deliver Narges' order
 await page.waitForTimeout(500);
 const btn = await page.$('.order .deliver');
-if (btn) { await btn.click({ force: true }); await page.waitForTimeout(1300); }
+if (btn) { await btn.click({ force: true }); await page.waitForTimeout(1000); }
 await page.screenshot({ path: `${out}/b-delivered.png` });
 // 3) tap the tea tin a dozen times and merge pairs greedily
 const tin = 7 * 7 + 3;

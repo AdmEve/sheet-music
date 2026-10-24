@@ -42,3 +42,8 @@ export async function writeSetting(key: string, value: string): Promise<void> {
     /* ignore */
   }
 }
+
+/** Keeps an unreadable save under a separate key (never overwritten) before starting fresh. */
+export async function backupBrokenSave(json: string): Promise<void> {
+  await writeSetting(`broken-save-${Date.now()}`, json);
+}

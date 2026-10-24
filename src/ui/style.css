@@ -314,3 +314,7 @@ svg { display: block; }
 .quest .qbar { height: 8px; border-radius: 4px; background: #ecd7ae; overflow: hidden; margin-top: 4px; }
 .quest .qbar > div { height: 100%; background: linear-gradient(90deg, #5fd17a, var(--green)); }
 .chip[disabled] { opacity: 0.5; }
+.speech { position: fixed; z-index: 63; width: 180px; padding: 6px 10px; border-radius: 14px; text-align: center; font-size: 13px; font-weight: 700;
+  background: #fff; box-shadow: inset 0 0 0 2px #e6cfa3, 0 3px 0 #0002; pointer-events: none; animation: speech 2.2s ease forwards; }
+.speech::before { content: ''; position: absolute; top: -7px; left: 50%; margin-left: -7px; border: 7px solid transparent; border-top: 0; border-bottom-color: #fff; }
+@keyframes speech { 0% { opacity: 0; transform: translateY(-6px) scale(.8); } 10%, 80% { opacity: 1; transform: none; } 100% { opacity: 0; } }

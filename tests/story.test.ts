@@ -41,3 +41,10 @@ describe('progression', () => {
     expect(s.stars).toBe(100_000 - total);
   });
 });
+
+describe('thank-you lines', () => {
+  it('exist for every character', async () => {
+    const { THANKS } = await import('../src/story/story');
+    for (const id of Object.keys(CAST)) expect(THANKS[id]?.length, id).toBeGreaterThan(0);
+  });
+});

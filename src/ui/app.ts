@@ -15,7 +15,7 @@ import { adsAvailable } from '../platform/ads';
 import { introKey, markSeen, progress } from '../game/progress';
 import { buzz } from '../platform/haptics';
 import { writeSave } from '../platform/storage';
-import { CAST } from '../story/story';
+import { CAST, THANKS } from '../story/story';
 import { add, animDone, clear, dateKey, fa, faNum, faTime, h, svgIcon, wait } from './dom';
 import { Modals } from './modals';
 import { PlaceScreen } from './place';
@@ -202,6 +202,7 @@ export class App {
     buzz('medium');
     // Items fly from the board into the customer's card.
     const target = card.getBoundingClientRect();
+    if (this.selected !== null && ev.cells.includes(this.selected)) this.select(null);
     await Promise.all(ev.cells.map((ci, k) => {
       const art = itemArt(order.needs[k] ?? order.needs[0]);
       const from = this.cells[ci].getBoundingClientRect();
@@ -212,6 +213,8 @@ export class App {
     this.flyReward(ICONS.coin, target, 'hud-coins', Math.min(6, 2 + Math.floor(order.coins / 20)));
     this.flyReward(ICONS.star, target, 'nav-alley', Math.min(5, order.stars + 1));
     this.floatText(`+${fa(order.stars)} ⭐`, target);
+    const lines = THANKS[order.who] ?? THANKS.narges;
+    this.speech(lines[Math.floor(Math.random() * lines.length)], target);
     await wait(420);
     const added = events.filter((e) => e.type === 'newOrder').map((e) => (e as Extract<GameEvent, { type: 'newOrder' }>).order.id);
     this.renderOrders(added);
@@ -616,6 +619,13 @@ export class App {
       );
       animDone(anim, ms).then(() => el.remove());
     }
+  }
+
+  /** A neighbour's short line in a speech bubble under their order card. */
+  speech(text: string, at: DOMRect): void {
+    const el = h('div', { class: 'speech', style: `top:${at.bottom + 4}px;left:${Math.max(6, Math.min(window.innerWidth - 186, at.left + at.width / 2 - 90))}px` }, text);
+    document.body.append(el);
+    setTimeout(() => el.remove(), 2200);
   }
 
   floatText(text: string, at: DOMRect): void {

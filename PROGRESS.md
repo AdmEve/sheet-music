@@ -42,7 +42,7 @@ studio + servers), card battler (Pesarkhande owns the theme; PvP needs servers).
 - **Economy:** energy (100 cap, +1 / 2 min), coins (soft), gems (hard, Bazaar IAP),
   rewarded ads for energy / doubled rewards. Daily gift. Later: weekly prize events.
 - **Monetization rails:** Cafe Bazaar in-app billing (Poolakey), domestic rewarded video
-  (Tapsell). Both behind interfaces with offline-safe fallbacks.
+  (Tapsell). Both behind interfaces with offline-safe fallbacks. Myket billing in the Myket flavor.
 
 ## Tech
 
@@ -82,12 +82,14 @@ seasons ≈ 9,700 energy for a free player (≈ 4–6 weeks casual).
 Also: performance pass for low-end phones (memoized HUD/orders/nav; ~40–110 ms per tap at
 6× CPU throttle), season 2 store screenshot, Persian launch checklist (`docs/LAUNCH-fa.md`).
 
+Myket: second store flavor done (`android/app/src/myket`, Myket billing 1.19); CI publishes
+`Mahalle.apk` (Bazaar) and `Mahalle-myket.apk`.
+
 Next (in order):
 1. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
-2. Myket store flavor (Myket billing) for the #2 Iranian store
-3. Small-size art polish pass; more juice on deliveries
-4. Season 3 («نامه‌ای از اون ور دنیا») as a post-launch update
-5. Weekly prize event design (needs a small domestic server) — optional
+2. Small-size art polish pass; more juice on deliveries
+3. Season 3 («نامه‌ای از اون ور دنیا») as a post-launch update
+4. Weekly prize event design (needs a small domestic server) — optional
 
 Known limits: local Gradle builds here can hit Maven Central rate limits (429); CI is the
 source of truth for APK builds.

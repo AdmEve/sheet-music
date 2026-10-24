@@ -9,7 +9,7 @@ import { ENERGY_CAP, ENERGY_REGEN_MS, claimDaily, loadState, newGame, refreshQue
 import { clearReminders, scheduleReminders } from './platform/notify';
 import { initAds } from './platform/ads';
 import { connectBilling, pendingPurchases, watchBillingConnection } from './platform/billing';
-import { loadSave, loadSetting } from './platform/storage';
+import { backupBrokenSave, loadSave, loadSetting } from './platform/storage';
 import { App } from './ui/app';
 import { animDone, dateKey, h, svgIcon } from './ui/dom';
 import { initToggles } from './ui/modals';
@@ -21,8 +21,11 @@ async function boot(): Promise<void> {
   const [save, sound, haptics, music] = await Promise.all([loadSave(), loadSetting('sound'), loadSetting('haptics'), loadSetting('music')]);
   // Music starts only after the splash tap (browsers/WebViews need a user gesture).
   initToggles(sound !== '0', haptics !== '0', false);
-  const fresh = !save;
-  const state = loadState(save) ?? newGame((Math.random() * 2 ** 32) >>> 0, Date.now());
+  const loaded = loadState(save);
+  // A save that exists but cannot be read is kept aside, never silently overwritten.
+  if (save && !loaded) await backupBrokenSave(save);
+  const fresh = !loaded;
+  const state = loaded ?? newGame((Math.random() * 2 ** 32) >>> 0, Date.now());
   tickEnergy(state, Date.now());
   refreshQuests(state, dateKey(new Date()));
 
@@ -107,4 +110,11 @@ function splash(): Promise<void> {
   });
 }
 
-boot();
+// Last-resort guards: log and keep playing rather than freezing on an unexpected error.
+window.addEventListener('error', (e) => console.error('game error', e.error ?? e.message));
+window.addEventListener('unhandledrejection', (e) => console.error('game rejection', e.reason));
+
+boot().catch((e) => {
+  console.error('boot failed', e);
+  document.body.insertAdjacentHTML('beforeend', '<div style="padding:24px;text-align:center;font-family:sans-serif">مشکلی پیش اومد. لطفاً بازی رو ببند و دوباره باز کن.</div>');
+});
