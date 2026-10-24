@@ -187,9 +187,14 @@ saves are written into localStorage `mahalle.save.v1`.
       own restoration school; «صنایع دستی» chain + easel at level 55); map of 50 places;
       trophy names fixed for the newer calendar events; Season 11 teased (UNESCO)
 
+- [x] Phase 20: stability pass over ten seasons — at 6× CPU throttle the splash shows in
+      ~0.8 s and the board in ~1 s (499 KB JS, 146 KB gzipped), the 50-place map opens in
+      ~350 ms with no long tasks while scrolling; the balance sim finishes all 45 tested
+      episodes in 20 of 20 games (~110 regen hours for the last ones); map store shot
+      refreshed
+
 Next (in order):
-1. Phase 20: polish and stability pass over the ten seasons (store shots, perf with 50
-   scenes, first-session check), then Season 11 «ثبت جهانی»
+1. Season 11 «ثبت جهانی»
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)
