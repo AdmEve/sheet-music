@@ -366,14 +366,15 @@ function chestDrop(s: GameState, chestLevel: number): Item {
   return { chain: pick(s, chains), level: 1 + Math.floor(rand(s) * (1 + chestLevel)) };
 }
 
-/** Product chains the player can currently produce (has a generator for, on board or bag). */
+/**
+ * Product chains the player is producing: those with a generator on the board. A generator
+ * put away in the bag pauses its chain, so a crowded late-game board can be thinned out.
+ */
 export function unlockedProducts(s: GameState): ChainId[] {
   const out = new Set<ChainId>();
-  const consider = (it: Item | null | undefined) => {
-    if (it && CHAINS[it.chain].produces && !CHAINS[it.chain].event) out.add(CHAINS[it.chain].produces!);
-  };
-  for (const c of s.board) if (!c.lock) consider(c.item);
-  for (const b of s.bag) consider(b);
+  for (const c of s.board) {
+    if (!c.lock && c.item && CHAINS[c.item.chain].produces && !CHAINS[c.item.chain].event) out.add(CHAINS[c.item.chain].produces!);
+  }
   if (out.size === 0) out.add('tea');
   return [...out];
 }

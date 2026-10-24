@@ -163,6 +163,10 @@ saves are written into localStorage `mahalle.save.v1`.
       with its plane-tree avenue, the tiled pool house, the cherry orchard, the mirror hall
       and the opening of the public garden; «کاشی» tile chain + glaze box at level 40); map
       of 35 places; Season 8 teased (Khale Mahin gets a radio show)
+- [x] Phase 16b: praise for quick merge streaks («آفرین!» … «استاد ادغام!»); a generator put
+      in the bag pauses its chain (orders only come from generators on the board), so late
+      players with 12 generators can thin the board out — bag slots become worth buying;
+      top-level items say they are for the album and can be sold
 
 Next (in order):
 1. Phase 17: Season 8 «رادیو محله» (Khale Mahin on the radio)

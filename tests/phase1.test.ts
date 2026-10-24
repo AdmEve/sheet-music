@@ -202,3 +202,20 @@ describe('rush an order with gems', () => {
     expect(s.orders).toHaveLength(1);
   });
 });
+
+describe('bagged generators', () => {
+  it('pause their chain: new orders only ask for chains with a generator on the board', async () => {
+    const { fillOrders, toBag } = await import('../src/game/model');
+    const s = emptyGame();
+    s.scriptStep = 99;
+    s.level = 12;
+    s.board[0] = { item: { chain: 'genTea', level: 1 } };
+    s.board[1] = { item: { chain: 'genBread', level: 1 } };
+    toBag(s, 1);
+    for (let k = 0; k < 50; k++) {
+      s.orders = [];
+      fillOrders(s);
+      expect(s.orders.flatMap((o) => o.needs).every((n) => n.chain === 'tea')).toBe(true);
+    }
+  });
+});

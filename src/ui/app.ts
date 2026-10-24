@@ -752,7 +752,7 @@ export class App {
     } else if (it.chain === 'chest') {
       hint = 'دوباره بزن تا باز بشه';
     } else if (it.level === maxLevel(it.chain)) {
-      hint = 'بالاترین سطح! برای سفارش‌های بزرگ نگهش دار.';
+      hint = 'بالاترین سطح! تو کلکسیون ثبت شد؛ سفارش‌ها این رو نمی‌خوان، می‌تونی بفروشیش.';
     }
     actions.unshift(h('button', { class: 'chip', onclick: () => this.modals.chain(it) }, 'ⓘ'));
     if (!cell.lock && !isGenerator(it) && !def.collectible) {
@@ -762,6 +762,7 @@ export class App {
       actions.push(h('button', { class: 'chip', onclick: () => {
         const ev = toBag(this.s, i);
         if (ev.length) return this.fail(ev);
+        if (def.produces && markSeen(this.s, 'tut:bagGen')) this.toast(`تا وقتی «${itemName(it)}» تو کیفه، کسی ازش سفارش نمی‌ده.`);
         this.renderCell(i);
         this.select(null);
         this.renderNav();
