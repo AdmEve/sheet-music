@@ -182,8 +182,14 @@ saves are written into localStorage `mahalle.save.v1`.
       job offer in Isfahan). The place screen lists seasons in one scrolling row and the
       five episodes of the chosen season below it (45 chips no longer push the task off)
 
+- [x] Phase 19: Season 10 «اصفهان» (`src/art/scenes10.ts`: a Safavid house with a muqarnas
+      iwan, Si-o-se-pol lit at night, Naqsh-e Jahan square, an arts workshop and the alley's
+      own restoration school; «صنایع دستی» chain + easel at level 55); map of 50 places;
+      trophy names fixed for the newer calendar events; Season 11 teased (UNESCO)
+
 Next (in order):
-1. Phase 19: Season 10 «اصفهان»
+1. Phase 20: polish and stability pass over the ten seasons (store shots, perf with 50
+   scenes, first-session check), then Season 11 «ثبت جهانی»
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)

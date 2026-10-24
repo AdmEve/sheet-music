@@ -5,7 +5,7 @@
 
 import { INK, O, THIN, sparkle } from './kit';
 
-export const MAP_H = 4930;
+export const MAP_H = 5460;
 const STEP = 106;
 const faDigits = (n: number) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 
@@ -186,6 +186,23 @@ const FACADES: Record<string, Facade> = {
     wall: '#f2d8a0', w: 128, h: 40, door: 'gate',
     deco: `<path d="M-30 -80 L-22 -70 L-30 -60 L-38 -70 Z" fill="url(#gRed)" ${THIN}/><path d="M24 -90 L32 -80 L24 -70 L16 -80 Z" fill="url(#gTurq)" ${THIN}/>` +
       `<path d="M-30 -60 q4 8 0 16 M24 -70 q4 8 0 16" fill="none" stroke="${INK}" stroke-width="1"/>`,
+  },
+  safavid: {
+    wall: 'url(#gCream)', door: 'arch', w: 120,
+    deco: `<path d="M-26 -44 V-60 Q-26 -74 0 -78 Q26 -74 26 -60 V-44 Z" fill="url(#gTurq)" ${O}/>`,
+  },
+  siosepol: {
+    wall: '#d9a873', h: 50, w: 140, door: 'arch',
+    deco: [-48, -24, 24, 48].map((x) => `<path d="M${x - 8} -6 V-26 Q${x} -38 ${x + 8} -26 V-6 Z" fill="#ffd36b" ${THIN}/>`).join('') + `<path d="M-74 4 H74" stroke="#6cc0ea" stroke-width="6"/>`,
+  },
+  naqshejahan: {
+    wall: '#e9c98a', roof: 'dome', roofFill: 'url(#gTurq)', door: 'arch', w: 136,
+    deco: `<path d="M58 -74 V-120" stroke="#e9c98a" stroke-width="6"/><path d="M52 -120 H64 L58 -128 Z" fill="url(#gTurq)" ${THIN}/>`,
+  },
+  workshop: { wall: '#efe3cc', roof: 'gable', roofFill: 'url(#gBlue)', door: 'shop', sign: 'کارگاه هنر' },
+  restoschool: {
+    wall: '#f2e8d0', roof: 'gable', roofFill: 'url(#gLeaf)', door: 'arch', sign: 'مدرسه‌ی مرمت',
+    deco: `<rect x="-62" y="-30" width="18" height="14" fill="#2f5a3a" ${THIN} stroke-width="1"/>`,
   },
   wedding: {
     wall: 'url(#gWood)', w: 120, h: 70, door: 'gate',

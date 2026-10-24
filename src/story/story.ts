@@ -1128,6 +1128,110 @@ export const PLACES: Place[] = [
       { who: 'mahin', text: 'نه! هیچ‌کس از این کوچه جایی نمی‌ره! … فصل بعد، باید یه فکری بکنیم.', mood: 'angry' },
     ],
   },
+  // ------------------------------------------------------------------ season 10: اصفهان
+  {
+    id: 'safavid',
+    name: 'خونه‌ی صفوی',
+    intro: [
+      { who: 'kaveh', text: 'یه ماه این‌جام، فقط برای دیدن کار. بعد تصمیم می‌گیرم. قول.' },
+      { who: 'golab', text: 'یه ماه؟ ما هم میایم! … اصفهان نصف جهانه، ما که نصف جهان رو ندیدیم.' },
+      { who: 'narges', text: 'کل کوچه دوباره سفر! این دفعه با اتوبوس.' },
+      { who: 'kaveh', text: 'خونه‌ی صفوی چهارصد سالشه. ایوونش ترک برداشته، حوضش خشکه.' },
+    ],
+    tasks: [
+      { id: 'saf.iwan', title: 'ایوون مقرنس', cost: 300, layer: 'iwan', after: [{ who: 'kaveh', text: 'مقرنس‌کاری… مثل لونه‌ی زنبور، ولی از گچ. هر تکه رو با دست تراشیدن.' }] },
+      { id: 'saf.pool', title: 'حوض حیاط', cost: 302, layer: 'pool', after: [{ who: 'golab', text: 'حوض همه‌ی خونه‌های قدیمی شبیه همه. انگار همه یه مادر دارن.' }] },
+      { id: 'saf.garden', title: 'باغچه‌ی چهارباغ', cost: 304, layer: 'garden', after: [{ who: 'fakhri', text: 'چهار باغچه، با جوی آب وسطش. نقشه‌ی بهشت ایرانی.' }] },
+      { id: 'saf.doors', title: 'درهای گره‌چینی', cost: 306, layer: 'doors', after: [{ who: 'aydin', text: 'این گره‌چینی کار یه عمره. استادکارش لابد مثل ننه‌ی من صبور بوده.' }] },
+      { id: 'saf.lights', title: 'چراغ‌های ایوون', cost: 308, layer: 'lights', after: [{ who: 'kaveh', text: 'مدیر میراث گفت کار من بهترین مرمت سال بوده. می‌خوان اینجا بمونم…', mood: 'surprised' }] },
+    ],
+    outro: [
+      { who: 'narges', text: 'کاوه… هر تصمیمی بگیری، باهاتم. ولی امشب فقط بریم کنار زاینده‌رود.' },
+      { who: 'kaveh', text: 'امشب فقط زاینده‌رود. قول.' },
+    ],
+  },
+  {
+    id: 'siosepol',
+    name: 'سی‌وسه‌پل',
+    intro: [
+      { who: 'bahman', text: 'سی و سه تا طاق. جوون که بودیم، زیر این پل آواز می‌خوندیم.' },
+      { who: 'reza', text: 'زاینده‌رود آب داره! چه شانسی. … ولی چراغ‌های پل خاموشه.' },
+      { who: 'shirin', text: 'خاموش؟ ما اینجاییم که روشنش کنیم!' },
+    ],
+    tasks: [
+      { id: 'sio.arches', title: 'طاق‌های پل', cost: 306, layer: 'arches', after: [{ who: 'kaveh', text: 'چهارصد ساله این آجرها روی هم‌اند. معمارهای اون زمان استاد ما هستن.' }] },
+      { id: 'sio.river', title: 'آب زاینده‌رود', cost: 308, layer: 'river', after: [{ who: 'golab', text: 'رودخونه‌ی پر، شهر رو زنده می‌کنه. مثل آب حوض که حیاط رو.' }] },
+      { id: 'sio.lights', title: 'چراغ‌های طاق‌ها', cost: 310, layer: 'lights', after: [{ who: 'mahin', text: 'شنونده‌های عزیز! زنده از سی‌وسه‌پل… قشنگ‌ترین شب عمرم!', mood: 'happy' }] },
+      { id: 'sio.boat', title: 'قایق‌های پدالی', cost: 312, layer: 'boat', after: [{ who: 'morteza', text: 'قایق قویی! … چرا من باید پدال بزنم؟ چرا همیشه من؟', mood: 'angry' }] },
+      { id: 'sio.song', title: 'آواز زیر پل', cost: 314, layer: 'song', after: [{ who: 'bahman', text: 'داداش… این آواز رو برای تو می‌خونم. زیر همون طاقی که با هم می‌خوندیم.', mood: 'sad' }] },
+    ],
+    outro: [
+      { who: 'aydin', text: 'فردا میدون نقش جهان! میدونی که از تبریز هم معروف‌تره… فقط یه کم!' },
+      { who: 'kaveh', text: 'تو میدون یه کارگاه مرمت دارن. می‌خوام ببینم چی کار می‌کنن.' },
+    ],
+  },
+  {
+    id: 'naqshejahan',
+    name: 'میدان نقش جهان',
+    intro: [
+      { who: 'golab', text: 'وای… این همه گنبد و کاشی! حاج‌بابا همیشه می‌گفت قبل از مردن باید اینجا رو ببینم.', mood: 'surprised' },
+      { who: 'narges', text: 'دلیجان‌ها رو نگاه کن! سوار شیم؟' },
+      { who: 'kaveh', text: 'میدون صدها ساله. ولی حوض وسطش و طاق‌نماهای دورش هر سال مرمت می‌خوان.' },
+    ],
+    tasks: [
+      { id: 'nq.arcade', title: 'طاق‌نماهای میدان', cost: 312, layer: 'arcade', after: [{ who: 'kaveh', text: 'دو طبقه طاق‌نما، دور تا دور میدون. یه قاب برای کل شهر.' }] },
+      { id: 'nq.pool', title: 'حوض بزرگ', cost: 314, layer: 'pool', after: [{ who: 'shirin', text: 'فواره‌ها! گلاب کوچولو داره دنبال کبوترها می‌دوه!', mood: 'happy' }] },
+      { id: 'nq.carriage', title: 'دلیجان', cost: 316, layer: 'carriage', after: [{ who: 'fakhri', text: 'یه دور دلیجان سواری. … من هیچ‌وقت این‌قدر خوش نگذرونده بودم.', mood: 'happy' }] },
+      { id: 'nq.domes', title: 'گنبدهای فیروزه‌ای', cost: 318, layer: 'domes', after: [{ who: 'golab', text: 'حاج‌بابا، دیدمش. همون‌جوری که می‌گفتی. آبی‌تر از آسمون.', mood: 'sad' }] },
+      { id: 'nq.lanterns', title: 'فانوس‌های شب', cost: 320, layer: 'lanterns', after: [{ who: 'narges', text: 'شب میدون… مثل شب کوچه‌ی خودمون. فقط هزار برابر بزرگ‌تر.' }] },
+    ],
+    outro: [
+      { who: 'kaveh', text: 'تو بازار قیصریه یه استاد مینیاتور هست. نود سالشه، ولی شاگرد نداره.' },
+      { who: 'kaveh', text: 'گفت: «هنری که شاگرد نداشته باشه، با استادش می‌میره.» … تمام راه بهش فکر کردم.' },
+    ],
+  },
+  {
+    id: 'workshop',
+    name: 'کارگاه هنرهای اصفهان',
+    intro: [
+      { who: 'mahin', text: 'استاد مینیاتور گفت هر کی بخواد، یه چیزی یادش می‌ده. من مینا کاری می‌خوام!' },
+      { who: 'aydin', text: 'منم قلم‌زنی. پدربزرگم همیشه می‌گفت دستت باید یه هنر بلد باشه.' },
+      { who: 'kaveh', text: 'کارگاه خاک خورده. قبل از کلاس، باید سر پا بشه.' },
+    ],
+    tasks: [
+      { id: 'ws.easels', title: 'سه‌پایه‌های نقاشی', cost: 318, layer: 'easels', after: [{ who: 'shirin', text: 'اولین مینیاتورم! … یه گل که شبیه گربه شده. ولی با عشق کشیدمش!', mood: 'happy' }] },
+      { id: 'ws.mina', title: 'میز میناکاری', cost: 320, layer: 'mina', after: [{ who: 'mahin', text: 'آبی مینا… رنگش از آسمون اصفهان دزدیده شده!' }] },
+      { id: 'ws.ghalam', title: 'قلم‌زنی روی مس', cost: 322, layer: 'ghalam', after: [{ who: 'aydin', text: 'تق، تق، تق… هر ضربه یه خط. مثل گره‌ی فرش، صبر می‌خواد.' }] },
+      { id: 'ws.khatam', title: 'جعبه‌ی خاتم', cost: 324, layer: 'khatam', after: [{ who: 'reza', text: 'هزار تا تکه‌ی ریز چوب و استخون… این رو چه جوری می‌سازن؟!', mood: 'surprised' }] },
+      { id: 'ws.window', title: 'پنجره‌ی کارگاه', cost: 326, layer: 'window', after: [{ who: 'kaveh', text: 'تصمیمم رو گرفتم. برمی‌گردیم. ولی دست خالی نه.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'kaveh', text: 'تو کوچه‌ی خودمون یه مدرسه‌ی مرمت باز می‌کنیم. استاد مینیاتور هم ماهی یه بار میاد درس می‌ده.' },
+      { who: 'narges', text: 'یعنی… می‌مونیم؟', mood: 'happy' },
+      { who: 'kaveh', text: 'جای ما همون‌جاست، نرگس. هنر رو باید برد جایی که آدم‌هاش رو دوست داری.', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'restoschool',
+    name: 'مدرسه‌ی مرمت کوچه',
+    intro: [
+      { who: 'farokhi', text: 'طبقه‌ی دوم پاساژ هم خالیه. مدرسه‌ی مرمت اون‌جا باشه، کنار موزه.' },
+      { who: 'mahin', text: 'اولین ثبت‌نامی‌ها: بیست و سه نفر! از همه‌ی محله‌ها، حتی کوچه‌ی بهار!' },
+      { who: 'golab', text: 'پس کلاس رو آماده کنیم. بچه‌ها باید جای خوب درس بخونن.' },
+    ],
+    tasks: [
+      { id: 'sch.desks', title: 'میز و نیمکت‌ها', cost: 324, layer: 'desks', after: [{ who: 'reza', text: 'میزها رو از چوب درخت توت خونه‌ی پدری ساختیم. یادگاری حاج‌بابا.' }] },
+      { id: 'sch.board', title: 'تخته‌ی کلاس', cost: 326, layer: 'board', after: [{ who: 'kaveh', text: 'درس اول: «هر خونه‌ی قدیمی یه قصه داره. مرمت یعنی گوش دادن به اون قصه.»' }] },
+      { id: 'sch.tools', title: 'قفسه‌ی ابزار مرمت', cost: 328, layer: 'tools', after: [{ who: 'morteza', text: 'ابزارها رو از بقالی آوردم. … فروشی نیستن! هدیه‌ن. باور کنید!' }] },
+      { id: 'sch.model', title: 'ماکت خونه‌ی صفوی', cost: 330, layer: 'model', after: [{ who: 'aydin', text: 'ماکت رو بچه‌ها با هم ساختن. یه روز یکی‌شون خود خونه رو مرمت می‌کنه.' }] },
+      { id: 'sch.ribbon', title: 'جشن افتتاح مدرسه', cost: 332, layer: 'ribbon', after: [{ who: 'narges', text: 'از یه قهوه‌خونه‌ی خاک‌گرفته شروع کردیم. حالا کوچه‌ی ما بقیه رو یاد می‌ده چه‌جوری نجات بدن.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'mahin', text: 'خبر داغ! … یه نامه از یونسکو! کارشناس‌هاشون از ماکت کوچه تو موزه عکس دیدن!', mood: 'surprised' },
+      { who: 'farokhi', text: 'ثبت جهانی؟ … کوچه‌ی حاج‌بابا؟', mood: 'surprised' },
+      { who: 'golab', text: 'حاج‌بابا… کوچه‌ات داره دنیا رو می‌گیره. فصل بعد…', mood: 'happy' },
+    ],
+  },
 ];
 
 export function findTask(id: string): { place: Place; task: Task; index: number } | null {

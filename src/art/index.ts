@@ -11,6 +11,7 @@ import { GEN_SAZ, SAZ } from './chainsH';
 import { GEN_TILE, TILE } from './chainsI';
 import { FOOTBALL, GEN_FOOTBALL } from './chainsJ';
 import { GEN_SEA, SEA } from './chainsK';
+import { CRAFT, GEN_CRAFT } from './chainsL';
 import {
   ASH, GEN_ASH, GEN_ICECREAM, GEN_KITE, GEN_LAVASHAK, GEN_NOWRUZ, GEN_SCHOOL, GEN_SURI, GEN_YALDA, ICECREAM, KITE, LAVASHAK, NOWRUZ, SCHOOL, SURI, YALDA,
 } from './events';
@@ -30,6 +31,7 @@ const ART: Record<ChainId, string[]> = {
   tile: TILE,
   football: FOOTBALL,
   sea: SEA,
+  craft: CRAFT,
   genTea: GEN_TEA,
   genBread: GEN_BREAD,
   genGarden: GEN_GARDEN,
@@ -44,6 +46,7 @@ const ART: Record<ChainId, string[]> = {
   genTile: GEN_TILE,
   genFootball: GEN_FOOTBALL,
   genSea: GEN_SEA,
+  genCraft: GEN_CRAFT,
   chest: CHEST,
   coins: COINS,
   energy: ENERGY,

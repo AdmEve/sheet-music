@@ -91,8 +91,8 @@ export class PlaceScreen {
       );
     } else if (!p.next || !p.place) {
       card.append(
-        h('div', { class: 'tasktitle' }, 'فصل نهم تموم شد! 🎉'),
-        h('p', { class: 'muted' }, 'ننه‌گلاب بالاخره دوباره دریا رو دید. ولی پیشنهاد کاری کاوه از اصفهان… فصل دهم به‌زودی با آپدیت بعدی میاد.'),
+        h('div', { class: 'tasktitle' }, 'فصل دهم تموم شد! 🎉'),
+        h('p', { class: 'muted' }, 'کاوه موند و مدرسه‌ی مرمت کوچه باز شد. ولی نامه‌ی یونسکو… فصل یازدهم به‌زودی با آپدیت بعدی میاد.'),
         h('button', { class: 'btn', onclick: back }, 'برگرد به بازی'),
       );
     } else {
