@@ -25,14 +25,15 @@ import { CHAINS, ChainId, GENERATOR_CHAINS, Item, PRODUCT_CHAINS, itemKey, itemN
 import {
   BAG_MAX, COIN_CHEST_PRICE, COIN_ENERGY_AMOUNT, DAILY_REWARDS, ENERGY_CAP, addEnergy, adsLeft, bagSlotCost, buyBagSlot,
   buyChestWithCoins, buyEnergyWithCoins, buyRefill, claimQuest, claimQuestBonus, coinEnergyLeft, coinEnergyPrice, countAd, fromBag,
-  allQuestsClaimed, newGame, questDone, questProgress, refillPrice, xpForLevel,
+  allQuestsClaimed, loadState, newGame, questDone, questProgress, refillPrice, xpForLevel,
 } from '../game/model';
 import { adsAvailable, showRewarded } from '../platform/ads';
 import { PRODUCTS, billingAvailable, buy, consume, fetchPrices } from '../platform/billing';
 import { MAX_ADS_PER_DAY } from '../platform/config';
 import { setHaptics } from '../platform/haptics';
 import { askNotifications } from '../platform/notify';
-import { rateOnStore, shareGame } from '../platform/social';
+import { copyText, rateOnStore, shareGame, shareText } from '../platform/social';
+import { decodeSave, encodeSave } from '../game/transfer';
 import { writeSetting } from '../platform/storage';
 import type { App } from './app';
 import { add, clear, dateKey, fa, faClock, faLeft, faNum, faTime, h, svgIcon } from './dom';
@@ -800,6 +801,42 @@ export class Modals {
     await askNotifications();
   }
 
+  /** Moving progress between phones with a code (the game has no accounts or server). */
+  transfer(): Promise<void> {
+    const s = this.app.s;
+    return this.open('انتقال پیشرفت', (body, close) => {
+      const code = encodeSave(JSON.stringify(s));
+      const mine = h('textarea', { class: 'code', readonly: true, rows: 3 });
+      mine.value = code;
+      const input = h('textarea', { class: 'code', rows: 3, placeholder: 'کد رو اینجا بچسبون…' });
+      add(body,
+        h('p', { style: 'font-size:13px' }, 'این کد همه‌ی پیشرفتت رو داره. برای خودت بفرست (مثلاً تو پیام‌رسان) و روی گوشی جدید واردش کن.'),
+        mine,
+        h('div', { class: 'grid2' },
+          h('button', { class: 'btn', onclick: async () => this.app.toast((await copyText(code)) ? 'کد کپی شد!' : 'کپی نشد؛ متن رو نگه دار و کپی کن.') }, 'کپی کد'),
+          h('button', { class: 'btn pink', onclick: () => shareText('کد پیشرفت محله‌ی ما', code) }, 'ارسال برای خودم')),
+        h('p', { style: 'font-weight:900;margin-top:14px' }, 'کد داری؟ واردش کن:'),
+        input,
+        h('button', { class: 'btn gold', onclick: async () => {
+          const json = decodeSave(input.value);
+          const next = json ? loadState(json) : null;
+          if (!next) return this.app.toast('این کد درست نیست. کامل کپی‌اش کن و دوباره امتحان کن.');
+          await this.open('جایگزین بشه؟', (b2, c2) => {
+            add(b2,
+              h('p', {}, `پیشرفت این گوشی (سطح ${fa(s.level)}) پاک می‌شه و پیشرفت کد (سطح ${fa(next.level)}، ${fa(next.tasksDone.length)} تعمیر) جاش میاد.`),
+              h('button', { class: 'btn pink', onclick: async () => {
+                this.app.s = next;
+                await this.app.saveNow();
+                c2();
+                close();
+                location.reload();
+              } }, 'آره، جایگزین کن'),
+              h('button', { class: 'btn plain', onclick: c2 }, 'نه'));
+          });
+        } }, 'بارگذاری پیشرفت'));
+    });
+  }
+
   settings(): Promise<void> {
     const s = this.app.s;
     return this.open('پروفایل و تنظیمات', (body, close) => {
@@ -832,6 +869,7 @@ export class Modals {
         toggle('موسیقی', musicEnabled, (v) => { setMusic(v); writeSetting('music', v ? '1' : '0'); }),
         toggle('صدا', soundOn, (v) => { setSound(v); writeSetting('sound', v ? '1' : '0'); }),
         toggle('لرزش', () => hapticsOn, (v) => { hapticsOn = v; setHaptics(v); writeSetting('haptics', v ? '1' : '0'); }),
+        h('button', { class: 'btn plain', onclick: () => this.transfer() }, '📲 انتقال به گوشی دیگه'),
         h('button', { class: 'btn gold', onclick: () => rateOnStore() }, '⭐ امتیاز بده'),
         h('button', { class: 'btn pink', onclick: () => shareGame() }, 'دعوت از دوستان'),
         h('p', { style: 'font-size:13px' }, 'محله‌ی ما — نسخه‌ی ', fa(__APP_VERSION__)),

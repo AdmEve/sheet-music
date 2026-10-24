@@ -540,3 +540,5 @@ svg { display: block; }
 .map-place { cursor: pointer; }
 .map-pin { animation: pinBob 1.2s ease-in-out infinite; }
 @keyframes pinBob { 50% { transform: translateY(-6px); } }
+textarea.code { width: 100%; font: 11px/1.4 monospace; direction: ltr; border: 0; border-radius: 12px; padding: 8px; background: #fff; box-shadow: inset 0 0 0 2px #e6cfa3; color: var(--ink); resize: none; user-select: text; -webkit-user-select: text; }
+textarea.code::placeholder { font-family: 'Vazirmatn', sans-serif; font-size: 13px; direction: rtl; }
