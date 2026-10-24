@@ -97,3 +97,24 @@ export function openGift(s: GameState, now: number, roll: number): GiftReward {
 export const skipGift = (s: GameState, now: number) => {
   s.giftAt = now + GIFT_EVERY_MS;
 };
+
+// ---------------------------------------------------------------- welcome back
+
+export const AWAY_DAYS = 2;
+const DAY = 86_400_000;
+
+export interface WelcomeGift {
+  days: number;
+  energy: number;
+  gems: number;
+  /** Chest level. */
+  chest: number;
+}
+
+/** A gift for a player who comes back after AWAY_DAYS or more; `last` is when they left. */
+export function welcomeBack(s: GameState, last: number, now: number): WelcomeGift | null {
+  if (!last || s.level < GIFT_LEVEL) return null;
+  const days = Math.floor((now - last) / DAY);
+  if (days < AWAY_DAYS) return null;
+  return { days, energy: 100, gems: Math.min(30, 5 * days), chest: Math.min(3, 1 + Math.floor(days / 5)) };
+}

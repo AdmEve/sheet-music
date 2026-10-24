@@ -7,6 +7,7 @@ import { DEFS } from './art/defs';
 import { itemArt } from './art/index';
 import { ENERGY_CAP, ENERGY_REGEN_MS, claimDaily, loadState, newGame, refreshQuests, tickEnergy } from './game/model';
 import { MILESTONES, THEMES, eventActive, eventEnd } from './game/events';
+import { welcomeBack } from './game/offers';
 import { RACE_MS } from './game/race';
 import { clearReminders, scheduleReminders } from './platform/notify';
 import { initAds } from './platform/ads';
@@ -28,6 +29,8 @@ async function boot(): Promise<void> {
   if (save && !loaded) await backupBrokenSave(save);
   const fresh = !loaded;
   const state = loaded ?? newGame((Math.random() * 2 ** 32) >>> 0, Date.now());
+  // Read before anything ticks the clock: it still says when the game last ran.
+  const away = loaded ? welcomeBack(state, state.clock, Date.now()) : null;
   tickEnergy(state, Date.now());
   refreshQuests(state, dateKey(new Date()));
 
@@ -52,6 +55,7 @@ async function boot(): Promise<void> {
   initAds();
 
   if (fresh) await app.firstRun();
+  if (away) await app.modals.welcome(away);
   const now = new Date();
   const yesterday = new Date(now.getTime() - 86_400_000);
   const daily = claimDaily(app.s, dateKey(now), dateKey(yesterday));
@@ -84,8 +88,10 @@ async function boot(): Promise<void> {
   // Lets the store-screenshot script stage a story line (nothing in the game fires this).
   document.addEventListener('debug-line', (e) => app.place.dialogue([(e as CustomEvent).detail]));
 
+  let hiddenAt = 0;
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') {
+      hiddenAt = Date.now();
       app.saveNow();
       stopMusic();
       const s = app.s;
@@ -101,6 +107,9 @@ async function boot(): Promise<void> {
       startMusic();
       tickEnergy(app.s, Date.now());
       app.renderHud();
+      // Back from the background after days (the app was never closed).
+      const away = welcomeBack(app.s, hiddenAt, Date.now());
+      if (away && !document.querySelector('.overlay')) void app.modals.welcome(away);
     }
   });
 }

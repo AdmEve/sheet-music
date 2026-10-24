@@ -7,7 +7,8 @@ import {
   CHAIN_BONUS_GEMS, CODEX_CHAINS, Reward, chainComplete, chainKey, claimAllCodex, claimCodex, codexClaimable, codexReward, isFound,
 } from '../game/codex';
 import {
-  OFFER_SKU, OfferId, PIGGY_CAP, PIGGY_MIN, PIGGY_PER_ORDER, activeOffers, breakPiggy, endOffer, firstBonusOpen, openGift, piggyReady, skipGift,
+  OFFER_SKU, OfferId, PIGGY_CAP, PIGGY_MIN, PIGGY_PER_ORDER, WelcomeGift, activeOffers, breakPiggy, endOffer, firstBonusOpen, openGift, piggyReady,
+  skipGift,
 } from '../game/offers';
 import { monthEnd, toJalali } from '../game/calendar';
 import {
@@ -754,6 +755,30 @@ export class Modals {
         gift ? h('p', { style: 'font-size:13px' }, `«${itemName(gift)}» به صفحه اضافه شد!`) : null,
         UNLOCKS[level] ? h('div', { class: 'unlock' }, '🔓 تازه باز شد: ', h('b', {}, UNLOCKS[level])) : null,
         h('button', { class: 'btn big', onclick: close }, 'عالیه!'),
+      );
+    }, false);
+  }
+
+  /** Back after a few days away: the neighbours kept something for you. */
+  welcome(g: WelcomeGift): Promise<void> {
+    const s = this.app.s;
+    sfx.levelUp();
+    const chip = (icon: string, text: string) => h('span', { class: 'got' }, h('span', { html: svgIcon(icon) }), text);
+    const chest = { chain: 'chest' as const, level: g.chest };
+    return this.open('خوش برگشتی!', (body, close) => {
+      add(body,
+        h('div', { class: 'order-sheet' },
+          h('div', { class: 'who', html: svgIcon(portrait('mahin', 'happy')) }),
+          h('p', { style: 'flex:1;text-align:right;margin:0' }, `${fa(g.days)} روزه نبودی! کوچه بدون تو سوت و کور بود. همسایه‌ها برات یه چیزی کنار گذاشتن…`)),
+        h('div', { class: 'contents' }, chip(ICONS.energy, faNum(g.energy)), chip(ICONS.gem, faNum(g.gems)), chip(itemArt(chest), itemName(chest))),
+        h('button', { class: 'btn big', onclick: () => {
+          addEnergy(s, g.energy);
+          s.gems += g.gems;
+          this.app.giveItem(chest);
+          this.app.renderAll();
+          this.app.dirty();
+          close();
+        } }, 'ممنون!'),
       );
     }, false);
   }

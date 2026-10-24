@@ -147,6 +147,10 @@ saves are written into localStorage `mahalle.save.v1`.
       items by name with what is still missing, «خودم درستش می‌کنم» (highlights them on the
       board) and «تحویل فوری» — the missing items paid in gems (their worth / 3, min 3),
       a gem sink that cannot loop with level-up gems
+- [x] Phase 13b: «خوش برگشتی!» — back after 2+ days (relaunch or resume from the
+      background): 100 energy, 5 gems a day away (max 30) and a chest from Khale Mahin;
+      perf re-check at 6× throttle with 25 places (map opens in ~450 ms, no long tasks
+      while scrolling)
 
 Next (in order):
 1. Phase 13: polish pass (store screenshots for the new seasons, perf re-check with 25

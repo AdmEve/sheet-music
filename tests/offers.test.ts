@@ -95,3 +95,18 @@ describe('save migration', () => {
     expect(s.giftAt).toBe(0);
   });
 });
+
+describe('welcome back', () => {
+  it('gives a gift after two days away, growing with the absence', async () => {
+    const { welcomeBack, AWAY_DAYS } = await import('../src/game/offers');
+    const { newGame } = await import('../src/game/model');
+    const s = newGame(1, 0);
+    s.level = 5;
+    const day = 86_400_000;
+    expect(welcomeBack(s, day, day + (AWAY_DAYS * day - 1))).toBeNull();
+    expect(welcomeBack(s, day, day + 2 * day)).toEqual({ days: 2, energy: 100, gems: 10, chest: 1 });
+    expect(welcomeBack(s, day, day + 30 * day)).toEqual({ days: 30, energy: 100, gems: 30, chest: 3 });
+    s.level = 1;
+    expect(welcomeBack(s, day, day + 5 * day)).toBeNull();
+  });
+});
