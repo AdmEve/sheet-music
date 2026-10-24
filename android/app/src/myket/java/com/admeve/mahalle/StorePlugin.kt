@@ -207,7 +207,7 @@ class StorePlugin : Plugin() {
     override fun handleOnDestroy() {
         try {
             helper?.dispose()
-        } catch (_: Exception) {
+        } catch (e: Exception) {
         }
         helper = null
         ready = false
