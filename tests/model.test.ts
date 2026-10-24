@@ -284,3 +284,28 @@ describe('bubbles', () => {
     expect(s.board[40].item).toBeNull();
   });
 });
+
+describe('daily quests', () => {
+  it('hands out three quests a day, tracks stats and pays once', async () => {
+    const m = await import('../src/game/model');
+    const s = emptyGame();
+    expect(m.refreshQuests(s, '2026-10-01')).toBe(true);
+    expect(m.refreshQuests(s, '2026-10-01')).toBe(false);
+    expect(s.quests.list).toHaveLength(3);
+    const q = s.quests.list[0];
+    expect(m.claimQuest(s, 0)).toBe(false);
+    s.stats.merges += q.target;
+    expect(m.questDone(s, q)).toBe(true);
+    const coins = s.coins;
+    expect(m.claimQuest(s, 0)).toBe(true);
+    expect(s.coins).toBeGreaterThan(coins);
+    expect(m.claimQuest(s, 0)).toBe(false);
+    expect(m.claimQuestBonus(s)).toBeNull();
+    s.stats.orders += 100; s.stats.taps += 1000;
+    m.claimQuest(s, 1); m.claimQuest(s, 2);
+    expect(m.claimQuestBonus(s)).toEqual({ chain: 'chest', level: 2 });
+    expect(m.claimQuestBonus(s)).toBeNull();
+    expect(m.refreshQuests(s, '2026-10-02')).toBe(true);
+    expect(s.quests.list.every((x) => !x.claimed)).toBe(true);
+  });
+});

@@ -27,6 +27,11 @@ export const ICONS = {
     `<circle cx="50" cy="50" r="30" fill="url(#gSteel)" ${O}/>` +
     [0, 45, 90, 135, 180, 225, 270, 315].map((a) => `<rect x="43" y="6" width="14" height="18" rx="3" fill="url(#gSteel)" ${THIN} transform="rotate(${a} 50 50)"/>`).join('') +
     `<circle cx="50" cy="50" r="12" fill="#fff7e6" ${O}/>`,
+  quest:
+    `<rect x="22" y="14" width="56" height="72" rx="6" fill="url(#gPaper)" ${O}/>` +
+    `<rect x="16" y="10" width="68" height="12" rx="6" fill="url(#gWood)" ${O}/><rect x="16" y="80" width="68" height="12" rx="6" fill="url(#gWood)" ${O}/>` +
+    `<path d="M32 36 l5 5 l9 -10 M32 54 l5 5 l9 -10" fill="none" stroke="#3fae5a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>` +
+    `<path d="M52 38 h16 M52 56 h16 M32 70 h36" stroke="#a5621f" stroke-width="4" stroke-linecap="round"/>`,
   video:
     `<rect x="10" y="22" width="80" height="56" rx="12" fill="url(#gRed)" ${O}/><path d="M42 36 L64 50 L42 64 Z" fill="#fff" ${THIN}/>`,
   sparkles: sparkle(30, 30, 14) + sparkle(70, 60, 10) + sparkle(64, 22, 7),

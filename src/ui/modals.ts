@@ -5,7 +5,8 @@ import { ICONS } from '../art/icons';
 import { CHAINS, Item, itemName } from '../game/items';
 import {
   BAG_MAX, COIN_CHEST_PRICE, COIN_ENERGY_AMOUNT, DAILY_REWARDS, ENERGY_CAP, addEnergy, adsLeft, bagSlotCost, buyBagSlot,
-  buyChestWithCoins, buyEnergyWithCoins, coinEnergyLeft, coinEnergyPrice, countAd, fromBag, newGame,
+  buyChestWithCoins, buyEnergyWithCoins, claimQuest, claimQuestBonus, coinEnergyLeft, coinEnergyPrice, countAd, fromBag,
+  newGame, questDone, questProgress,
 } from '../game/model';
 import { adsAvailable, showRewarded } from '../platform/ads';
 import { PRODUCTS, billingAvailable, buy, fetchPrices } from '../platform/billing';
@@ -245,6 +246,44 @@ export class Modals {
       body.append(row, h('p', {}, 'هر روز سر بزن تا هدیه‌ها بزرگ‌تر بشن!'));
       body.append(h('button', { class: 'btn', onclick: close }, `گرفتم! ${[r.coins ? `${fa(r.coins)} سکه` : '', r.energy ? `${fa(r.energy)} انرژی` : '', r.gems ? `${fa(r.gems)} الماس` : ''].filter(Boolean).join(' + ')}`));
     }, false);
+  }
+
+  quests(): Promise<void> {
+    const s = this.app.s;
+    const label = { merges: 'ادغام کن', orders: 'سفارش تحویل بده', taps: 'مولدها رو بزن' } as const;
+    return this.open('کارهای روزانه', (body) => {
+      const render = () => {
+        clear(body);
+        body.append(h('p', { style: 'font-size:13px' }, 'هر روز سه کار تازه. همه رو انجام بدی، یه صندوقچه‌ی مسی هم جایزه داری!'));
+        s.quests.list.forEach((q, k) => {
+          const prog = questProgress(s, q);
+          const reward = [q.reward.coins ? `${fa(q.reward.coins)} سکه` : '', q.reward.energy ? `${fa(q.reward.energy)} انرژی` : '', q.reward.gems ? `${fa(q.reward.gems)} الماس` : ''].filter(Boolean).join(' ');
+          body.append(h('div', { class: 'quest' },
+            h('div', { class: 'qtext' }, `${fa(q.target)} بار ${label[q.kind]}`, h('div', { class: 'qbar' }, h('div', { style: `width:${(prog / q.target) * 100}%` })), h('div', { class: 'qsub' }, `${fa(prog)} / ${fa(q.target)} · جایزه: ${reward}`)),
+            q.claimed
+              ? h('span', { class: 'chip' }, '✓')
+              : h('button', { class: `chip ${questDone(s, q) ? 'green' : ''}`, disabled: !questDone(s, q), onclick: () => {
+                  if (!claimQuest(s, k)) return;
+                  sfx.coin();
+                  this.app.renderAll();
+                  this.app.dirty();
+                  render();
+                } }, 'بگیر')));
+        });
+        if (s.quests.list.every((q) => q.claimed) && !s.quests.bonusClaimed) {
+          body.append(h('button', { class: 'btn gold', onclick: () => {
+            const chest = claimQuestBonus(s);
+            if (!chest) return;
+            this.app.giveItem(chest);
+            sfx.levelUp();
+            this.app.renderAll();
+            this.app.dirty();
+            render();
+          } }, 'جایزه‌ی ویژه: صندوقچه‌ی مسی 🎁'));
+        }
+      };
+      render();
+    });
   }
 
   /** After the first episode: rating, sharing and the notification permission. */

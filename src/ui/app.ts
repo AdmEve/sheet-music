@@ -8,7 +8,8 @@ import { portrait } from '../art/portraits';
 import { CHAINS, Item, canMerge, isGenerator, itemName, maxLevel, sameItem } from '../game/items';
 import {
   CELLS, ENERGY_CAP, GameEvent, GameState, Order, bubbleGemCost, buySheet, deliver, drop, msToNextEnergy, needsMet,
-  popBubble, sellValue, sell, sheetGemCost, tap, tickBubbles, tickEnergy, toBag, xpForLevel,
+  popBubble, questsClaimable, refreshQuests, sellValue, sell, sheetGemCost, tap, tickBubbles, tickEnergy, toBag,
+  xpForLevel,
 } from '../game/model';
 import { adsAvailable, showRewarded } from '../platform/ads';
 import { introKey, markSeen, progress } from '../game/progress';
@@ -131,6 +132,10 @@ export class App {
       }
     });
     if (this.selected !== null && this.s.board[this.selected].lock === 'bubble') this.renderInfo();
+    if (refreshQuests(this.s, new Date().toLocaleDateString('en-CA'))) {
+      this.renderNav();
+      this.dirty();
+    }
   }
 
   // ------------------------------------------------------------------ orders
@@ -511,8 +516,11 @@ export class App {
     const p = progress(this.s);
     const ready = !!p.next && this.s.stars >= p.next.cost;
     const bagCount = this.s.bag.filter(Boolean).length;
+    const claimable = questsClaimable(this.s);
     this.navEl.append(
       h('button', { class: 'navbtn', onclick: () => this.modals.settings() }, h('span', { html: svgIcon(ICONS.gear) }), 'تنظیمات'),
+      h('button', { class: `navbtn${claimable ? ' ready' : ''}`, onclick: () => this.modals.quests().then(() => this.renderNav()) }, h('span', { html: svgIcon(ICONS.quest) }), 'روزانه',
+        claimable ? h('span', { class: 'badge' }, fa(claimable)) : null),
       h('button', { class: 'navbtn', onclick: () => this.modals.bag() }, h('span', { html: svgIcon(ICONS.bag) }), 'کیف',
         bagCount ? h('span', { class: 'badge' }, fa(bagCount)) : null),
       h('button', { class: `navbtn main${ready ? ' ready' : ''}`, id: 'nav-alley', onclick: () => this.openPlace() },

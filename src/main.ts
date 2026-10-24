@@ -5,7 +5,7 @@ import { App as CapApp } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { DEFS } from './art/defs';
 import { itemArt } from './art/index';
-import { ENERGY_CAP, ENERGY_REGEN_MS, claimDaily, loadState, newGame, tickEnergy } from './game/model';
+import { ENERGY_CAP, ENERGY_REGEN_MS, claimDaily, loadState, newGame, refreshQuests, tickEnergy } from './game/model';
 import { clearReminders, scheduleReminders } from './platform/notify';
 import { initAds } from './platform/ads';
 import { connectBilling, recoverPending } from './platform/billing';
@@ -25,6 +25,7 @@ async function boot(): Promise<void> {
   const fresh = !save;
   const state = loadState(save) ?? newGame((Math.random() * 2 ** 32) >>> 0, Date.now());
   tickEnergy(state, Date.now());
+  refreshQuests(state, dateKey(new Date()));
 
   const root = document.getElementById('app')!;
   const app = new App(root, state);

@@ -66,6 +66,8 @@ export interface GameState {
   ads: { day: string; count: number };
   /** One-time shop offers already bought. */
   bought: string[];
+  /** Today's daily quests. */
+  quests: QuestDay;
   /** Last time (ms) the UI told the model; used for bubble expiry. */
   clock: number;
   /** Coin-shop energy purchases today (price rises with each). */
@@ -176,6 +178,7 @@ export function newGame(seed: number, now: number): GameState {
     bought: [],
     coinEnergy: { day: '', count: 0 },
     clock: now,
+    quests: { day: '', list: [], bonusClaimed: false },
   };
   const put = (r: number, c: number, item: Item, lock?: Lock) => {
     s.board[idx(r, c)] = lock ? { item, lock } : { item };
@@ -577,7 +580,7 @@ export function loadState(json: string | null): GameState | null {
     const raw = JSON.parse(json) as Partial<GameState>;
     if (raw.v !== 1 || !Array.isArray(raw.board) || raw.board.length !== CELLS) return null;
     const base = newGame(raw.rng ?? 1, raw.energyAt ?? Date.now());
-    return { ...base, ...raw, stats: { ...base.stats, ...raw.stats }, ads: raw.ads ?? base.ads, bought: raw.bought ?? [], coinEnergy: raw.coinEnergy ?? base.coinEnergy, clock: raw.clock ?? base.clock } as GameState;
+    return { ...base, ...raw, stats: { ...base.stats, ...raw.stats }, ads: raw.ads ?? base.ads, bought: raw.bought ?? [], coinEnergy: raw.coinEnergy ?? base.coinEnergy, clock: raw.clock ?? base.clock, quests: raw.quests ?? base.quests } as GameState;
   } catch {
     return null;
   }
@@ -653,4 +656,63 @@ export function popBubble(s: GameState, at: number, free = false): GameEvent[] {
   }
   s.board[at] = { item: c.item };
   return [{ type: 'bubblePop', at }];
+}
+
+// ---------------------------------------------------------------------------- daily quests
+
+export type QuestKind = 'merges' | 'orders' | 'taps';
+
+export interface Quest {
+  kind: QuestKind;
+  target: number;
+  /** Stat value when the quest was handed out. */
+  start: number;
+  reward: { coins?: number; energy?: number; gems?: number };
+  claimed: boolean;
+}
+
+export interface QuestDay {
+  day: string;
+  list: Quest[];
+  bonusClaimed: boolean;
+}
+
+/** Hands out today's quests if the day changed. Returns true when new quests were made. */
+export function refreshQuests(s: GameState, today: string): boolean {
+  if (s.quests.day === today) return false;
+  const L = s.level;
+  s.quests = {
+    day: today,
+    bonusClaimed: false,
+    list: [
+      { kind: 'merges', target: 15 + L * 3, start: s.stats.merges, reward: { coins: 40 + L * 10 }, claimed: false },
+      { kind: 'orders', target: 4 + Math.floor(L / 2), start: s.stats.orders, reward: { energy: 20 }, claimed: false },
+      { kind: 'taps', target: 30 + L * 5, start: s.stats.taps, reward: { gems: 5 }, claimed: false },
+    ],
+  };
+  return true;
+}
+
+export const questProgress = (s: GameState, q: Quest) => Math.min(q.target, s.stats[q.kind] - q.start);
+export const questDone = (s: GameState, q: Quest) => questProgress(s, q) >= q.target;
+export const questsClaimable = (s: GameState) =>
+  s.quests.list.filter((q) => !q.claimed && questDone(s, q)).length +
+  (allQuestsClaimed(s) && !s.quests.bonusClaimed ? 1 : 0);
+export const allQuestsClaimed = (s: GameState) => s.quests.list.length > 0 && s.quests.list.every((q) => q.claimed);
+
+export function claimQuest(s: GameState, index: number): boolean {
+  const q = s.quests.list[index];
+  if (!q || q.claimed || !questDone(s, q)) return false;
+  q.claimed = true;
+  s.coins += q.reward.coins ?? 0;
+  s.gems += q.reward.gems ?? 0;
+  addEnergy(s, q.reward.energy ?? 0);
+  return true;
+}
+
+/** Bonus for finishing all three: a copper chest. Returns the chest item to place. */
+export function claimQuestBonus(s: GameState): Item | null {
+  if (!allQuestsClaimed(s) || s.quests.bonusClaimed) return null;
+  s.quests.bonusClaimed = true;
+  return { chain: 'chest', level: 2 };
 }
