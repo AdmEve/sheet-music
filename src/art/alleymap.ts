@@ -5,7 +5,7 @@
 
 import { INK, O, THIN, sparkle } from './kit';
 
-export const MAP_H = 5990;
+export const MAP_H = 6520;
 const STEP = 106;
 const faDigits = (n: number) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 
@@ -220,6 +220,17 @@ const FACADES: Record<string, Facade> = {
   worldparty: {
     wall: 'url(#gTerracotta)', w: 120, h: 80, door: 'gate',
     deco: `<rect x="-20" y="-70" width="40" height="14" rx="2" fill="url(#gSilver)" ${THIN}/>` + Array.from({ length: 8 }, (_, i) => `<rect x="${-56 + i * 15}" y="${-92 + Math.sin((i / 7) * Math.PI) * 6}" width="9" height="6" fill="${['#2a9d4a', '#fffdf6', '#e0303f', '#3a76c4'][i % 4]}" stroke="${INK}" stroke-width=".6"/>`).join(''),
+  },
+  mahinhome: { wall: '#e8d5ff', roof: 'gable', roofFill: 'url(#gPurple)', door: 'arch', deco: `<path d="M44 -74 V-96 M38 -90 H50" ${O} stroke-width="2"/>` },
+  cakeroom: { wall: '#f2e8d0', roof: 'awning', roofFill: 'url(#gRose)', door: 'shop', deco: `<rect x="-60" y="-30" width="16" height="20" rx="2" fill="#fffdf6" ${THIN}/>` },
+  hall: { wall: '#fdfaf3', roof: 'gable', roofFill: 'url(#gRed)', door: 'arch', w: 132, sign: 'تالار محله' },
+  memories: {
+    wall: '#efe3cc', door: 'arch',
+    deco: [-46, 46].map((x) => `<rect x="${x - 10}" y="-58" width="20" height="16" fill="url(#gGold)" ${THIN}/>`).join(''),
+  },
+  birthday: {
+    wall: '#ffe0ef', w: 124, h: 60, door: 'gate',
+    deco: [[-50, '#e0303f'], [-30, '#f6c945'], [30, '#14879a'], [50, '#ff7a9c']].map(([x, c]) => `<ellipse cx="${x}" cy="-82" rx="7" ry="9" fill="${c}" ${THIN}/><path d="M${x} -73 V-60" stroke="${INK}" stroke-width="1"/>`).join(''),
   },
   wedding: {
     wall: 'url(#gWood)', w: 120, h: 70, door: 'gate',

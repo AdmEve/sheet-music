@@ -93,8 +93,8 @@ export class PlaceScreen {
       );
     } else if (!p.next || !p.place) {
       card.append(
-        h('div', { class: 'tasktitle' }, 'فصل یازدهم تموم شد! 🎉'),
-        h('p', { class: 'muted' }, 'کوچه‌ی حاج‌بابا ثبت جهانی شد! ولی تولد ننه‌گلاب… فصل دوازدهم به‌زودی با آپدیت بعدی میاد.'),
+        h('div', { class: 'tasktitle' }, 'فصل دوازدهم تموم شد! 🎉'),
+        h('p', { class: 'muted' }, 'ننه‌گلاب هفتادسالگی‌ش رو با کل محله جشن گرفت. ولی عروسی شیرین و آیدین… فصل سیزدهم به‌زودی با آپدیت بعدی میاد.'),
         h('button', { class: 'btn', onclick: back }, 'برگرد به بازی'),
       );
     } else {

@@ -202,8 +202,14 @@ saves are written into localStorage `mahalle.save.v1`.
       landing seasons early and crowding the board. Each one has an `unlockPlace` (its
       season's first place) and is handed out when the story gets there, with a toast
 
+- [x] Phase 22: Season 12 «تولد ننه‌گلاب» (`src/art/scenes12.ts`: Khale Mahin's home, Reza's
+      cake room, the community hall, the memory wall and the party; «جشن» chain + party box
+      at the season's start); map of 60 places; Season 13 teased (Shirin and Aydin's
+      wedding). Balance sim with story-based unlocks: 20 of 20 games finish all 55 tested
+      episodes, regen hours rising smoothly to ~133
+
 Next (in order):
-1. Season 12 «تولد ننه‌گلاب»
+1. Season 13 «عروسی شیرین و آیدین»
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)

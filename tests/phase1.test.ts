@@ -128,6 +128,8 @@ describe('generator catch-up', () => {
     expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genBaby', 'genLamp']);
     finish(50);
     expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genSaz', 'genTile', 'genFootball', 'genSea', 'genCraft', 'genCallig']);
+    finish(55);
+    expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genParty']);
   });
 });
 

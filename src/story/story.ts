@@ -1334,6 +1334,105 @@ export const PLACES: Place[] = [
       { who: 'golab', text: 'نود؟ … من هنوز هفتاد ساله‌م، مهین! حساب کتابت ضعیفه!', mood: 'angry' },
     ],
   },
+  // ------------------------------------------------------------------ season 12: تولد ننه‌گلاب
+  {
+    id: 'mahinhome',
+    name: 'خونه‌ی خاله مهین',
+    intro: [
+      { who: 'mahin', text: 'جلسه‌ی سری! خونه‌ی من. ننه‌گلاب نباید بفهمه. … چرا همه‌تون دارید می‌خندید؟' },
+      { who: 'shirin', text: 'خاله، شما و راز نگه داشتن؟', mood: 'happy' },
+      { who: 'mahin', text: 'این دفعه فرق داره! … ولی اول یه کم خونه رو جمع کنیم. چهل سال روزنامه نگه داشتم.' },
+    ],
+    tasks: [
+      { id: 'mh2.papers', title: 'کپه‌ی روزنامه‌ها', cost: 360, layer: 'papers', after: [{ who: 'reza', text: 'روزنامه‌ی سال شصت و دو! «افتتاح نونوایی اوستا رضا»… پدرم بود! چه جوون بود!', mood: 'surprised' }] },
+      { id: 'mh2.radio', title: 'رادیوی قدیمی', cost: 362, layer: 'radio', after: [{ who: 'mahin', text: 'این رادیو رو مادرم داد. از همین فهمیدم که خبر، مهم‌ترین چیز دنیاست.' }] },
+      { id: 'mh2.sofa', title: 'مبل و پشتی', cost: 364, layer: 'sofa', after: [{ who: 'fakhri', text: 'خونه‌ت قشنگه مهین. … چهل سال همسایه‌ایم، اولین باره میام تو.' }, { who: 'mahin', text: 'آخه همیشه من میام خونه‌ی بقیه!', mood: 'happy' }] },
+      { id: 'mh2.albums', title: 'آلبوم‌های عکس', cost: 366, layer: 'albums', after: [{ who: 'narges', text: 'عکس‌های ننه‌گلاب از جوونی… خاله، این‌ها رو از کجا آوردی؟!', mood: 'surprised' }, { who: 'mahin', text: 'خبرنگار هیچ‌وقت منبعش رو لو نمی‌ده!' }] },
+      { id: 'mh2.board', title: 'تخته‌ی نقشه‌ی جشن', cost: 368, layer: 'board', after: [{ who: 'mahin', text: 'نقشه: رضا کیک، آیدین تالار، نرگس دیوار خاطرات، بهمن… نگه داشتن ننه‌گلاب تا ساعت هشت!' }] },
+    ],
+    outro: [
+      { who: 'bahman', text: 'من باید ننه‌گلاب رو سرگرم کنم؟ … می‌برمش تجریش، آش رشته. اون عاشق آشه.' },
+      { who: 'reza', text: 'کیک با من. یه کیک که کل محله ازش بخوره. شب تا صبح کار دارم!' },
+    ],
+  },
+  {
+    id: 'cakeroom',
+    name: 'کیک‌پزی اوستا رضا',
+    intro: [
+      { who: 'reza', text: 'پشت نونوایی یه اتاق خالیه. امشب کیک‌پزی می‌شه!' },
+      { who: 'shirin', text: 'رضا، تو تا حالا کیک پختی؟', mood: 'surprised' },
+      { who: 'reza', text: 'سنگک می‌پزم، دخترم. کیک هم یه نون شیرینه دیگه! … نه؟' },
+    ],
+    tasks: [
+      { id: 'ck.oven', title: 'فر بزرگ', cost: 366, layer: 'oven', after: [{ who: 'reza', text: 'فر روشن شد! حرارتش مثل تنور سنگکه. … شاید یه کم زیاده.' }] },
+      { id: 'ck.layers', title: 'لایه‌های کیک', cost: 368, layer: 'layers', after: [{ who: 'fakhri', text: 'لایه‌ی اول سوخت، رضا. … خوب شد من اومدم.' }, { who: 'reza', text: 'فخری‌خانم، دمت گرم!', mood: 'happy' }] },
+      { id: 'ck.cream', title: 'خامه و گلاب', cost: 370, layer: 'cream', after: [{ who: 'golab', text: '(تلفنی) رضا، چرا صدای همزن میاد؟ … نه، هیچی، رادیوئه!' }] },
+      { id: 'ck.decor', title: 'تزئین کیک', cost: 372, layer: 'decor', after: [{ who: 'shirin', text: 'گل‌های خامه‌ای! هر گل یه رنگ، مثل گلدون‌های در خونه‌ها.' }] },
+      { id: 'ck.box', title: 'جعبه‌ی بزرگ کیک', cost: 374, layer: 'box', after: [{ who: 'reza', text: 'سه طبقه، صد و ده تیکه. کیک من! … و فخری‌خانم.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'aydin', text: 'تالار پاساژ آماده‌ست، ولی خالیه. باید حسابی تزئینش کنیم.' },
+      { who: 'farokhi', text: 'تالار پاساژ… یه روز می‌خواستم اونجا رو بدم اجاره، برای عروسی‌های پولدارها. حالا برای ننه‌گلاب.' },
+    ],
+  },
+  {
+    id: 'hall',
+    name: 'تالار محله',
+    intro: [
+      { who: 'aydin', text: 'دیوارها سفیده، صندلی‌ها نامرتب. سه ساعت وقت داریم!' },
+      { who: 'kaveh', text: 'شاگردهای مدرسه‌ی مرمت هم اومدن کمک. کلاس امروزشون: «تالار در سه ساعت»!' },
+    ],
+    tasks: [
+      { id: 'hl.curtains', title: 'پرده‌های مخمل', cost: 372, layer: 'curtains', after: [{ who: 'golab', text: '(تلفنی) بهمن، چرا هی ساعت رو نگاه می‌کنی؟ … نه، کجا بریم؟' }] },
+      { id: 'hl.tables', title: 'میزهای گرد', cost: 374, layer: 'tables', after: [{ who: 'morteza', text: 'صد و ده صندلی، دو برابر جشن نام‌گذاری. کرایه؟ … نه، دیگه حتی نمی‌پرسم.' }] },
+      { id: 'hl.flowers', title: 'دیوار گل', cost: 376, layer: 'flowers', after: [{ who: 'fakhri', text: 'گل محمدی، از حیاط ننه‌گلاب. … یواشکی چیدیم!' }] },
+      { id: 'hl.stage', title: 'سن موسیقی', cost: 378, layer: 'stage', after: [{ who: 'bahman', text: 'تار داداش، سنتور شاگرد، ساز عاشیقی آیدین. ارکستر محله!' }] },
+      { id: 'hl.lights', title: 'چلچراغ تالار', cost: 380, layer: 'lights', after: [{ who: 'aydin', text: 'چلچراغ روشن شد! … حالا فقط دیوار خاطرات مونده.' }] },
+    ],
+    outro: [
+      { who: 'narges', text: 'دیوار خاطرات… یه عمر ننه‌گلاب، روی یه دیوار. از کجا شروع کنیم؟' },
+      { who: 'mahin', text: 'از اولش. از روزی که اومد این کوچه، شصت سال پیش.' },
+    ],
+  },
+  {
+    id: 'memories',
+    name: 'دیوار خاطرات',
+    intro: [
+      { who: 'narges', text: 'هر کی یه چیز آورده. یه عکس، یه نامه، یه یادگاری.' },
+      { who: 'bahman', text: 'من نامه‌هایی رو آوردم که داداش برام نوشت. همشون اسم گلاب داره. همیشه هوای کوچه رو داشت.' },
+    ],
+    tasks: [
+      { id: 'mem.young', title: 'عکس جوونی ننه‌گلاب', cost: 378, layer: 'young', after: [{ who: 'mahin', text: 'ننه‌گلاب، بیست سالگی، کنار حوض. این عکس رو مادرم گرفته بود.' }] },
+      { id: 'mem.samovar', title: 'سماور قهوه‌خونه', cost: 380, layer: 'samovar', after: [{ who: 'narges', text: 'سماور قهوه‌خونه رو از موزه قرض گرفتیم. اولین چیزی که تو این کوچه درست کردیم.' }] },
+      { id: 'mem.letters', title: 'نامه‌های قدیمی', cost: 382, layer: 'letters', after: [{ who: 'bahman', text: 'نامه‌ی آخر داداش: «گلاب هنوز هر صبح جلوی خونه رو آب‌پاشی می‌کنه.»', mood: 'sad' }] },
+      { id: 'mem.rose', title: 'شیشه‌ی گلاب', cost: 384, layer: 'rose', after: [{ who: 'golab', text: '(از پشت در) … بهمن؟ اینجا کجاست؟ چرا همه ساکتن؟', mood: 'surprised' }] },
+      { id: 'mem.cradle', title: 'گهواره‌ی گلاب کوچولو', cost: 386, layer: 'cradle', after: [{ who: 'narges', text: 'و آخرین عکس: دو تا گلاب. یکی هفتاد سال، یکی یه سال. … حالا، چراغ‌ها خاموش!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'golab', text: '(چراغ‌ها روشن میشن) … یا خدا! همه‌تون این‌جایید؟!', mood: 'surprised' },
+      { who: 'mahin', text: 'تولدت مبارک ننه‌گلاب!!! … دیدید؟ راز رو نگه داشتم!', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'birthday',
+    name: 'جشن تولد ننه‌گلاب',
+    intro: [
+      { who: 'golab', text: 'من… من نمی‌دونم چی بگم. یه عمر تو این کوچه کار کردم. هیچ‌وقت فکر نمی‌کردم…', mood: 'sad' },
+      { who: 'narges', text: 'نگو ننه‌گلاب. امشب فقط جشن بگیر.' },
+    ],
+    tasks: [
+      { id: 'bd.cake', title: 'کیک سه‌طبقه', cost: 384, layer: 'cake', after: [{ who: 'reza', text: 'کیک رسید! بدون حتی یه ترک. … فقط یه گوشه‌ش رو موقع آوردن خوردم.' }] },
+      { id: 'bd.candles', title: 'شمع‌های تولد', cost: 386, layer: 'candles', after: [{ who: 'golab', text: 'هفتاد شمع؟ مهین، می‌خوای تالار آتیش بگیره؟ … هفت تا کافیه!', mood: 'happy' }] },
+      { id: 'bd.gifts', title: 'میز کادوها', cost: 388, layer: 'gifts', after: [{ who: 'farokhi', text: 'کادوی من: یه سند. خونه‌ی ننه‌گلاب برای همیشه ثبت میراث شد. هیچ‌کس نمی‌تونه بخرتش.' }, { who: 'golab', text: 'فرخی… پسرم… بیا بغلم.', mood: 'sad' }] },
+      { id: 'bd.music', title: 'ارکستر محله', cost: 390, layer: 'music', after: [{ who: 'bahman', text: 'این آهنگ رو گلاب شصت سال پیش تو عروسی خواهرش می‌خوند. … حالا همه با هم!', mood: 'happy' }] },
+      { id: 'bd.wish', title: 'آرزوی ننه‌گلاب', cost: 392, layer: 'wish', after: [{ who: 'golab', text: 'آرزوم؟ آرزوم برآورده شده. این کوچه زنده‌ست. شماها زنده‌اید. دیگه هیچی نمی‌خوام.', mood: 'happy' }, { who: 'narges', text: 'پس آرزوی ما رو بکن: که صد سال دیگه هم تو این کوچه باشی.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'shirin', text: 'خب… حالا که همه این‌جان… من و آیدین یه خبر داریم.', mood: 'happy' },
+      { who: 'aydin', text: 'تاریخ عروسی رو تعیین کردیم! یه عروسی ترکی ـ تهرونی، تو همین کوچه!', mood: 'happy' },
+      { who: 'mahin', text: 'خبر داغ!!! … ای بابا، این دفعه هم من آخرین نفر بودم که فهمیدم!', mood: 'surprised' },
+    ],
+  },
 ];
 
 export function findTask(id: string): { place: Place; task: Task; index: number } | null {
