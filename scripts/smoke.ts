@@ -203,6 +203,46 @@ async function drag(page: Page, a: number, b: number): Promise<void> {
   await page.close();
 }
 
+// ------------------------------------------------------------------ 3. back after days away, rush an order
+{
+  step = 'welcome back';
+  const s = newGame(91, Date.now());
+  s.board = Array.from({ length: CELLS }, () => ({ item: null }));
+  s.board[7 * COLS + 3] = { item: { chain: 'genTea', level: 2 } };
+  s.board[7 * COLS + 1] = { item: { chain: 'genBread', level: 1 } };
+  s.level = 8; s.xp = 200; s.gems = 200; s.coins = 500; s.energy = 40;
+  s.tasksDone = PLACES[0].tasks.map((t) => t.id);
+  s.storySeen = ['teahouse:intro', 'teahouse:outro', 'bakery:intro', 'tut:merge', 'tut:deliver', 'tut:generator', 'tut:alley', 'ask:rate', 'tut:bubble'];
+  s.scriptStep = 99;
+  s.lastDaily = new Date().toLocaleDateString('en-CA');
+  s.clock = Date.now() - 3 * 86_400_000;
+  s.orders = [{ id: 900, who: 'reza', needs: [{ chain: 'bread', level: 3 }], coins: 10, stars: 3 }];
+  fillOrders(s);
+  discover(s);
+  const page = await openPage(JSON.stringify(s));
+  await page.waitForTimeout(800);
+  check((await page.textContent('.overlay h2').catch(() => ''))?.includes('خوش برگشتی'), 'welcome-back gift shows');
+  await click(page, '.overlay .btn.big');
+  let st = await saved(page);
+  check(st.energy >= 140 && st.gems >= 210, `welcome gift paid (energy ${st.energy}, gems ${st.gems})`);
+  await page.waitForTimeout(800);
+  await skipDialogue(page);
+  await closeOverlays(page);
+
+  step = 'rush an order';
+  await click(page, '.order[data-order="900"]');
+  await page.waitForTimeout(300);
+  check(await page.$('.order-sheet'), 'order sheet opens');
+  const gems = (await saved(page)).gems;
+  await click(page, '.overlay .btn.pink');
+  await page.waitForTimeout(1500);
+  for (let k = 0; k < 3 && await page.$('.overlay .btn'); k++) { await click(page, '.overlay .btn'); await page.waitForTimeout(200); }
+  st = await saved(page);
+  check(!st.orders.some((o) => o.id === 900), 'rushed order delivered');
+  check(st.gems < gems, `gems spent on the rush (${gems} → ${st.gems})`);
+  await page.close();
+}
+
 await browser.close();
 server.close();
 if (problems.length) {
