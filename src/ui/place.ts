@@ -13,6 +13,8 @@ import { sfx } from './sound';
 export class PlaceScreen {
   readonly places = PLACES;
 
+  private working = false;
+
   constructor(private app: App) {}
 
   /** Shows the alley screen; resolves when the player goes back to the board. */
@@ -83,6 +85,17 @@ export class PlaceScreen {
   }
 
   private async doTask(screen: HTMLElement, back: () => void): Promise<void> {
+    // One task at a time: a double tap must not buy the next task too.
+    if (this.working) return;
+    this.working = true;
+    try {
+      await this.runTask(screen, back);
+    } finally {
+      this.working = false;
+    }
+  }
+
+  private async runTask(screen: HTMLElement, back: () => void): Promise<void> {
     const s = this.app.s;
     const r = completeNextTask(s);
     if (!r.ok) {

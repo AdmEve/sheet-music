@@ -8,14 +8,13 @@ import { itemArt } from './art/index';
 import { ENERGY_CAP, ENERGY_REGEN_MS, claimDaily, loadState, newGame, refreshQuests, tickEnergy } from './game/model';
 import { clearReminders, scheduleReminders } from './platform/notify';
 import { initAds } from './platform/ads';
-import { connectBilling, recoverPending } from './platform/billing';
+import { connectBilling, pendingPurchases, watchBillingConnection } from './platform/billing';
 import { loadSave, loadSetting } from './platform/storage';
 import { App } from './ui/app';
-import { h, svgIcon } from './ui/dom';
+import { dateKey, h, svgIcon } from './ui/dom';
 import { initToggles } from './ui/modals';
 import { setMusic, startMusic, stopMusic } from './ui/sound';
 
-const dateKey = (d: Date) => d.toLocaleDateString('en-CA');
 
 async function boot(): Promise<void> {
   document.body.insertAdjacentHTML('afterbegin', DEFS);
@@ -37,7 +36,12 @@ async function boot(): Promise<void> {
   // Store connections happen in the background; the game never waits on them.
   connectBilling().then(async (ok) => {
     if (!ok) return;
-    for (const p of await recoverPending()) app.modals.grant(p.sku);
+    watchBillingConnection();
+    // Paid but unconsumed purchases: grant the ones we never granted, then consume all.
+    for (const { product, token } of await pendingPurchases()) {
+      if (app.s.grantedTokens.includes(token)) await app.modals.finishPurchase(token);
+      else await app.modals.grant(product.sku, token);
+    }
   });
   initAds();
 
@@ -57,9 +61,12 @@ async function boot(): Promise<void> {
     CapApp.addListener('backButton', () => {
       const dialogue = document.querySelector('.dialogue') as HTMLElement | null;
       if (dialogue) return dialogue.click();
-      const close = document.querySelector('.overlay:last-of-type .close') as HTMLElement | null;
-      if (close) return close.click();
-      if (document.querySelector('.overlay')) return; // non-closable (level up etc.): use its button
+      const overlays = document.querySelectorAll('.overlay');
+      const top = overlays[overlays.length - 1];
+      if (top) {
+        (top.querySelector('.close') as HTMLElement | null)?.click();
+        return; // non-closable windows (level up etc.) close with their own button
+      }
       const back = document.querySelector('.place .top .chip') as HTMLElement | null;
       if (back) return back.click();
       app.saveNow().then(() => CapApp.minimizeApp());

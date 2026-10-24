@@ -66,6 +66,8 @@ export interface GameState {
   ads: { day: string; count: number };
   /** One-time shop offers already bought. */
   bought: string[];
+  /** Bazaar purchase tokens whose reward was granted (consumed or not yet). */
+  grantedTokens: string[];
   /** Today's daily quests. */
   quests: QuestDay;
   /** Last time (ms) the UI told the model; used for bubble expiry. */
@@ -179,6 +181,7 @@ export function newGame(seed: number, now: number): GameState {
     coinEnergy: { day: '', count: 0 },
     clock: now,
     quests: { day: '', list: [], bonusClaimed: false },
+    grantedTokens: [],
   };
   const put = (r: number, c: number, item: Item, lock?: Lock) => {
     s.board[idx(r, c)] = lock ? { item, lock } : { item };
@@ -422,7 +425,8 @@ export function fromBag(s: GameState, slot: number): GameEvent[] {
   const to = nearestEmpty(s, idx(ROWS - 1, Math.floor(COLS / 2)));
   if (to === null) return [{ type: 'fail', reason: 'boardFull' }];
   s.board[to] = { item: it };
-  s.bag[slot] = null;
+  if (s.bag.length > BAG_MAX) s.bag.splice(slot, 1);
+  else s.bag[slot] = null;
   return [{ type: 'spawn', from: to, to, item: it }];
 }
 
@@ -493,18 +497,28 @@ function gainXp(s: GameState, xp: number): GameEvent[] {
     s.gems += gems;
     addEnergy(s, 20);
     const gift = levelGift(s.level);
-    if (gift) {
-      const to = nearestEmpty(s, idx(ROWS - 1, Math.floor(COLS / 2)));
-      if (to !== null) s.board[to] = { item: gift };
-      else {
-        const slot = s.bag.indexOf(null);
-        if (slot >= 0) s.bag[slot] = gift;
-        else s.bag.push(gift);
-      }
-    }
+    if (gift) placeItem(s, gift);
     events.push({ type: 'levelUp', level: s.level, gems, gift });
   }
   return events;
+}
+
+/**
+ * Puts a reward item on the board near the bottom centre (where the generators are);
+ * if the board is full it goes into the bag. Rewards are never dropped: when the bag is
+ * also full it grows past BAG_MAX (rare), and the extra slot disappears once emptied.
+ * Returns the board cell, or null if it went to the bag.
+ */
+export function placeItem(s: GameState, it: Item): number | null {
+  const to = nearestEmpty(s, idx(ROWS - 1, Math.floor(COLS / 2)));
+  if (to !== null) {
+    s.board[to] = { item: it };
+    return to;
+  }
+  const slot = s.bag.indexOf(null);
+  if (slot >= 0) s.bag[slot] = it;
+  else s.bag.push(it);
+  return null;
 }
 
 /** New generators arrive as level-up gifts; every few levels a chest. */
@@ -580,7 +594,7 @@ export function loadState(json: string | null): GameState | null {
     const raw = JSON.parse(json) as Partial<GameState>;
     if (raw.v !== 1 || !Array.isArray(raw.board) || raw.board.length !== CELLS) return null;
     const base = newGame(raw.rng ?? 1, raw.energyAt ?? Date.now());
-    return { ...base, ...raw, stats: { ...base.stats, ...raw.stats }, ads: raw.ads ?? base.ads, bought: raw.bought ?? [], coinEnergy: raw.coinEnergy ?? base.coinEnergy, clock: raw.clock ?? base.clock, quests: raw.quests ?? base.quests } as GameState;
+    return { ...base, ...raw, stats: { ...base.stats, ...raw.stats }, ads: raw.ads ?? base.ads, bought: raw.bought ?? [], coinEnergy: raw.coinEnergy ?? base.coinEnergy, clock: raw.clock ?? base.clock, quests: raw.quests ?? base.quests, grantedTokens: raw.grantedTokens ?? [] } as GameState;
   } catch {
     return null;
   }

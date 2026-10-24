@@ -8,12 +8,13 @@ const ENERGY_ID = 1;
 const DAILY_ID = 2;
 let permitted: boolean | null = null;
 
-async function allowed(): Promise<boolean> {
+/** Checks permission; only prompts the player when `ask` is true. */
+async function allowed(ask: boolean): Promise<boolean> {
   if (!Capacitor.isNativePlatform()) return false;
-  if (permitted !== null) return permitted;
+  if (permitted === true) return true;
   try {
     let p = await LocalNotifications.checkPermissions();
-    if (p.display === 'prompt' || p.display === 'prompt-with-rationale') p = await LocalNotifications.requestPermissions();
+    if (ask && (p.display === 'prompt' || p.display === 'prompt-with-rationale')) p = await LocalNotifications.requestPermissions();
     permitted = p.display === 'granted';
   } catch {
     permitted = false;
@@ -23,11 +24,11 @@ async function allowed(): Promise<boolean> {
 
 /** Asks for permission at a friendly moment (after the first episode), not at launch. */
 export async function askNotifications(): Promise<void> {
-  await allowed();
+  await allowed(true);
 }
 
 export async function scheduleReminders(energyFullAt: number | null): Promise<void> {
-  if (!(await allowed())) return;
+  if (!(await allowed(false))) return;
   const now = Date.now();
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);

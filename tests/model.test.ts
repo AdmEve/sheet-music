@@ -309,3 +309,19 @@ describe('daily quests', () => {
     expect(s.quests.list.every((x) => !x.claimed)).toBe(true);
   });
 });
+
+describe('reward placement', () => {
+  it('puts rewards near the generators, then the bag, never dropping them', async () => {
+    const { placeItem, fromBag, BAG_MAX, ROWS } = await import('../src/game/model');
+    const s = emptyGame();
+    const at = placeItem(s, { chain: 'chest', level: 1 })!;
+    expect(Math.floor(at / COLS)).toBe(ROWS - 1);
+    for (let i = 0; i < CELLS; i++) s.board[i] = { item: { chain: 'tea', level: 1 } };
+    s.bag = Array.from({ length: BAG_MAX }, () => ({ chain: 'bread', level: 1 }));
+    expect(placeItem(s, { chain: 'chest', level: 2 })).toBeNull();
+    expect(s.bag).toHaveLength(BAG_MAX + 1);
+    s.board[0] = { item: null };
+    fromBag(s, BAG_MAX);
+    expect(s.bag).toHaveLength(BAG_MAX);
+  });
+});

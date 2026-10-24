@@ -43,3 +43,6 @@ export function clear(el: Element): void {
 }
 
 export const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+/** Local calendar day as YYYY-MM-DD: the one key used for daily gifts, quests and caps. */
+export const dateKey = (d: Date = new Date()) => d.toLocaleDateString('en-CA');

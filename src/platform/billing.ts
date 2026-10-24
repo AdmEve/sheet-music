@@ -64,37 +64,59 @@ export async function fetchPrices(): Promise<Record<string, string>> {
   }
 }
 
-export type PurchaseResult = { ok: true; product: Product } | { ok: false; reason: 'unavailable' | 'cancelled' | 'error' };
+export type PurchaseResult =
+  | { ok: true; product: Product; token: string }
+  | { ok: false; reason: 'unavailable' | 'cancelled' | 'error' };
 
-/** Buys and immediately consumes; the caller grants the reward only on ok. */
+/**
+ * Starts a Bazaar purchase. Does NOT consume: the caller must grant the reward and save it
+ * first, then call consume(token). That way a crash can never lose a paid purchase.
+ */
 export async function buy(sku: string): Promise<PurchaseResult> {
   const product = PRODUCTS.find((p) => p.sku === sku);
   if (!product) return { ok: false, reason: 'error' };
   if (!connected && !(await connectBilling())) return { ok: false, reason: 'unavailable' };
   try {
     const r = await Bazaar.purchase({ sku, payload: `${sku}:${Date.now()}` });
-    await Bazaar.consume({ purchaseToken: r.purchaseToken });
-    return { ok: true, product };
+    return { ok: true, product, token: r.purchaseToken };
   } catch (e) {
     const msg = String((e as Error)?.message ?? e);
+    if (/not connected/i.test(msg)) connected = false;
     return { ok: false, reason: /cancel/i.test(msg) ? 'cancelled' : 'error' };
   }
 }
 
-/** Grants purchases that were paid but never consumed (crash / killed app). */
-export async function recoverPending(): Promise<Product[]> {
+/** Consumes a purchase whose reward is already granted and saved. Safe to retry later. */
+export async function consume(token: string): Promise<boolean> {
+  if (!connected) return false;
+  try {
+    await Bazaar.consume({ purchaseToken: token });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Purchases that Bazaar still holds unconsumed (paid, then app killed / consume failed). */
+export async function pendingPurchases(): Promise<{ product: Product; token: string }[]> {
   if (!connected) return [];
   try {
     const { purchases } = await Bazaar.pending();
-    const out: Product[] = [];
+    const out: { product: Product; token: string }[] = [];
     for (const p of purchases) {
       const product = PRODUCTS.find((x) => x.sku === p.sku);
-      if (!product) continue;
-      await Bazaar.consume({ purchaseToken: p.purchaseToken });
-      out.push(product);
+      if (product) out.push({ product, token: p.purchaseToken });
     }
     return out;
   } catch {
     return [];
   }
+}
+
+/** Keeps the JS view of the connection in sync when Bazaar drops it. */
+export function watchBillingConnection(): void {
+  if (!Capacitor.isNativePlatform()) return;
+  (Bazaar as unknown as { addListener(e: string, cb: () => void): void }).addListener('disconnected', () => {
+    connected = false;
+  });
 }

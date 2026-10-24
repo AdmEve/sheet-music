@@ -23,6 +23,14 @@ import org.json.JSONArray
 class BazaarPlugin : Plugin() {
     private var payment: Payment? = null
     private var connection: Connection? = null
+    /** connect() calls waiting for the handshake; all are answered together. */
+    private val waiting = mutableListOf<PluginCall>()
+
+    private fun answerWaiting(connected: Boolean) {
+        val calls = waiting.toList()
+        waiting.clear()
+        calls.forEach { it.resolve(JSObject().put("connected", connected)) }
+    }
 
     @PluginMethod
     fun connect(call: PluginCall) {
@@ -31,17 +39,19 @@ class BazaarPlugin : Plugin() {
         if (connection?.getState() == ConnectionState.Connected) {
             return call.resolve(JSObject().put("connected", true))
         }
+        waiting.add(call)
+        if (waiting.size > 1) return // a handshake is already in progress
         val p = Payment(context, PaymentConfiguration(localSecurityCheck = SecurityCheck.Enable(rsaPublicKey = key)))
         payment = p
-        var answered = false
         connection = p.connect {
-            connectionSucceed {
-                if (!answered) { answered = true; call.resolve(JSObject().put("connected", true)) }
+            connectionSucceed { answerWaiting(true) }
+            connectionFailed { answerWaiting(false) }
+            disconnected {
+                connection = null
+                payment = null
+                answerWaiting(false)
+                notifyListeners("disconnected", JSObject())
             }
-            connectionFailed {
-                if (!answered) { answered = true; call.resolve(JSObject().put("connected", false)) }
-            }
-            disconnected { connection = null }
         }
     }
 

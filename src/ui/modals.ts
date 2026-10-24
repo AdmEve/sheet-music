@@ -6,21 +6,21 @@ import { CHAINS, Item, itemName } from '../game/items';
 import {
   BAG_MAX, COIN_CHEST_PRICE, COIN_ENERGY_AMOUNT, DAILY_REWARDS, ENERGY_CAP, addEnergy, adsLeft, bagSlotCost, buyBagSlot,
   buyChestWithCoins, buyEnergyWithCoins, claimQuest, claimQuestBonus, coinEnergyLeft, coinEnergyPrice, countAd, fromBag,
-  newGame, questDone, questProgress,
+  allQuestsClaimed, newGame, questDone, questProgress,
 } from '../game/model';
 import { adsAvailable, showRewarded } from '../platform/ads';
-import { PRODUCTS, billingAvailable, buy, fetchPrices } from '../platform/billing';
+import { PRODUCTS, billingAvailable, buy, consume, fetchPrices } from '../platform/billing';
 import { MAX_ADS_PER_DAY } from '../platform/config';
 import { setHaptics } from '../platform/haptics';
 import { askNotifications } from '../platform/notify';
 import { rateOnBazaar, shareGame } from '../platform/social';
 import { writeSetting } from '../platform/storage';
 import type { App } from './app';
-import { add, clear, fa, faNum, faTime, h, svgIcon } from './dom';
+import { add, clear, dateKey, fa, faNum, faTime, h, svgIcon } from './dom';
 import { musicEnabled, setMusic, setSound, sfx, soundOn } from './sound';
 
 export const REFILL_GEMS = 20;
-const today = () => new Date().toLocaleDateString('en-CA');
+const today = () => dateKey();
 
 let hapticsOn = true;
 export const initToggles = (sound: boolean, haptics: boolean, music: boolean) => {
@@ -54,6 +54,22 @@ export class Modals {
     });
   }
 
+  /** Plays a rewarded video if today's cap allows; true only when it was fully watched. */
+  async rewarded(): Promise<boolean> {
+    const s = this.app.s;
+    if (!adsAvailable() || adsLeft(s, today(), MAX_ADS_PER_DAY) <= 0) {
+      this.app.toast('امروز دیگه ویدیوی جایزه‌دار نداریم. فردا دوباره!');
+      return false;
+    }
+    if (!(await showRewarded())) {
+      this.app.toast('ویدیو در دسترس نیست. کمی بعد دوباره امتحان کن.');
+      return false;
+    }
+    countAd(s, today());
+    this.app.dirty();
+    return true;
+  }
+
   energy(): Promise<void> {
     const s = this.app.s;
     return this.open('انرژی', (body, close) => {
@@ -73,14 +89,13 @@ export class Modals {
         } }, `+${fa(ENERGY_CAP)} انرژی با ${fa(REFILL_GEMS)}`, h('span', { html: svgIcon(ICONS.gem) })),
         adsAvailable()
           ? h('button', { class: 'btn pink', disabled: left <= 0, onclick: async () => {
-              if (await showRewarded()) {
-                countAd(s, today());
+              close();
+              if (await this.rewarded()) {
                 addEnergy(s, 30);
                 sfx.levelUp();
                 this.app.renderHud();
                 this.app.dirty();
-              } else this.app.toast('ویدیو در دسترس نیست. کمی بعد دوباره امتحان کن.');
-              close();
+              }
             } }, h('span', { html: svgIcon(ICONS.video) }), `+${fa(30)} انرژی با دیدن ویدیو (${fa(left)} بار مونده)`)
           : null,
       );
@@ -104,8 +119,8 @@ export class Modals {
             else if (r.reason === 'error') this.app.toast('خرید انجام نشد. دوباره امتحان کن.');
             return;
           }
-          this.grant(p.sku);
           close();
+          await this.grant(p.sku, r.token);
         } }, price);
         grid.append(
           p.once
@@ -143,34 +158,46 @@ export class Modals {
       if (adsAvailable()) {
         const left = adsLeft(s, today(), MAX_ADS_PER_DAY);
         body.append(h('button', { class: 'btn pink', disabled: left <= 0, onclick: async () => {
-          if (await showRewarded()) {
-            countAd(s, today());
+          close();
+          if (await this.rewarded()) {
             s.gems += 3;
             sfx.coin();
             this.app.renderHud();
             this.app.dirty();
             this.app.toast('۳ الماس هدیه گرفتی!');
           }
-          close();
         } }, h('span', { html: svgIcon(ICONS.video) }), `۳ الماس رایگان با دیدن ویدیو (${fa(left)})`));
       }
       body.append(h('p', { style: 'font-size:11px;color:#7a5a44' }, 'پرداخت امن از طریق کافه‌بازار. خریدها روی همین گوشی ذخیره می‌شن.'));
     });
   }
 
-  /** Delivers a paid product (also used to recover unconsumed purchases on start). */
-  grant(sku: string): void {
+  /**
+   * Delivers a paid product, saves, and only then consumes it on Bazaar. The token is kept
+   * until consumption succeeds so startup recovery never grants the same purchase twice.
+   */
+  async grant(sku: string, token: string): Promise<void> {
     const s = this.app.s;
     const p = PRODUCTS.find((x) => x.sku === sku);
-    if (!p) return;
+    if (!p || s.grantedTokens.includes(token)) return;
+    s.grantedTokens.push(token);
     s.gems += p.gems;
     if (p.energy) addEnergy(s, p.energy);
     if (p.chest) this.app.giveItem({ chain: 'chest', level: p.chest });
     if (p.once && !s.bought.includes(p.sku)) s.bought.push(p.sku);
+    await this.app.saveNow();
     sfx.levelUp();
-    this.app.renderHud();
-    this.app.saveNow();
+    this.app.renderAll();
     this.app.toast(`${p.title} اضافه شد. ممنون از حمایتت!`);
+    await this.finishPurchase(token);
+  }
+
+  /** Consumes a granted purchase and forgets its token (retried on next start if it fails). */
+  async finishPurchase(token: string): Promise<void> {
+    if (await consume(token)) {
+      this.app.s.grantedTokens = this.app.s.grantedTokens.filter((t) => t !== token);
+      await this.app.saveNow();
+    }
   }
 
   bag(): Promise<void> {
@@ -270,7 +297,7 @@ export class Modals {
                   render();
                 } }, 'بگیر')));
         });
-        if (s.quests.list.every((q) => q.claimed) && !s.quests.bonusClaimed) {
+        if (allQuestsClaimed(s) && !s.quests.bonusClaimed) {
           body.append(h('button', { class: 'btn gold', onclick: () => {
             const chest = claimQuestBonus(s);
             if (!chest) return;

@@ -8,15 +8,15 @@ import { portrait } from '../art/portraits';
 import { CHAINS, Item, canMerge, isGenerator, itemName, maxLevel, sameItem } from '../game/items';
 import {
   CELLS, ENERGY_CAP, GameEvent, GameState, Order, bubbleGemCost, buySheet, deliver, drop, msToNextEnergy, needsMet,
-  popBubble, questsClaimable, refreshQuests, sellValue, sell, sheetGemCost, tap, tickBubbles, tickEnergy, toBag,
+  placeItem, popBubble, questsClaimable, refreshQuests, sellValue, sell, sheetGemCost, tap, tickBubbles, tickEnergy, toBag,
   xpForLevel,
 } from '../game/model';
-import { adsAvailable, showRewarded } from '../platform/ads';
+import { adsAvailable } from '../platform/ads';
 import { introKey, markSeen, progress } from '../game/progress';
 import { buzz } from '../platform/haptics';
 import { writeSave } from '../platform/storage';
 import { CAST } from '../story/story';
-import { add, clear, fa, faNum, faTime, h, svgIcon, wait } from './dom';
+import { add, clear, dateKey, fa, faNum, faTime, h, svgIcon, wait } from './dom';
 import { Modals } from './modals';
 import { PlaceScreen } from './place';
 import { sfx } from './sound';
@@ -132,7 +132,7 @@ export class App {
       }
     });
     if (this.selected !== null && this.s.board[this.selected].lock === 'bubble') this.renderInfo();
-    if (refreshQuests(this.s, new Date().toLocaleDateString('en-CA'))) {
+    if (refreshQuests(this.s, dateKey())) {
       this.renderNav();
       this.dirty();
     }
@@ -269,7 +269,7 @@ export class App {
       this.select(d.from);
       this.cells.forEach((c, i) => {
         const other = this.s.board[i];
-        if (i !== d.from && other.item && other.lock !== 'box' && canMerge(it, other.item)) c.classList.add('target');
+        if (i !== d.from && other.item && other.lock !== 'box' && other.lock !== 'bubble' && canMerge(it, other.item)) c.classList.add('target');
       });
     }
     d.ghost.style.left = `${e.clientX}px`;
@@ -474,8 +474,12 @@ export class App {
       add(this.info, thumb, h('div', { class: 'text' }, h('div', { class: 'name' }, `حباب: ${itemName(it)}`), h('div', { class: 'hint' }, `${fa(secs)} ثانیه دیگه می‌پره!`)),
         h('button', { class: 'chip pink', onclick: () => this.handle(popBubble(this.s, i), i) }, fa(bubbleGemCost(it)), h('span', { html: svgIcon(ICONS.gem) })),
         adsAvailable() ? h('button', { class: 'chip green', onclick: async () => {
-          if (await showRewarded()) this.handle(popBubble(this.s, i, true), i);
-          else this.toast('ویدیو در دسترس نیست.');
+          const bubbled = { ...it };
+          if (!(await this.modals.rewarded())) return;
+          // The bubble may have floated away while the video played: still give the item.
+          const c = this.s.board[i];
+          if (c.lock === 'bubble' && c.item) this.handle(popBubble(this.s, i, true), i);
+          else this.giveItem(bubbled);
         } }, h('span', { html: svgIcon(ICONS.video) })) : null);
       return;
     }
@@ -692,18 +696,14 @@ export class App {
     this.tutorial();
   }
 
-  /** Grants the item the player gets (e.g. from a shop chest) next to the bottom centre. */
+  /** Grants a reward item next to the generators (or into the bag when the board is full). */
   giveItem(it: Item): void {
-    const target = this.s.board.findIndex((c, i) => !c.item && !c.lock && i >= 0);
-    if (target >= 0) {
-      this.s.board[target] = { item: it };
-      this.renderCell(target);
-      this.cells[target].querySelector('.item')?.classList.add('pop');
-    } else {
-      const slot = this.s.bag.indexOf(null);
-      if (slot >= 0) this.s.bag[slot] = it;
-      else this.s.bag.push(it);
+    const at = placeItem(this.s, it);
+    if (at !== null) {
+      this.renderCell(at);
+      this.cells[at].querySelector('.item')?.classList.add('pop');
     }
+    this.renderNav();
     this.dirty();
   }
 }
