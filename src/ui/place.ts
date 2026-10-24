@@ -277,7 +277,9 @@ export class PlaceScreen {
         await this.dialogue(r.nextPlace.intro);
       }
       // A new season brings its own generator (and its chain into the orders).
-      for (const it of ensureGenerators(s)) {
+      const arrived = ensureGenerators(s);
+      if (arrived.length) this.app.dirty();
+      for (const it of arrived) {
         const where = s.board.some((c) => c.item?.chain === it.chain) ? 'رو صفحه‌ست' : 'تو کیفته';
         this.app.toast(`«${itemName(it)}» رسید و ${where}! از حالا سفارش «${CHAINS[CHAINS[it.chain].produces!].name}» هم میاد.`);
         await wait(2600);
