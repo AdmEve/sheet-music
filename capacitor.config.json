@@ -1,0 +1,9 @@
+{
+  "appId": "com.admeve.mahalle",
+  "appName": "محله‌ی ما",
+  "webDir": "dist",
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#f6ead2"
+  }
+}

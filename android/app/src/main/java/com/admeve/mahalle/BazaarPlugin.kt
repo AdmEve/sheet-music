@@ -1,0 +1,106 @@
+package com.admeve.mahalle
+
+import com.getcapacitor.JSObject
+import com.getcapacitor.Plugin
+import com.getcapacitor.PluginCall
+import com.getcapacitor.PluginMethod
+import com.getcapacitor.annotation.CapacitorPlugin
+import ir.cafebazaar.poolakey.Connection
+import ir.cafebazaar.poolakey.ConnectionState
+import ir.cafebazaar.poolakey.Payment
+import ir.cafebazaar.poolakey.config.PaymentConfiguration
+import ir.cafebazaar.poolakey.config.SecurityCheck
+import ir.cafebazaar.poolakey.request.PurchaseRequest
+import org.json.JSONArray
+
+/**
+ * Cafe Bazaar in-app billing (Poolakey) exposed to the web layer as `Bazaar`.
+ * Purchases are verified locally with the app's RSA key from the Bazaar developer panel.
+ */
+@CapacitorPlugin(name = "Bazaar")
+class BazaarPlugin : Plugin() {
+    private var payment: Payment? = null
+    private var connection: Connection? = null
+
+    @PluginMethod
+    fun connect(call: PluginCall) {
+        val key = call.getString("rsaKey").orEmpty()
+        if (key.isEmpty()) return call.reject("missing rsaKey")
+        if (connection?.getState() == ConnectionState.Connected) {
+            return call.resolve(JSObject().put("connected", true))
+        }
+        val p = Payment(context, PaymentConfiguration(localSecurityCheck = SecurityCheck.Enable(rsaPublicKey = key)))
+        payment = p
+        var answered = false
+        connection = p.connect {
+            connectionSucceed {
+                if (!answered) { answered = true; call.resolve(JSObject().put("connected", true)) }
+            }
+            connectionFailed {
+                if (!answered) { answered = true; call.resolve(JSObject().put("connected", false)) }
+            }
+            disconnected { connection = null }
+        }
+    }
+
+    @PluginMethod
+    fun getPrices(call: PluginCall) {
+        val p = payment ?: return call.reject("not connected")
+        val skus = call.getArray("skus")?.toList<String>() ?: emptyList()
+        p.getInAppSkuDetails(skus) {
+            getSkuDetailsSucceed { list ->
+                val prices = JSObject()
+                list.forEach { prices.put(it.sku, it.price) }
+                call.resolve(JSObject().put("prices", prices))
+            }
+            getSkuDetailsFailed { call.reject(it.message ?: "sku details failed") }
+        }
+    }
+
+    @PluginMethod
+    fun purchase(call: PluginCall) {
+        val p = payment ?: return call.reject("not connected")
+        val sku = call.getString("sku") ?: return call.reject("missing sku")
+        val payload = call.getString("payload")
+        val registry = activity?.activityResultRegistry ?: return call.reject("no activity")
+        activity.runOnUiThread {
+            p.purchaseProduct(registry, PurchaseRequest(productId = sku, payload = payload)) {
+                purchaseSucceed { info ->
+                    call.resolve(JSObject().put("purchaseToken", info.purchaseToken).put("orderId", info.orderId))
+                }
+                purchaseCanceled { call.reject("cancelled") }
+                purchaseFailed { call.reject(it.message ?: "purchase failed") }
+                failedToBeginFlow { call.reject(it.message ?: "could not start purchase") }
+            }
+        }
+    }
+
+    @PluginMethod
+    fun consume(call: PluginCall) {
+        val p = payment ?: return call.reject("not connected")
+        val token = call.getString("purchaseToken") ?: return call.reject("missing token")
+        p.consumeProduct(token) {
+            consumeSucceed { call.resolve() }
+            consumeFailed { call.reject(it.message ?: "consume failed") }
+        }
+    }
+
+    @PluginMethod
+    fun pending(call: PluginCall) {
+        val p = payment ?: return call.reject("not connected")
+        p.getPurchasedProducts {
+            querySucceed { list ->
+                val arr = JSONArray()
+                list.forEach { arr.put(JSObject().put("sku", it.productId).put("purchaseToken", it.purchaseToken)) }
+                call.resolve(JSObject().put("purchases", arr))
+            }
+            queryFailed { call.reject(it.message ?: "query failed") }
+        }
+    }
+
+    override fun handleOnDestroy() {
+        connection?.disconnect()
+        connection = null
+        super.handleOnDestroy()
+    }
+}
