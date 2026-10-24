@@ -193,8 +193,13 @@ saves are written into localStorage `mahalle.save.v1`.
       episodes in 20 of 20 games (~110 regen hours for the last ones); map store shot
       refreshed
 
+- [x] Phase 21: Season 11 «ثبت جهانی» (`src/art/scenes11.ts`: the dossier office, the
+      inspectors' visit, a photo exhibition in the cistern, a night of Persian culture and
+      the world-heritage party; «خوشنویسی» chain + calligrapher's desk at level 60); map of
+      55 places; Season 12 teased (Golab's birthday)
+
 Next (in order):
-1. Season 11 «ثبت جهانی»
+1. Season 12 «تولد ننه‌گلاب»
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)

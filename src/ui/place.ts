@@ -91,8 +91,8 @@ export class PlaceScreen {
       );
     } else if (!p.next || !p.place) {
       card.append(
-        h('div', { class: 'tasktitle' }, 'فصل دهم تموم شد! 🎉'),
-        h('p', { class: 'muted' }, 'کاوه موند و مدرسه‌ی مرمت کوچه باز شد. ولی نامه‌ی یونسکو… فصل یازدهم به‌زودی با آپدیت بعدی میاد.'),
+        h('div', { class: 'tasktitle' }, 'فصل یازدهم تموم شد! 🎉'),
+        h('p', { class: 'muted' }, 'کوچه‌ی حاج‌بابا ثبت جهانی شد! ولی تولد ننه‌گلاب… فصل دوازدهم به‌زودی با آپدیت بعدی میاد.'),
         h('button', { class: 'btn', onclick: back }, 'برگرد به بازی'),
       );
     } else {

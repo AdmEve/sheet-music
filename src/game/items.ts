@@ -3,8 +3,8 @@
 // they produce; merging two generators makes a stronger one.
 
 export type ChainId =
-  | 'tea' | 'bread' | 'garden' | 'tools' | 'textile' | 'pottery' | 'sweets' | 'post' | 'baby' | 'lamp' | 'saz' | 'tile' | 'football' | 'sea' | 'craft'
-  | 'genTea' | 'genBread' | 'genGarden' | 'genTools' | 'genTextile' | 'genPottery' | 'genSweets' | 'genPost' | 'genBaby' | 'genLamp' | 'genSaz' | 'genTile' | 'genFootball' | 'genSea' | 'genCraft'
+  | 'tea' | 'bread' | 'garden' | 'tools' | 'textile' | 'pottery' | 'sweets' | 'post' | 'baby' | 'lamp' | 'saz' | 'tile' | 'football' | 'sea' | 'craft' | 'callig'
+  | 'genTea' | 'genBread' | 'genGarden' | 'genTools' | 'genTextile' | 'genPottery' | 'genSweets' | 'genPost' | 'genBaby' | 'genLamp' | 'genSaz' | 'genTile' | 'genFootball' | 'genSea' | 'genCraft' | 'genCallig'
   | 'chest' | 'coins' | 'energy'
   | 'yalda' | 'genYalda' | 'nowruz' | 'genNowruz' | 'kite' | 'genKite' | 'lavashak' | 'genLavashak'
   | 'ash' | 'genAsh' | 'icecream' | 'genIcecream' | 'suri' | 'genSuri' | 'school' | 'genSchool';
@@ -100,6 +100,11 @@ export const CHAINS: Record<ChainId, ChainDef> = {
     name: 'صنایع دستی',
     levels: ['قلم‌مو', 'رنگ‌دان', 'کاسه‌ی مینا', 'بشقاب قلم‌زنی', 'جعبه‌ی خاتم', 'قاب مینیاتور', 'قلمدان', 'طاووس میناکاری'],
   },
+  callig: {
+    id: 'callig',
+    name: 'خوشنویسی',
+    levels: ['قلم نی', 'دوات و لیقه', 'کاغذ آهارمهره', 'سیاه‌مشق', 'قطعه‌ی نستعلیق', 'تابلوی خوشنویسی', 'کتاب مذهّب', 'کتیبه‌ی طلایی'],
+  },
   genTea: { id: 'genTea', name: 'قوطی چای', levels: ['قوطی چای', 'قوطی چای حلبی', 'صندوقچه چای'], produces: 'tea', unlockLevel: 1 },
   genBread: { id: 'genBread', name: 'تنور', levels: ['تنور کوچک', 'تنور', 'تنور بزرگ'], produces: 'bread', unlockLevel: 1 },
   genGarden: { id: 'genGarden', name: 'باغچه', levels: ['باغچه کوچک', 'باغچه', 'باغچه گل'], produces: 'garden', unlockLevel: 2 },
@@ -115,6 +120,7 @@ export const CHAINS: Record<ChainId, ChainDef> = {
   genFootball: { id: 'genFootball', name: 'ساک ورزشی', levels: ['ساک ورزشی کوچک', 'ساک ورزشی', 'کمد رختکن'], produces: 'football', unlockLevel: 45 },
   genSea: { id: 'genSea', name: 'زنبیل ساحلی', levels: ['زنبیل ساحلی کوچک', 'زنبیل ساحلی', 'صندوق ساحلی'], produces: 'sea', unlockLevel: 50 },
   genCraft: { id: 'genCraft', name: 'سه‌پایه‌ی نقاشی', levels: ['سه‌پایه‌ی کوچک', 'سه‌پایه‌ی نقاشی', 'کارگاه مینیاتور'], produces: 'craft', unlockLevel: 55 },
+  genCallig: { id: 'genCallig', name: 'میز خوشنویسی', levels: ['جعبه‌ی قلم', 'میز خوشنویسی', 'کارگاه خوشنویسی'], produces: 'callig', unlockLevel: 60 },
   chest: { id: 'chest', name: 'صندوقچه', levels: ['صندوقچه چوبی', 'صندوقچه مسی', 'صندوقچه طلایی'] },
   coins: { id: 'coins', name: 'سکه', levels: ['چند سکه', 'کیسه سکه', 'کوزه سکه'], collectible: 'coins' },
   energy: { id: 'energy', name: 'انرژی', levels: ['استکان انرژی', 'قوری انرژی', 'سماور انرژی'], collectible: 'energy' },
@@ -136,8 +142,8 @@ export const CHAINS: Record<ChainId, ChainDef> = {
   genSchool: { id: 'genSchool', name: 'جعبه‌ی لوازم‌التحریر', levels: ['جعبه‌ی لوازم‌التحریر'], produces: 'school', event: 'school' },
 };
 
-export const PRODUCT_CHAINS: ChainId[] = ['tea', 'bread', 'garden', 'tools', 'textile', 'pottery', 'sweets', 'post', 'baby', 'lamp', 'saz', 'tile', 'football', 'sea', 'craft'];
-export const GENERATOR_CHAINS: ChainId[] = ['genTea', 'genBread', 'genGarden', 'genTools', 'genTextile', 'genPottery', 'genSweets', 'genPost', 'genBaby', 'genLamp', 'genSaz', 'genTile', 'genFootball', 'genSea', 'genCraft'];
+export const PRODUCT_CHAINS: ChainId[] = ['tea', 'bread', 'garden', 'tools', 'textile', 'pottery', 'sweets', 'post', 'baby', 'lamp', 'saz', 'tile', 'football', 'sea', 'craft', 'callig'];
+export const GENERATOR_CHAINS: ChainId[] = ['genTea', 'genBread', 'genGarden', 'genTools', 'genTextile', 'genPottery', 'genSweets', 'genPost', 'genBaby', 'genLamp', 'genSaz', 'genTile', 'genFootball', 'genSea', 'genCraft', 'genCallig'];
 
 export interface Item {
   chain: ChainId;

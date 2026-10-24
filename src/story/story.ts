@@ -1232,6 +1232,108 @@ export const PLACES: Place[] = [
       { who: 'golab', text: 'حاج‌بابا… کوچه‌ات داره دنیا رو می‌گیره. فصل بعد…', mood: 'happy' },
     ],
   },
+  // ------------------------------------------------------------------ season 11: ثبت جهانی
+  {
+    id: 'dossier',
+    name: 'دفتر پرونده‌ی ثبت',
+    intro: [
+      { who: 'farokhi', text: 'یونسکو یه پرونده‌ی کامل می‌خواد: نقشه، عکس، تاریخچه، و اینکه مردم چطور از کوچه نگه‌داری می‌کنن.' },
+      { who: 'mahin', text: 'تاریخچه با من! چهل ساله همه‌چی این کوچه رو یادداشت کردم. … بالاخره به یه دردی خورد!', mood: 'happy' },
+      { who: 'kaveh', text: 'کتابخونه‌ی خونه‌ی همسایه‌ها رو دفتر کار می‌کنیم. میز بزرگ لازم داریم.' },
+    ],
+    tasks: [
+      { id: 'dos.table', title: 'میز بزرگ نقشه‌ها', cost: 330, layer: 'table', after: [{ who: 'kaveh', text: 'نقشه‌ی همه‌ی خونه‌ها، با مقیاس. شاگردهای مدرسه‌ی مرمت کشیدنش.' }] },
+      { id: 'dos.files', title: 'کمد پرونده‌ها', cost: 332, layer: 'files', after: [{ who: 'mahin', text: 'دفترچه‌ی سال ۱۳۶۰: «امروز حاج‌بابا سماور نو خرید.» … اینم تاریخه دیگه!' }] },
+      { id: 'dos.photos', title: 'دیوار عکس‌ها', cost: 334, layer: 'photos', after: [{ who: 'bahman', text: 'عکس‌های قدیمی من از هامبورگ هم هست. کوچه از نگاه کسی که دلش تنگش بود.' }] },
+      { id: 'dos.lamp', title: 'چراغ مطالعه', cost: 336, layer: 'lamp', after: [{ who: 'narges', text: 'سه شب تا صبح بیدار موندیم. ولی پرونده تموم شد.' }] },
+      { id: 'dos.stamp', title: 'مهر و امضای پرونده', cost: 338, layer: 'stamp', after: [{ who: 'farokhi', text: 'پرونده رفت! حالا کارشناس‌های یونسکو میان کوچه رو ببینن.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'golab', text: 'مهمون خارجی؟ پس کوچه باید از همیشه تمیزتر باشه. همه جارو دست بگیرید!' },
+      { who: 'aydin', text: 'من انگلیسی بلدم. ترکی هم بلدم. … اگه ترک بودن، کمک می‌کنه!' },
+    ],
+  },
+  {
+    id: 'inspection',
+    name: 'روز بازدید',
+    intro: [
+      { who: 'mahin', text: 'کارشناس‌ها ساعت ده میان! سه نفرن: یکی ایتالیایی، یکی ژاپنی، یکی هم از مصر.' },
+      { who: 'morteza', text: 'من به همه‌شون شربت مجانی می‌دم. … این کارها رو یونسکو می‌بینه، نه؟' },
+      { who: 'kaveh', text: 'کوچه رو همون‌جوری که هست نشون می‌دیم. زنده، با آدم‌هاش.' },
+    ],
+    tasks: [
+      { id: 'ins.sweep', title: 'جارو و آب‌پاشی کوچه', cost: 336, layer: 'sweep', after: [{ who: 'golab', text: 'آب‌پاشی صبح، بوی خاک نم‌خورده… این رو هم بنویسید تو پرونده.' }] },
+      { id: 'ins.signs', title: 'تابلوهای راهنما', cost: 338, layer: 'signs', after: [{ who: 'aydin', text: 'فارسی، انگلیسی… و یه کوچولو ترکی، برای دل خودم.' }] },
+      { id: 'ins.flowers', title: 'گلدون‌های در خونه‌ها', cost: 340, layer: 'flowers', after: [{ who: 'fakhri', text: 'هر در یه گلدون. هر گلدون یه رنگ. با ننه‌گلاب انتخاب کردیم.' }] },
+      { id: 'ins.guides', title: 'میز خوش‌آمد', cost: 342, layer: 'guides', after: [{ who: 'narges', text: 'کارشناس ژاپنی گفت: «این کوچه مثل یه خونواده‌ست.» … فهمید!', mood: 'happy' }] },
+      { id: 'ins.tea', title: 'چای قهوه‌خونه برای مهمون‌ها', cost: 344, layer: 'tea', after: [{ who: 'reza', text: 'کارشناس ایتالیایی سه تا سنگک خرید! گفت از پیتزا خوشمزه‌تره!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'farokhi', text: 'کارشناس‌ها گفتن یه نمایشگاه عکس هم می‌خوان، تا جلسه‌ی نهایی.' },
+      { who: 'kaveh', text: 'آب‌انبار! بهترین گالری دنیا. نور از نورگیر می‌افته روی عکس‌ها.' },
+    ],
+  },
+  {
+    id: 'exhibition',
+    name: 'نمایشگاه عکس آب‌انبار',
+    intro: [
+      { who: 'shirin', text: 'عکس‌ها رو بزرگ چاپ کردیم! از قهوه‌خونه‌ی خاک‌گرفته تا جشن نام‌گذاری.' },
+      { who: 'mahin', text: 'عکس‌های من بهتر از همه‌ست. … آره، خودم انتخابشون کردم.' },
+      { who: 'kaveh', text: 'آب‌انبار نم داره. باید قاب‌ها و نورپردازی درست باشه.' },
+    ],
+    tasks: [
+      { id: 'exh.frames', title: 'قاب‌های بزرگ', cost: 342, layer: 'frames', after: [{ who: 'narges', text: 'عکس اول: روزی که فرخی اومد کوچه رو بخره. عکس آخر: فرخی داور فینال.', mood: 'happy' }] },
+      { id: 'exh.lights', title: 'نورپردازی', cost: 344, layer: 'lights', after: [{ who: 'kaveh', text: 'هر عکس یه نور. مثل چراغ‌های قهوه‌خونه در اولین شب.' }] },
+      { id: 'exh.path', title: 'مسیر بازدید', cost: 346, layer: 'path', after: [{ who: 'reza', text: 'چهل پله پایین، چهل سال خاطره. حساب دقیقیه!' }] },
+      { id: 'exh.book', title: 'دفتر یادبود', cost: 348, layer: 'book', after: [{ who: 'golab', text: 'یه بچه نوشته: «وقتی بزرگ شدم، می‌خوام مثل ننه‌گلاب باشم.» … دیگه چی می‌خوام از دنیا؟', mood: 'sad' }] },
+      { id: 'exh.ribbon', title: 'افتتاح نمایشگاه', cost: 350, layer: 'ribbon', after: [{ who: 'farokhi', text: 'جلسه‌ی نهایی یونسکو یه ماه دیگه‌ست. تا اون موقع… یه جشن فرهنگی بگیریم؟', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'bahman', text: 'شب فرهنگ ایرانی! سنتور، خوشنویسی، آش… همه‌چی که این کوچه رو کوچه کرده.' },
+      { who: 'mahin', text: 'از رادیو اعلام می‌کنم. کل تهران دعوتن!' },
+    ],
+  },
+  {
+    id: 'culturenight',
+    name: 'شب فرهنگ ایرانی',
+    intro: [
+      { who: 'bahman', text: 'یه استاد خوشنویس میاد، شعر حافظ می‌نویسه برای هر کی بخواد.' },
+      { who: 'golab', text: 'آش رشته با من. صد کاسه! … دویست کاسه!' },
+      { who: 'aydin', text: 'فرش‌ها رو تو کوچه پهن می‌کنیم. مهمون باید رو فرش بشینه.' },
+    ],
+    tasks: [
+      { id: 'cn.carpets', title: 'فرش‌های کوچه', cost: 348, layer: 'carpets', after: [{ who: 'aydin', text: 'سی تا فرش، از سر کوچه تا ته کوچه. ننه‌م ببینه، ذوق می‌کنه.' }] },
+      { id: 'cn.santur', title: 'سنتور و تار', cost: 350, layer: 'santur', after: [{ who: 'bahman', text: 'شاگرد مدرسه‌ی مرمت سنتور می‌زنه، من تار. … چهل سال دیر، ولی بالاخره.' }] },
+      { id: 'cn.calligraphy', title: 'میز خوشنویسی', cost: 352, layer: 'calligraphy', after: [{ who: 'narges', text: 'استاد برام نوشت: «دل می‌رود ز دستم، صاحب‌دلان خدا را». قابش می‌کنم.', mood: 'happy' }] },
+      { id: 'cn.ash', title: 'دیگ‌های آش', cost: 354, layer: 'ash', after: [{ who: 'golab', text: 'دویست کاسه تموم شد! … فردا دوباره بار می‌ذارم.' }] },
+      { id: 'cn.lanterns', title: 'فانوس‌های کوچه', cost: 356, layer: 'lanterns', after: [{ who: 'mahin', text: 'زنگ زدن… از پاریس! جلسه‌ی یونسکو فردا صبحه. همه بیدار بمونید!', mood: 'surprised' }] },
+    ],
+    outro: [
+      { who: 'farokhi', text: '(صبح، تلفن به دست) … ثبت شد. کوچه‌ی حاج‌بابا ثبت جهانی شد!', mood: 'happy' },
+      { who: 'narges', text: 'حاج‌بابا… شنیدی؟ کوچه‌ت مال کل دنیا شد.', mood: 'sad' },
+    ],
+  },
+  {
+    id: 'worldparty',
+    name: 'جشن ثبت جهانی',
+    intro: [
+      { who: 'mahin', text: 'تلویزیون اومده! خبرگزاری‌ها اومدن! … ولی خبر رو اول من دادم!', mood: 'happy' },
+      { who: 'kaveh', text: 'یه لوح بزرگ رو سردر کوچه نصب می‌کنیم. کنار لوح ثبت ملی.' },
+      { who: 'golab', text: 'و یه عکس با همه. همه‌ی همه. حتی کوچه‌ی بهار.' },
+    ],
+    tasks: [
+      { id: 'wp.plaque', title: 'لوح ثبت جهانی', cost: 354, layer: 'plaque', after: [{ who: 'farokhi', text: 'دو تا لوح، کنار هم. یه روز من می‌خواستم این سردر رو خراب کنم.' }] },
+      { id: 'wp.flags', title: 'پرچم‌های کشورها', cost: 356, layer: 'flags', after: [{ who: 'aydin', text: 'کارشناس‌ها هم اومدن! ژاپنیه بادبادک آورده، ایتالیاییه… پیتزا. باید جلوش رو بگیریم!' }] },
+      { id: 'wp.stage', title: 'سن جشن', cost: 358, layer: 'stage', after: [{ who: 'narges', text: 'سخنرانی؟ من؟ … فقط یه جمله می‌گم: «این کوچه رو آدم‌هاش نجات دادن، نه آجرهاش.»', mood: 'happy' }] },
+      { id: 'wp.lights', title: 'چراغونی کل محله', cost: 360, layer: 'lights', after: [{ who: 'reza', text: 'از سر خیابون تا ته کوچه، همه‌جا روشن! این دفعه برق رو آقا مرتضی حساب کرد.' }, { who: 'morteza', text: 'آره… مجانی. دیگه عادت کردم.', mood: 'happy' }] },
+      { id: 'wp.photo', title: 'عکس بزرگ محله', cost: 362, layer: 'photo', after: [{ who: 'golab', text: 'یک، دو، سه… «سیـــب!» … حاج‌بابا هم تو عکسه. من می‌بینمش.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'mahin', text: 'خبر داغ! … خب، این یکی خیلی داغ نیست، ولی مهمه.', mood: 'surprised' },
+      { who: 'mahin', text: 'هفته‌ی دیگه تولد ننه‌گلابه. نود سالگیش! یه جشن لازم داره که تاریخ یادش بمونه!', mood: 'happy' },
+      { who: 'golab', text: 'نود؟ … من هنوز هفتاد ساله‌م، مهین! حساب کتابت ضعیفه!', mood: 'angry' },
+    ],
+  },
 ];
 
 export function findTask(id: string): { place: Place; task: Task; index: number } | null {

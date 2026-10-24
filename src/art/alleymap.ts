@@ -5,7 +5,7 @@
 
 import { INK, O, THIN, sparkle } from './kit';
 
-export const MAP_H = 5460;
+export const MAP_H = 5990;
 const STEP = 106;
 const faDigits = (n: number) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 
@@ -203,6 +203,23 @@ const FACADES: Record<string, Facade> = {
   restoschool: {
     wall: '#f2e8d0', roof: 'gable', roofFill: 'url(#gLeaf)', door: 'arch', sign: 'مدرسه‌ی مرمت',
     deco: `<rect x="-62" y="-30" width="18" height="14" fill="#2f5a3a" ${THIN} stroke-width="1"/>`,
+  },
+  dossier: { wall: '#efe3cc', roof: 'gable', roofFill: 'url(#gTurq)', door: 'arch', sign: 'پرونده‌ی ثبت' },
+  inspection: {
+    wall: '#cf9e6c', w: 104, h: 86, door: 'gate',
+    deco: [-62, 62].map((x) => `<rect x="${x - 10}" y="-60" width="20" height="10" rx="2" fill="url(#gBlue)" ${THIN}/>`).join(''),
+  },
+  exhibition: {
+    wall: '#c9a26b', roof: 'dome', roofFill: 'url(#gClay)', door: 'gate',
+    deco: [-36, 36].map((x) => `<rect x="${x - 10}" y="-30" width="20" height="16" fill="url(#gGold)" ${THIN}/>`).join(''),
+  },
+  culturenight: {
+    wall: '#d9a873', h: 56, w: 128, door: 'gate',
+    deco: `<path d="M-60 -62 Q0 -80 60 -62" fill="none" stroke="${INK}" stroke-width="1.2"/>` + Array.from({ length: 7 }, (_, i) => `<circle cx="${-48 + i * 16}" cy="${-66 - Math.sin((i / 6) * Math.PI) * 8}" r="4" fill="#ffd36b" ${THIN} stroke-width=".8"/>`).join(''),
+  },
+  worldparty: {
+    wall: 'url(#gTerracotta)', w: 120, h: 80, door: 'gate',
+    deco: `<rect x="-20" y="-70" width="40" height="14" rx="2" fill="url(#gSilver)" ${THIN}/>` + Array.from({ length: 8 }, (_, i) => `<rect x="${-56 + i * 15}" y="${-92 + Math.sin((i / 7) * Math.PI) * 6}" width="9" height="6" fill="${['#2a9d4a', '#fffdf6', '#e0303f', '#3a76c4'][i % 4]}" stroke="${INK}" stroke-width=".6"/>`).join(''),
   },
   wedding: {
     wall: 'url(#gWood)', w: 120, h: 70, door: 'gate',
