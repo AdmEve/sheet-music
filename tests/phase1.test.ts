@@ -107,3 +107,16 @@ describe('merge hint', () => {
     expect(findHint(s)).toBeNull();
   });
 });
+
+describe('generator catch-up', () => {
+  it('hands a missing generator to players already past its level, once', async () => {
+    const { ensureGenerators } = await import('../src/game/model');
+    const s = newGame(2, 0);
+    s.level = 21;
+    const given = ensureGenerators(s).map((i) => i.chain);
+    expect(given).toContain('genPost');
+    expect(given).toContain('genSweets');
+    expect(given).not.toContain('genGarden'); // still in its crate on the board
+    expect(ensureGenerators(s)).toEqual([]);
+  });
+});

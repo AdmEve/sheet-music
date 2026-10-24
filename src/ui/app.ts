@@ -12,7 +12,7 @@ import { ensurePass, passClaimable, passProgress, passUnlocked, PASS_STEPS } fro
 import { OFFER_SKU, OfferId, PIGGY_CAP, activeOffers, giftReady, offerOnLevel, piggyFull, piggyUnlocked } from '../game/offers';
 import { CHAINS, Item, canMerge, isGenerator, itemName, maxLevel, sameItem } from '../game/items';
 import {
-  CELLS, ENERGY_CAP, GameEvent, GameState, Order, adsLeft, bubbleGemCost, buySheet, deliver, drop, findHint, msToNextEnergy, needsMet,
+  CELLS, ENERGY_CAP, GameEvent, GameState, Order, adsLeft, bubbleGemCost, ensureGenerators, buySheet, deliver, drop, findHint, msToNextEnergy, needsMet,
   placeItem, popBubble, questsClaimable, refreshQuests, sellValue, sell, sheetGemCost, tap, tickBubbles, tickEnergy, toBag,
   xpForLevel,
 } from '../game/model';
@@ -86,6 +86,7 @@ export class App {
     this.boardEl.addEventListener('pointermove', (e) => this.onMove(e));
     this.boardEl.addEventListener('pointerup', (e) => this.onUp(e));
     this.boardEl.addEventListener('pointercancel', () => this.cancelDrag());
+    for (const it of ensureGenerators(this.s)) this.toast(`«${itemName(it)}» به صفحه اضافه شد!`);
     this.renderAll();
     setInterval(() => this.tick(), 1000);
   }

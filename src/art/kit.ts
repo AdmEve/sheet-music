@@ -32,7 +32,8 @@ export function estekan(x: number, y: number, s = 1, withTea = false, saucer = t
       : '') +
       (withTea ? `<path d="${tea}" fill="url(#gTea)"/>` : '') +
       `<path d="${body}" fill="url(#gGlass)" fill-opacity="${withTea ? 0.35 : 0.9}" ${O}/>` +
-      `<path d="M-18 -26 L18 -26" stroke="url(#gGold)" stroke-width="4" stroke-linecap="round"/>` +
+      // Solid colour: a gradient stroke on a perfectly straight line has a zero-size box and draws nothing.
+      `<path d="M-18 -26 L18 -26" stroke="#e9b949" stroke-width="4" stroke-linecap="round"/>` +
       `<path d="M-18 -26 L18 -26" stroke="${INK}" stroke-width="1" opacity=".5"/>` +
       shine(-10, -14, 2.2, 7, 10, 0.85),
     t,

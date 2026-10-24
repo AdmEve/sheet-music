@@ -102,7 +102,7 @@ const TAILOR: Record<string, Layer> = {
   machine: (d) =>
     `<rect x="20" y="140" width="110" height="10" rx="3" fill="url(#gWoodDark)" ${O}/><path d="M30 150 V200 M120 150 V200" ${O} stroke-width="5"/>` +
     (d
-      ? `<path d="M36 140 V108 Q36 98 46 98 H104 Q114 98 114 108 V118 H98 V112 H54 V140 Z" fill="#222" ${O}/><path d="M46 104 H104" stroke="url(#gGold)" stroke-width="3"/><circle cx="108" cy="126" r="9" fill="url(#gSteel)" ${THIN}/>` + sparkle(124, 98, 5)
+      ? `<path d="M36 140 V108 Q36 98 46 98 H104 Q114 98 114 108 V118 H98 V112 H54 V140 Z" fill="#222" ${O}/><path d="M46 104 H104" stroke="#e9b949" stroke-width="3"/><circle cx="108" cy="126" r="9" fill="url(#gSteel)" ${THIN}/>` + sparkle(124, 98, 5)
       : `<path d="M30 140 C30 96 120 96 120 140 Z" fill="#fbf7ee" fill-opacity=".9" stroke="#c9b9a0" stroke-width="2"/>`),
   dress: (d) =>
     `<path d="M180 210 V198 M168 210 h24" ${O} stroke-width="4"/>` +

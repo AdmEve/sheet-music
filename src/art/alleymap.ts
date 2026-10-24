@@ -5,7 +5,7 @@
 
 import { INK, O, THIN, sparkle } from './kit';
 
-export const MAP_H = 1180;
+export const MAP_H = 1710;
 const STEP = 106;
 const faDigits = (n: number) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 
@@ -64,6 +64,17 @@ const FACADES: Record<string, Facade> = {
   sweetshop: { wall: '#fff3c4', roof: 'awning', roofFill: 'url(#gRose)', door: 'shop' },
   tailor: { wall: '#d8e4ec', door: 'shop', sign: 'خیاطی', deco: `<path d="M-8 -30 C-12 -20 -10 -10 -12 -4 L12 -4 C10 -10 12 -20 8 -30 Z" fill="url(#gRose)" ${THIN}/>` },
   aghd: { wall: '#fdfaf3', roof: 'dome', roofFill: 'url(#gGold)', door: 'arch', w: 120 },
+  postoffice: { wall: '#d8e4d4', door: 'shop', sign: 'پُست', deco: `<rect x="44" y="-40" width="14" height="22" rx="3" fill="url(#gYellow)" ${THIN}/>` },
+  photo: { wall: '#efe0d0', door: 'shop', sign: 'آتلیه رز', roof: 'awning', roofFill: 'url(#gRose)' },
+  zurkhaneh: { wall: '#c98a52', roof: 'dome', roofFill: 'url(#gTerracotta)', door: 'arch', w: 120 },
+  cinema: {
+    wall: '#4a1a24', door: 'shop', sign: 'سینما', h: 80,
+    deco: Array.from({ length: 10 }, (_, i) => `<circle cx="${-45 + i * 10}" cy="-90" r="2.2" fill="#ffd36b"/>`).join(''),
+  },
+  home: {
+    wall: '#e0b07a', roof: 'gable', door: 'gate',
+    deco: `<circle cx="-56" cy="-70" r="16" fill="url(#gLeaf)" ${O}/><ellipse cx="-60" cy="-72" rx="2" ry="3" fill="url(#gPlum)"/><ellipse cx="-50" cy="-66" rx="2" ry="3" fill="url(#gPlum)"/>`,
+  },
   wedding: {
     wall: 'url(#gWood)', w: 120, h: 70, door: 'gate',
     deco: Array.from({ length: 9 }, (_, i) => `<circle cx="${-56 + i * 14}" cy="${-72 + Math.sin(i / 8 * Math.PI) * -8}" r="3.2" fill="${['#ffd36b', '#ff7a9c', '#5fe0e0'][i % 3]}" ${THIN} stroke-width=".8"/>`).join(''),
@@ -104,7 +115,7 @@ export function mapSvg(ids: string[], names: string[], states: MapState[]): stri
   let s = `<rect width="360" height="${MAP_H}" fill="#e9d9b8"/>`;
   s += Array.from({ length: 40 }, (_, i) => `<circle cx="${(i * 97) % 360}" cy="${(i * 211) % MAP_H}" r="${2 + (i % 3)}" fill="#d8c39c" opacity=".7"/>`).join('');
   s += alley(ids.length);
-  s += [[30, 1120], [330, 980], [20, 760], [340, 560], [26, 330], [334, 160], [40, 70]].map(([x, y]) => tree(x, y, 0.9)).join('');
+  s += [[30, 1650], [330, 1510], [20, 1290], [340, 1090], [26, 860], [334, 690], [24, 470], [336, 300], [40, 120]].map(([x, y]) => tree(x, y, 0.9)).join('');
   ids.forEach((id, k) => {
     const p = plot(k);
     const f = FACADES[id] ?? FACADES.teahouse;

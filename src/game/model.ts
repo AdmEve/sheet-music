@@ -572,6 +572,25 @@ export function placeItem(s: GameState, it: Item): number | null {
   return null;
 }
 
+/**
+ * Generators whose unlock level the player has passed but who never got them (e.g. a new
+ * season's generator arriving by update after they levelled past it). Places each one
+ * and returns it. Generators cannot be sold, so "not on the board or in the bag" means
+ * "never received".
+ */
+export function ensureGenerators(s: GameState): Item[] {
+  const owned = new Set([...s.board.map((c) => c.item?.chain), ...s.bag.map((b) => b?.chain)]);
+  const given: Item[] = [];
+  for (const g of GENERATOR_CHAINS) {
+    const lvl = CHAINS[g].unlockLevel ?? 1;
+    if (lvl <= 1 || lvl > s.level || owned.has(g)) continue;
+    const it: Item = { chain: g, level: 1 };
+    placeItem(s, it);
+    given.push(it);
+  }
+  return given;
+}
+
 /** New generators arrive as level-up gifts; every few levels a chest. */
 function levelGift(level: number): Item | null {
   for (const g of GENERATOR_CHAINS) if (CHAINS[g].unlockLevel === level && level > 1) return { chain: g, level: 1 };

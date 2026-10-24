@@ -34,6 +34,12 @@ export class PlaceScreen {
         resolve();
       };
       this.render(screen, back);
+      // A new season that arrived by update: its first place has not been introduced yet.
+      const cur = progress(this.app.s).place;
+      if (cur && markSeen(this.app.s, introKey(cur.id))) {
+        this.app.dirty();
+        void this.dialogue(cur.intro);
+      }
     });
   }
 
@@ -63,8 +69,8 @@ export class PlaceScreen {
       );
     } else if (!p.next || !p.place) {
       card.append(
-        h('div', { class: 'tasktitle' }, 'فصل دوم تموم شد! 💍'),
-        h('p', { class: 'muted' }, 'کوچه نجات پیدا کرد و عروسی هم برگزار شد. فصل سوم («نامه‌ای از اون ور دنیا») به‌زودی با آپدیت بعدی میاد.'),
+        h('div', { class: 'tasktitle' }, 'فصل سوم تموم شد! 💌'),
+        h('p', { class: 'muted' }, 'عمو بهمن بعد از چهل سال برگشت و خونه‌ی پدری شد «خونه‌ی همسایه‌ها». ولی خاله مهین یه خبر تازه داره… فصل چهارم به‌زودی با آپدیت بعدی میاد.'),
         h('button', { class: 'btn', onclick: back }, 'برگرد به بازی'),
       );
     } else {

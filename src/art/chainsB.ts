@@ -210,7 +210,7 @@ export const TEXTILE: string[] = [
 export const GEN_TEXTILE: string[] = [
   // دوک نخ‌ریسی
   shadow(50, 86, 26) +
-    `<path d="M50 10 L50 82" stroke="url(#gWood)" stroke-width="5" stroke-linecap="round"/><path d="M50 10 L50 82" ${THIN}/>` +
+    `<path d="M50 10 L50 82" stroke="#b07a46" stroke-width="5" stroke-linecap="round"/><path d="M50 10 L50 82" ${THIN}/>` +
     `<ellipse cx="50" cy="70" rx="20" ry="7" fill="url(#gWoodDark)" ${O}/>` + yarn(50, 44, 15, 'url(#rWool)'),
   // دار قالی
   shadow(50, 89, 38) +

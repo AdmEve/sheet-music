@@ -4,6 +4,7 @@ import { BREAD, GEN_BREAD, GEN_TEA, TEA } from './chainsA';
 import { GARDEN, GEN_GARDEN, GEN_POTTERY, GEN_TEXTILE, GEN_TOOLS, POTTERY, TEXTILE, TOOLS } from './chainsB';
 import { CHEST, COINS, ENERGY } from './chainsC';
 import { GEN_SWEETS, SWEETS } from './chainsD';
+import { GEN_POST, POST } from './chainsE';
 import { GEN_KITE, GEN_LAVASHAK, GEN_NOWRUZ, GEN_YALDA, KITE, LAVASHAK, NOWRUZ, YALDA } from './events';
 
 const ART: Record<ChainId, string[]> = {
@@ -14,6 +15,7 @@ const ART: Record<ChainId, string[]> = {
   textile: TEXTILE,
   pottery: POTTERY,
   sweets: SWEETS,
+  post: POST,
   genTea: GEN_TEA,
   genBread: GEN_BREAD,
   genGarden: GEN_GARDEN,
@@ -21,6 +23,7 @@ const ART: Record<ChainId, string[]> = {
   genTextile: GEN_TEXTILE,
   genPottery: GEN_POTTERY,
   genSweets: GEN_SWEETS,
+  genPost: GEN_POST,
   chest: CHEST,
   coins: COINS,
   energy: ENERGY,

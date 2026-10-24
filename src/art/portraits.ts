@@ -93,7 +93,7 @@ const scarfFront = (fill: string) =>
 const dots = (color: string) =>
   [[34, 26], [46, 22], [58, 24], [68, 32], [28, 38], [72, 46]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2" fill="${color}"/>`).join('');
 
-export const CAST_IDS = ['narges', 'mahin', 'reza', 'shirin', 'kaveh', 'morteza', 'golab', 'fakhri', 'farokhi'];
+export const CAST_IDS = ['narges', 'mahin', 'reza', 'shirin', 'kaveh', 'morteza', 'golab', 'fakhri', 'farokhi', 'bahman'];
 export const MOOD_LIST: Mood[] = ['neutral', 'happy', 'sad', 'angry', 'surprised'];
 
 const PORTRAITS: Record<string, (m: FaceOpts) => string> = {
@@ -146,6 +146,13 @@ const PORTRAITS: Record<string, (m: FaceOpts) => string> = {
     face({ eyes: 'narrow', brows: 'stern', mouth: 'smirk', ...m }) +
     `<path d="M29 46 C26 22 74 20 71 44 C66 34 54 28 40 34 C36 36 32 40 29 46 Z" fill="#111" ${O}/>` +
     `<path d="M33 48 h14 v6 c0 3 -14 3 -14 0 Z M53 48 h14 v6 c0 3 -14 3 -14 0 Z" fill="#222" ${THIN}/><path d="M47 50 h6" stroke="${INK}" stroke-width="2"/>`,
+  bahman: (m) =>
+    bg('#e3e8f0', '#9fb0c8') + shoulders('#5b4a3a', `<path d="M34 82 C40 90 60 90 66 82 L62 96 L38 96 Z" fill="url(#gCarpet)" ${THIN}/>`) +
+    `<path d="M29 50 C27 40 30 36 33 38 M71 50 C73 40 70 36 67 38" fill="none" stroke="#e8e8e8" stroke-width="5" stroke-linecap="round"/>` +
+    face({ eyes: 'smile', brows: 'soft', mouth: 'small', skin: '#efc6a4', wrinkles: true, ...m }) +
+    `<path d="M38 61 C42 57 47 59 50 60 C53 59 58 57 62 61 C58 65 54 63 50 64 C46 63 42 65 38 61 Z" fill="#f0f0f0" ${THIN}/>` +
+    `<circle cx="41" cy="52" r="6.5" fill="none" stroke="#6b4a2a" stroke-width="1.8"/><circle cx="59" cy="52" r="6.5" fill="none" stroke="#6b4a2a" stroke-width="1.8"/><path d="M47.5 52 h5" stroke="#6b4a2a" stroke-width="1.8"/>` +
+    `<ellipse cx="50" cy="35" rx="30" ry="6" fill="#4a4a5a" ${O}/><path d="M32 34 C32 18 68 18 68 34 Z" fill="#4a4a5a" ${O}/><path d="M33 30 H67" stroke="#2a2a3a" stroke-width="4"/><path d="M44 21 Q50 25 56 21" fill="none" stroke="#2a2a3a" stroke-width="1.6"/>`,
 };
 
 const cache = new Map<string, string>();
