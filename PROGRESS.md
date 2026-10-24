@@ -69,11 +69,16 @@ Done and pushed (CI green, `android-latest` release has an installable APK + AAB
 - [x] Android project, Kotlin plugins (Poolakey 2.3.0 billing, Tapsell Plus 2.3.3 ads),
       icons, splash, CI signing from secrets, README + Persian store listing
 
+Also done since: store screenshots (`docs/screenshots/`), background music, merge
+sparkles, bubbles (gem/ad sink), daily quests, offline reminders (energy full / daily
+gift), Bazaar rating + share prompt after episode 1, code-review fixes (purchase safety:
+grant → save → consume with token tracking; native connection handling; double-tap guard;
+ad cap), old-WebView compatibility (Chrome 69 build target, animation fallbacks).
+
 Next (in order):
-1. Store screenshots (1080×1920) with captions → `docs/screenshots/`
-2. Background music loop (synth, Persian mode), toggle in settings
-3. Polish pass on small item art at board size; more merge juice (particles)
-4. Season 2 ("عروسی") content plan; weekly prize event design (needs a small server)
+1. Season 2 «عروسی»: 5 more places, sweets chain (قنادی) + generator, dialogue
+2. Small-size art polish pass; more juice on deliveries
+3. Weekly prize event design (needs a small domestic server) — optional
 
 Known limits: local Gradle builds here can hit Maven Central rate limits (429); CI is the
 source of truth for APK builds.
