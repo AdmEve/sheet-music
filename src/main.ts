@@ -64,6 +64,8 @@ async function boot(): Promise<void> {
     CapApp.addListener('backButton', () => {
       const dialogue = document.querySelector('.dialogue') as HTMLElement | null;
       if (dialogue) return dialogue.click();
+      const map = document.querySelector('.mapview .top .chip') as HTMLElement | null;
+      if (map && !document.querySelector('.overlay')) return map.click();
       const overlays = document.querySelectorAll('.overlay');
       const top = overlays[overlays.length - 1];
       if (top) {

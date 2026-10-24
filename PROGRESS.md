@@ -104,7 +104,9 @@ season pass ~10%, events run 4–10 at a time, decoration choice drives self-exp
 - [x] Phase 4: live events (`src/game/events.ts`: weekly kites/lavashak, Yalda, Nowruz;
       event generator + chain + 12 milestones + trophy) and the alley race vs 4 bots
       (`src/game/race.ts`, time-based so it works offline)
-- [ ] Phase 5: presentation (decor choice, board frame, celebrations, expressions, map)
+- [x] Phase 5: decoration styles per restored piece (`src/art/decor.ts`), celebrations
+      (`src/ui/celebrate.ts`), mood expressions in dialogue, carved board frame + girih
+      background, alley map with revisit mode (`src/art/alleymap.ts`)
 - [ ] Phase 6: save-transfer code, Season 3, e2e smoke test in CI
 
 QA in a browser: localStorage `mahalle.fakeAds=1` / `mahalle.fakeStore=1` fake the video

@@ -3,6 +3,7 @@
 import { ICONS } from '../art/icons';
 import { moodOf, portrait } from '../art/portraits';
 import { STYLES } from '../art/decor';
+import { MAP_H, MapState, mapSvg, plot } from '../art/alleymap';
 import { layerHasStyles, sceneSvg } from '../art/places';
 import { offerOnEpisode } from '../game/offers';
 import { completeNextTask, introKey, markSeen, outroKey, progress } from '../game/progress';
@@ -17,6 +18,8 @@ export class PlaceScreen {
   readonly places = PLACES;
 
   private working = false;
+  /** A finished place opened from the map or the episode chips (null = the current one). */
+  private viewing: Place | null = null;
 
   constructor(private app: App) {}
 
@@ -24,6 +27,7 @@ export class PlaceScreen {
   open(): Promise<void> {
     return new Promise((resolve) => {
       const screen = h('div', { class: 'place' });
+      this.viewing = null;
       document.body.append(screen);
       const back = () => {
         screen.remove();
@@ -37,14 +41,27 @@ export class PlaceScreen {
     const s = this.app.s;
     const p = progress(s);
     clear(screen);
-    const place: Place = p.place ?? PLACES[PLACES.length - 1];
+    const place: Place = this.viewing ?? p.place ?? PLACES[PLACES.length - 1];
     const scene = h('div', { class: 'scene', html: this.scene(place) });
     if (flashLayer) scene.append(h('div', { class: 'flash' }));
+    const visit = (k: number) => {
+      if (k > p.placeIndex) return this.app.toast('اول قسمت‌های قبلی رو تموم کن!');
+      this.viewing = k === p.placeIndex ? null : PLACES[k];
+      sfx.page();
+      this.render(screen, back);
+    };
+    const shown = PLACES.indexOf(place);
     const episodes = h('div', { class: 'episodes' }, ...PLACES.map((_, k) =>
-      h('span', { class: `ep${k < p.placeIndex ? ' done' : k === p.placeIndex ? ' cur' : ''}` }, `قسمت ${fa(k + 1)}`)));
+      h('button', { class: `ep${k < p.placeIndex ? ' done' : k === p.placeIndex ? ' cur' : ''}${k === shown ? ' shown' : ''}`, onclick: () => visit(k) }, `قسمت ${fa(k + 1)}`)));
 
     const card = h('div', { class: 'card' });
-    if (!p.next || !p.place) {
+    if (this.viewing) {
+      card.append(
+        h('div', { class: 'tasktitle' }, '✓ این قسمت تموم شده'),
+        h('p', { class: 'muted' }, 'می‌تونی سبک هر تکه رو از فهرست پایین عوض کنی.'),
+        h('button', { class: 'btn', onclick: () => visit(p.placeIndex) }, 'برگرد به قسمت فعلی'),
+      );
+    } else if (!p.next || !p.place) {
       card.append(
         h('div', { class: 'tasktitle' }, 'فصل دوم تموم شد! 💍'),
         h('p', { class: 'muted' }, 'کوچه نجات پیدا کرد و عروسی هم برگزار شد. فصل سوم («نامه‌ای از اون ور دنیا») به‌زودی با آپدیت بعدی میاد.'),
@@ -81,12 +98,43 @@ export class PlaceScreen {
       h('div', { class: 'top' },
         h('button', { class: 'chip', onclick: back }, '→ بازی'),
         h('h2', {}, place.name),
+        h('button', { class: 'chip', 'aria-label': 'نقشه‌ی محله', onclick: () => this.openMap(screen, back, visit) }, '🗺'),
         h('div', { class: 'chip' }, fa(s.stars), h('span', { html: svgIcon(ICONS.star) }))),
       scene,
       episodes,
       card,
       list,
     );
+  }
+
+  /** The whole alley: restored places in colour, the current one under scaffolding. */
+  private openMap(screen: HTMLElement, back: () => void, visit: (k: number) => void): void {
+    const p = progress(this.app.s);
+    const states: MapState[] = PLACES.map((_, k) => (k < p.placeIndex ? 'done' : k === p.placeIndex ? 'current' : 'locked'));
+    const close = () => view.remove();
+    const body = h('div', { class: 'map-body', html: mapSvg(PLACES.map((x) => x.id), PLACES.map((x) => x.name), states) });
+    const view = h('div', { class: 'mapview' },
+      h('div', { class: 'top' }, h('button', { class: 'chip', onclick: close }, '→ برگرد'), h('h2', {}, 'نقشه‌ی محله'), h('span', { class: 'chip' }, `${fa(Math.min(p.placeIndex, PLACES.length))}/${fa(PLACES.length)} ✓`)),
+      body);
+    body.addEventListener('click', (e) => {
+      const g = (e.target as Element).closest('.map-place') as SVGGElement | null;
+      if (!g) return;
+      const k = Number(g.dataset.k);
+      if (k > p.placeIndex) return this.app.toast('اول قسمت‌های قبلی رو تموم کن!');
+      close();
+      visit(k);
+    });
+    screen.append(view);
+    sfx.page();
+    // Open at the place being worked on.
+    const k = Math.min(p.placeIndex, PLACES.length - 1);
+    requestAnimationFrame(() => {
+      const svg = body.querySelector('svg');
+      if (!svg) return;
+      const scale = svg.getBoundingClientRect().height / MAP_H;
+      body.scrollTop = plot(k).y * scale - body.clientHeight / 2;
+    });
+    void back;
   }
 
   private scene(place: Place, override?: { layer: string; style: number }): string {

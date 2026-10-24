@@ -531,3 +531,12 @@ svg { display: block; }
 .w-tag.a { right: 8px; background: var(--green); }
 .wipe.go .w-tag.b { opacity: 0; transition: opacity 0.3s 1.6s; }
 .dialogue .face.react svg { animation: pop 0.3s cubic-bezier(0.3, 1.6, 0.5, 1); }
+
+/* ------------------------------------------------------------------ alley map */
+.place .ep.shown { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--ink); }
+.mapview { position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 5; display: flex; flex-direction: column; background: var(--bg); animation: fade 0.2s; padding-top: var(--safe-top); }
+.map-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.map-body svg { width: 100%; height: auto; display: block; }
+.map-place { cursor: pointer; }
+.map-pin { animation: pinBob 1.2s ease-in-out infinite; }
+@keyframes pinBob { 50% { transform: translateY(-6px); } }

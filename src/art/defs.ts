@@ -58,4 +58,5 @@ ${rad('rWool', [[0, '#ffffff'], [1, '#e6ddd0']])}
 ${rad('rSugar', [[0, '#ffffff'], [1, '#e8eef2']])}
 ${rad('rGlow', [[0, 'rgba(255,240,150,.95)'], [1, 'rgba(255,200,60,0)']], 0.5, 0.5, 0.5)}
 ${rad('rCoin', [[0, '#fff6b8'], [0.6, '#f4c43a'], [1, '#b98118']])}
+<filter id="fGray"><feColorMatrix type="saturate" values="0.12"/></filter>
 </defs></svg>`;
