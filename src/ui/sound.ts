@@ -71,6 +71,7 @@ export const sfx = {
   levelUp: () => [0, 2, 4, 5, 7, 9, 11].forEach((s, i) => pluck(freq(s), i * 0.07, 0.15)),
   task: () => [7, 4, 2, 4, 7, 11].forEach((s, i) => pluck(freq(s), i * 0.11, 0.15)),
   page: () => tone(880, 0, 0.05, 'sine', 0.06),
+  discover: () => [7, 9, 11].forEach((s, i) => pluck(freq(s), i * 0.06, 0.11)),
 };
 
 // ---------------------------------------------------------------- background music

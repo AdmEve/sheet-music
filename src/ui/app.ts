@@ -5,9 +5,10 @@ import { itemArt } from '../art/index';
 import { ICONS } from '../art/icons';
 import { O, THIN } from '../art/kit';
 import { portrait } from '../art/portraits';
+import { codexClaimable, discover } from '../game/codex';
 import { CHAINS, Item, canMerge, isGenerator, itemName, maxLevel, sameItem } from '../game/items';
 import {
-  CELLS, ENERGY_CAP, GameEvent, GameState, Order, bubbleGemCost, buySheet, deliver, drop, msToNextEnergy, needsMet,
+  CELLS, ENERGY_CAP, GameEvent, GameState, Order, bubbleGemCost, buySheet, deliver, drop, findHint, msToNextEnergy, needsMet,
   placeItem, popBubble, questsClaimable, refreshQuests, sellValue, sell, sheetGemCost, tap, tickBubbles, tickEnergy, toBag,
   xpForLevel,
 } from '../game/model';
@@ -106,7 +107,8 @@ export class App {
     if (key === this.hudKey) return;
     this.hudKey = key;
     clear(this.hud);
-    const level = h('div', { class: 'level-badge', id: 'hud-level', style: `--xp:${pct}%` }, h('span', {}, fa(s.level)));
+    const level = h('button', { class: 'level-badge', id: 'hud-level', style: `--xp:${pct}%`, onclick: () => this.modals.settings(), 'aria-label': 'پروفایل و تنظیمات' },
+      h('span', {}, fa(s.level)), h('i', { class: 'gear', html: svgIcon(ICONS.gear) }));
     const energy = h('button', { class: 'pill', id: 'hud-energy', onclick: () => this.modals.energy() },
       h('span', { class: 'ico', html: svgIcon(ICONS.energy) }), fa(s.energy),
       s.energy < ENERGY_CAP ? h('span', { class: 'sub' }, faTime(toNext)) : null,
@@ -139,6 +141,28 @@ export class App {
       this.renderNav();
       this.dirty();
     }
+    this.maybeHint();
+  }
+
+  // ------------------------------------------------------------------ idle merge hint
+
+  private idleSince = Date.now();
+  private hinted: number[] = [];
+
+  /** Any touch on the board resets the idle timer and stops the hint wiggle. */
+  private poke(): void {
+    this.idleSince = Date.now();
+    for (const i of this.hinted) this.cells[i].classList.remove('hint');
+    this.hinted = [];
+  }
+
+  private maybeHint(): void {
+    if (this.hinted.length || this.busy || this.drag || this.hand || Date.now() - this.idleSince < 6000) return;
+    if (document.querySelector('.overlay, .dialogue, .place')) return;
+    const pair = findHint(this.s);
+    if (!pair) return;
+    this.hinted = pair;
+    for (const i of pair) this.cells[i].classList.add('hint');
   }
 
   // ------------------------------------------------------------------ orders
@@ -225,6 +249,7 @@ export class App {
     this.dirty();
     for (const e of events) if (e.type === 'levelUp') await this.modals.levelUp(e.level, e.gems, e.gift);
     if (this.s.level !== prevLevel) this.renderAll();
+    this.discoverNew();
     this.tutorial();
   }
 
@@ -259,6 +284,7 @@ export class App {
   }
 
   private onDown(e: PointerEvent): void {
+    this.poke();
     if (this.busy) return;
     const i = this.cellAt(e.clientX, e.clientY);
     if (i === null) return;
@@ -439,11 +465,44 @@ export class App {
       }
     }
     if (ordersChanged) this.renderOrders();
+    this.discoverNew();
     this.renderHud();
     this.renderInfo();
     this.renderNav();
     this.dirty();
     this.tutorial();
+  }
+
+  // ------------------------------------------------------------------ discoveries
+
+  private discoverQueue: Item[] = [];
+  private discoverShowing = false;
+
+  /** Adds newly owned items to the album and announces each with a small banner. */
+  discoverNew(): void {
+    const fresh = discover(this.s);
+    if (!fresh.length) return;
+    this.discoverQueue.push(...fresh);
+    this.renderNav();
+    this.dirty();
+    if (!this.discoverShowing) void this.showDiscoveries();
+  }
+
+  private async showDiscoveries(): Promise<void> {
+    this.discoverShowing = true;
+    while (this.discoverQueue.length) {
+      const it = this.discoverQueue.shift()!;
+      const el = h('button', { class: 'discover', onclick: () => { el.remove(); this.modals.codex().then(() => this.renderAll()); } },
+        h('span', { class: 'art', html: svgIcon(itemArt(it)) }),
+        h('span', {}, h('b', {}, 'وسیله‌ی جدید!'), h('br'), itemName(it)));
+      document.body.append(el);
+      sfx.discover();
+      await wait(this.discoverQueue.length > 2 ? 900 : 1500);
+      el.classList.add('out');
+      await wait(250);
+      el.remove();
+    }
+    this.discoverShowing = false;
   }
 
   fail(events: GameEvent[]): void {
@@ -533,13 +592,15 @@ export class App {
     const p = progress(this.s);
     const ready = !!p.next && this.s.stars >= p.next.cost;
     const bagCount = this.s.bag.filter(Boolean).length;
-    const key = `${this.s.stars}|${p.next?.id}|${bagCount}|${questsClaimable(this.s)}`;
+    const album = codexClaimable(this.s);
+    const key = `${this.s.stars}|${p.next?.id}|${bagCount}|${questsClaimable(this.s)}|${album}`;
     if (key === this.navKey) return;
     this.navKey = key;
     clear(this.navEl);
     const claimable = questsClaimable(this.s);
     this.navEl.append(
-      h('button', { class: 'navbtn', onclick: () => this.modals.settings() }, h('span', { html: svgIcon(ICONS.gear) }), 'تنظیمات'),
+      h('button', { class: 'navbtn', id: 'nav-album', onclick: () => this.modals.codex().then(() => this.renderNav()) }, h('span', { html: svgIcon(ICONS.album) }), 'کلکسیون',
+        album ? h('span', { class: 'badge' }, fa(album)) : null),
       h('button', { class: `navbtn${claimable ? ' ready' : ''}`, onclick: () => this.modals.quests().then(() => this.renderNav()) }, h('span', { html: svgIcon(ICONS.quest) }), 'روزانه',
         claimable ? h('span', { class: 'badge' }, fa(claimable)) : null),
       h('button', { class: 'navbtn', onclick: () => this.modals.bag() }, h('span', { html: svgIcon(ICONS.bag) }), 'کیف',
@@ -729,6 +790,7 @@ export class App {
       this.renderCell(at);
       this.cells[at].querySelector('.item')?.classList.add('pop');
     }
+    this.discoverNew();
     this.renderNav();
     this.dirty();
   }

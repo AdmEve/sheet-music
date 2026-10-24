@@ -2,11 +2,14 @@
 
 import { itemArt } from '../art/index';
 import { ICONS } from '../art/icons';
-import { CHAINS, Item, itemName } from '../game/items';
+import {
+  CHAIN_BONUS_GEMS, CODEX_CHAINS, Reward, chainComplete, chainKey, claimAllCodex, claimCodex, codexClaimable, codexReward, isFound,
+} from '../game/codex';
+import { CHAINS, ChainId, GENERATOR_CHAINS, Item, PRODUCT_CHAINS, itemKey, itemName, maxLevel } from '../game/items';
 import {
   BAG_MAX, COIN_CHEST_PRICE, COIN_ENERGY_AMOUNT, DAILY_REWARDS, ENERGY_CAP, addEnergy, adsLeft, bagSlotCost, buyBagSlot,
-  buyChestWithCoins, buyEnergyWithCoins, claimQuest, claimQuestBonus, coinEnergyLeft, coinEnergyPrice, countAd, fromBag,
-  allQuestsClaimed, newGame, questDone, questProgress,
+  buyChestWithCoins, buyEnergyWithCoins, buyRefill, claimQuest, claimQuestBonus, coinEnergyLeft, coinEnergyPrice, countAd, fromBag,
+  allQuestsClaimed, newGame, questDone, questProgress, refillPrice, xpForLevel,
 } from '../game/model';
 import { adsAvailable, showRewarded } from '../platform/ads';
 import { PRODUCTS, billingAvailable, buy, consume, fetchPrices } from '../platform/billing';
@@ -19,7 +22,6 @@ import type { App } from './app';
 import { add, clear, dateKey, fa, faNum, faTime, h, svgIcon } from './dom';
 import { musicEnabled, setMusic, setSound, sfx, soundOn } from './sound';
 
-export const REFILL_GEMS = 20;
 const today = () => dateKey();
 
 let hapticsOn = true;
@@ -79,14 +81,12 @@ export class Modals {
         h('p', {}, `انرژی: ${fa(s.energy)} از ${fa(ENERGY_CAP)}`),
         s.energy < ENERGY_CAP ? h('p', { style: 'font-size:13px' }, `هر ۲ دقیقه یک انرژی پر می‌شه. انرژی بعدی: ${faTime(Math.max(0, 120000 - (Date.now() - s.energyAt)))}`) : null,
         h('button', { class: 'btn gold', onclick: () => {
-          if (s.gems < REFILL_GEMS) { close(); return this.shop(); }
-          s.gems -= REFILL_GEMS;
-          addEnergy(s, ENERGY_CAP);
+          if (!buyRefill(s, today())) { close(); return this.shop(); }
           sfx.levelUp();
           this.app.renderHud();
           this.app.dirty();
           close();
-        } }, `+${fa(ENERGY_CAP)} انرژی با ${fa(REFILL_GEMS)}`, h('span', { html: svgIcon(ICONS.gem) })),
+        } }, `+${fa(ENERGY_CAP)} انرژی با ${fa(refillPrice(s, today()))}`, h('span', { html: svgIcon(ICONS.gem) })),
         adsAvailable()
           ? h('button', { class: 'btn pink', disabled: left <= 0, onclick: async () => {
               close();
@@ -198,6 +198,83 @@ export class Modals {
       this.app.s.grantedTokens = this.app.s.grantedTokens.filter((t) => t !== token);
       await this.app.saveNow();
     }
+  }
+
+  /** Small "+5 💎" style label for a reward. */
+  private rewardBits(r: Reward): (HTMLElement | string)[] {
+    const out: (HTMLElement | string)[] = [];
+    if (r.gems) out.push(fa(r.gems), h('span', { html: svgIcon(ICONS.gem) }));
+    if (r.coins) out.push(fa(r.coins), h('span', { html: svgIcon(ICONS.coin) }));
+    return out;
+  }
+
+  /** Coins/gems fly from `from` to the HUD after an album claim. */
+  private paid(r: Reward, from: DOMRect): void {
+    if (r.gems) this.app.flyReward(ICONS.gem, from, 'hud-gems', Math.min(5, 1 + r.gems));
+    if (r.coins) this.app.flyReward(ICONS.coin, from, 'hud-coins', Math.min(5, 1 + Math.floor(r.coins / 10)));
+    sfx.coin();
+    this.app.renderHud();
+    this.app.renderNav();
+    this.app.dirty();
+  }
+
+  codex(): Promise<void> {
+    const s = this.app.s;
+    const total = CODEX_CHAINS.reduce((n, c) => n + maxLevel(c), 0);
+    const sections: { title: string; chains: ChainId[]; bonus: ChainId | null }[] = [
+      ...PRODUCT_CHAINS.map((c) => ({ title: CHAINS[c].name, chains: [c], bonus: c })),
+      { title: 'مولدها', chains: GENERATOR_CHAINS, bonus: null },
+      { title: 'صندوقچه و جایزه', chains: ['chest', 'coins', 'energy'] as ChainId[], bonus: null },
+    ];
+    return this.open('کلکسیون', (body) => {
+      const render = () => {
+        clear(body);
+        const claimable = codexClaimable(s);
+        add(body,
+          h('p', { style: 'font-size:13px;margin:0' }, `${fa(s.found.length)} از ${fa(total)} وسیله پیدا شده. هر وسیله‌ی تازه جایزه داره!`),
+          h('div', { class: 'bar' }, h('div', { style: `width:${(s.found.length / total) * 100}%` })),
+          claimable ? h('button', { class: 'btn gold', onclick: (e: Event) => {
+            const r = claimAllCodex(s);
+            this.paid(r, (e.currentTarget as HTMLElement).getBoundingClientRect());
+            render();
+          } }, `همه‌ی جایزه‌ها رو بگیر (${fa(claimable)})`) : null);
+        for (const sec of sections) {
+          const items: Item[] = sec.chains.flatMap((c) => CHAINS[c].levels.map((_, k) => ({ chain: c, level: k + 1 })));
+          const foundN = items.filter((it) => isFound(s, it)).length;
+          const head = h('div', { class: 'codex-head' }, h('b', {}, sec.title), h('span', { class: 'muted' }, `${fa(foundN)}/${fa(items.length)}`));
+          if (sec.bonus) {
+            const key = chainKey(sec.bonus);
+            const done = s.codexClaimed.includes(key);
+            const ready = !done && chainComplete(s, sec.bonus);
+            head.append(h('button', { class: `chip${ready ? ' green' : ''}`, disabled: !ready && !done, onclick: (e: Event) => {
+              const r = ready ? claimCodex(s, key) : null;
+              if (r) { this.paid(r, (e.currentTarget as HTMLElement).getBoundingClientRect()); render(); }
+            } }, ...(done ? ['✓'] : ['🎁 ', ...this.rewardBits({ gems: CHAIN_BONUS_GEMS })])));
+          }
+          const grid = h('div', { class: 'codex-grid' });
+          for (const it of items) {
+            const key = itemKey(it);
+            const found = isFound(s, it);
+            const waiting = found && !s.codexClaimed.includes(key);
+            const card = h('button', { class: `codex-card${found ? '' : ' unknown'}${waiting ? ' waiting' : ''}`, 'aria-label': found ? itemName(it) : '؟', html: svgIcon(itemArt(it)) });
+            if (waiting) card.append(h('span', { class: 'codex-reward' }, ...this.rewardBits(codexReward(it))));
+            card.addEventListener('click', () => {
+              if (!found) return this.app.toast('هنوز پیداش نکردی!');
+              const r = s.codexClaimed.includes(key) ? null : claimCodex(s, key);
+              if (!r) return this.app.toast(itemName(it));
+              this.paid(r, card.getBoundingClientRect());
+              // Update in place: re-rendering ~90 drawings per tap is slow on old phones.
+              card.classList.remove('waiting');
+              card.querySelector('.codex-reward')?.remove();
+              if (codexClaimable(s) === 0 || (sec.bonus && chainComplete(s, sec.bonus))) render();
+            });
+            grid.append(card);
+          }
+          body.append(head, grid);
+        }
+      };
+      render();
+    });
   }
 
   bag(): Promise<void> {
@@ -327,7 +404,21 @@ export class Modals {
   }
 
   settings(): Promise<void> {
-    return this.open('تنظیمات', (body, close) => {
+    const s = this.app.s;
+    return this.open('پروفایل و تنظیمات', (body, close) => {
+      const cur = xpForLevel(s.level), next = xpForLevel(s.level + 1);
+      const total = CODEX_CHAINS.reduce((n, c) => n + maxLevel(c), 0);
+      body.append(h('div', { class: 'profile' },
+        h('div', { class: 'level-badge big' }, h('span', {}, fa(s.level))),
+        h('div', { style: 'flex:1' },
+          h('div', { style: 'font-weight:900' }, `سطح ${fa(s.level)}`),
+          h('div', { class: 'bar' }, h('div', { style: `width:${((s.xp - cur) / Math.max(1, next - cur)) * 100}%` })),
+          h('div', { class: 'muted', style: 'font-size:12px' }, `${fa(Math.max(0, next - s.xp))} ستاره‌ی دیگه تا سطح بعد`))),
+        h('div', { class: 'stats' },
+          h('div', {}, h('b', {}, faNum(s.stats.merges)), 'ادغام'),
+          h('div', {}, h('b', {}, faNum(s.stats.orders)), 'سفارش'),
+          h('div', {}, h('b', {}, `${fa(s.found.length)}/${fa(total)}`), 'کلکسیون'),
+          h('div', {}, h('b', {}, fa(s.tasksDone.length)), 'تعمیر')));
       const toggle = (label: string, get: () => boolean, set: (v: boolean) => void) => {
         const btn = h('button', { class: `btn ${get() ? '' : 'plain'}` }, `${label}: ${get() ? 'روشن' : 'خاموش'}`);
         btn.addEventListener('click', () => {

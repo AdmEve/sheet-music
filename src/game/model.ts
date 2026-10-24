@@ -6,6 +6,7 @@ import {
   CHAINS, ChainId, GENERATOR_CHAINS, Item, PRODUCT_CHAINS, canMerge, collectAmount, isGenerator,
   itemValue, maxLevel, sameItem, spawnWeights,
 } from './items';
+import { discover } from './codex';
 
 export const COLS = 7;
 export const ROWS = 9;
@@ -74,6 +75,12 @@ export interface GameState {
   clock: number;
   /** Coin-shop energy purchases today (price rises with each). */
   coinEnergy: { day: string; count: number };
+  /** Gem energy refills today (price rises with each). */
+  refills: { day: string; count: number };
+  /** Item keys ever owned (collection album). */
+  found: string[];
+  /** Album cards (item keys, `all:<chain>` bonuses) whose reward was taken. */
+  codexClaimed: string[];
 }
 
 export type GameEvent =
@@ -182,6 +189,9 @@ export function newGame(seed: number, now: number): GameState {
     clock: now,
     quests: { day: '', list: [], bonusClaimed: false },
     grantedTokens: [],
+    refills: { day: '', count: 0 },
+    found: [],
+    codexClaimed: [],
   };
   const put = (r: number, c: number, item: Item, lock?: Lock) => {
     s.board[idx(r, c)] = lock ? { item, lock } : { item };
@@ -214,6 +224,7 @@ export function newGame(seed: number, now: number): GameState {
   // Garden generator waits in a crate near the top for level 2.
   put(0, 3, { chain: 'genGarden', level: 1 }, 'box');
   fillOrders(s);
+  discover(s);
   return s;
 }
 
@@ -594,7 +605,15 @@ export function loadState(json: string | null): GameState | null {
     const raw = JSON.parse(json) as Partial<GameState>;
     if (raw.v !== 1 || !Array.isArray(raw.board) || raw.board.length !== CELLS) return null;
     const base = newGame(raw.rng ?? 1, raw.energyAt ?? Date.now());
-    return { ...base, ...raw, stats: { ...base.stats, ...raw.stats }, ads: raw.ads ?? base.ads, bought: raw.bought ?? [], coinEnergy: raw.coinEnergy ?? base.coinEnergy, clock: raw.clock ?? base.clock, quests: raw.quests ?? base.quests, grantedTokens: raw.grantedTokens ?? [] } as GameState;
+    const s = {
+      ...base, ...raw, stats: { ...base.stats, ...raw.stats }, ads: raw.ads ?? base.ads, bought: raw.bought ?? [],
+      coinEnergy: raw.coinEnergy ?? base.coinEnergy, clock: raw.clock ?? base.clock, quests: raw.quests ?? base.quests,
+      grantedTokens: raw.grantedTokens ?? [], refills: raw.refills ?? base.refills,
+      found: raw.found ?? [], codexClaimed: raw.codexClaimed ?? [],
+    } as GameState;
+    // Saves from before the album: everything the player holds now counts as found.
+    if (!raw.found) discover(s);
+    return s;
   } catch {
     return null;
   }
@@ -640,6 +659,57 @@ export function buyChestWithCoins(s: GameState): boolean {
   if (s.coins < COIN_CHEST_PRICE) return false;
   s.coins -= COIN_CHEST_PRICE;
   return true;
+}
+
+// ---------------------------------------------------------------------------- gem refills
+
+/** Full energy refill with gems: cheap the first time each day, then dearer. */
+export const REFILL_PRICES = [10, 20, 40, 60, 80];
+
+export function refillPrice(s: GameState, today: string): number {
+  const n = s.refills.day === today ? s.refills.count : 0;
+  return REFILL_PRICES[Math.min(n, REFILL_PRICES.length - 1)];
+}
+
+export function buyRefill(s: GameState, today: string): boolean {
+  const price = refillPrice(s, today);
+  if (s.gems < price) return false;
+  s.gems -= price;
+  if (s.refills.day !== today) s.refills = { day: today, count: 0 };
+  s.refills.count++;
+  addEnergy(s, ENERGY_CAP);
+  return true;
+}
+
+// ---------------------------------------------------------------------------- merge hint
+
+/**
+ * A merge worth suggesting to an idle player: [drag from, drop on]. Prefers merges whose
+ * result an order needs, then freeing dust sheets, then the lowest level (tidies the board).
+ */
+export function findHint(s: GameState): [number, number] | null {
+  const wanted = new Set(s.orders.flatMap((o) => o.needs.map((n) => `${n.chain}:${n.level}`)));
+  let best: [number, number] | null = null;
+  let bestScore = -Infinity;
+  for (let a = 0; a < CELLS; a++) {
+    const ca = s.board[a];
+    if (!ca.item || ca.lock) continue;
+    for (let b = 0; b < CELLS; b++) {
+      if (b === a) continue;
+      const cb = s.board[b];
+      if (!cb.item || (cb.lock && cb.lock !== 'sheet') || !canMerge(ca.item, cb.item)) continue;
+      if (!cb.lock && b < a) continue; // free pairs: count each once
+      let score = -ca.item.level;
+      if (wanted.has(`${ca.item.chain}:${ca.item.level + 1}`)) score += 100;
+      if (cb.lock === 'sheet') score += 50;
+      if (CHAINS[ca.item.chain].collectible) score -= 20;
+      if (score > bestScore) {
+        bestScore = score;
+        best = [a, b];
+      }
+    }
+  }
+  return best;
 }
 
 // ---------------------------------------------------------------------------- bubbles

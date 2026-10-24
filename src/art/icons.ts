@@ -34,5 +34,11 @@ export const ICONS = {
     `<path d="M52 38 h16 M52 56 h16 M32 70 h36" stroke="#a5621f" stroke-width="4" stroke-linecap="round"/>`,
   video:
     `<rect x="10" y="22" width="80" height="56" rx="12" fill="url(#gRed)" ${O}/><path d="M42 36 L64 50 L42 64 Z" fill="#fff" ${THIN}/>`,
+  album:
+    `<path d="M50 24 C38 14 22 14 10 20 L10 84 C22 78 38 78 50 88 Z" fill="url(#gRed)" ${O}/>` +
+    `<path d="M50 24 C62 14 78 14 90 20 L90 84 C78 78 62 78 50 88 Z" fill="url(#gRed)" ${O}/>` +
+    `<path d="M50 28 C40 20 26 20 16 25 L16 78 C26 73 40 74 50 82 Z M50 28 C60 20 74 20 84 25 L84 78 C74 73 60 74 50 82 Z" fill="url(#gPaper)" ${THIN}/>` +
+    `<rect x="22" y="34" width="20" height="18" rx="3" fill="url(#gTurq)" ${THIN}/><rect x="58" y="34" width="20" height="18" rx="3" fill="url(#gGold)" ${THIN}/>` +
+    `<rect x="22" y="56" width="20" height="14" rx="3" fill="#f3b3c4" ${THIN}/><rect x="58" y="56" width="20" height="14" rx="3" fill="#bfe3a6" ${THIN}/>`,
   sparkles: sparkle(30, 30, 14) + sparkle(70, 60, 10) + sparkle(64, 22, 7),
 };
