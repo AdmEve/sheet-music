@@ -143,6 +143,11 @@ saves are written into localStorage `mahalle.save.v1`.
       episode. Level-up gems capped at 20 (were 5 + level, i.e. free refills late on).
       Store shots 7 and 8 now show Season 5 and the 25-place map.
 
+- [x] Phase 13a: order details sheet: from level 6, tapping an unfinished order shows its
+      items by name with what is still missing, «خودم درستش می‌کنم» (highlights them on the
+      board) and «تحویل فوری» — the missing items paid in gems (their worth / 3, min 3),
+      a gem sink that cannot loop with level-up gems
+
 Next (in order):
 1. Phase 13: polish pass (store screenshots for the new seasons, perf re-check with 25
    scenes, full first-hour playthrough)

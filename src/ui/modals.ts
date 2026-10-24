@@ -25,8 +25,9 @@ import { CHAINS, ChainId, GENERATOR_CHAINS, Item, PRODUCT_CHAINS, itemKey, itemN
 import {
   BAG_MAX, COIN_CHEST_PRICE, COIN_ENERGY_AMOUNT, DAILY_REWARDS, ENERGY_CAP, addEnergy, adsLeft, bagSlotCost, buyBagSlot,
   buyChestWithCoins, buyEnergyWithCoins, buyRefill, claimQuest, claimQuestBonus, coinEnergyLeft, coinEnergyPrice, countAd, fromBag,
-  allQuestsClaimed, loadState, newGame, questDone, questProgress, refillPrice, xpForLevel,
+  Order, allQuestsClaimed, loadState, needsMet, newGame, questDone, questProgress, refillPrice, rushPrice, xpForLevel,
 } from '../game/model';
+import { CAST } from '../story/story';
 import { adsAvailable, showRewarded } from '../platform/ads';
 import { PRODUCTS, billingAvailable, buy, consume, fetchPrices } from '../platform/billing';
 import { MAX_ADS_PER_DAY } from '../platform/config';
@@ -302,6 +303,28 @@ export class Modals {
   }
 
   /** The occasional free gift: one video opens it. */
+  /** An unfinished order: what is missing, where to find it, and finishing it for gems. */
+  order(o: Order): Promise<void> {
+    const s = this.app.s;
+    const met = needsMet(s, o);
+    const price = rushPrice(s, o);
+    return this.open(`سفارش ${CAST[o.who]?.name ?? ''}`, (body, close) => {
+      add(body,
+        h('div', { class: 'order-sheet' },
+          h('div', { class: 'who', html: svgIcon(portrait(o.who)) }),
+          h('div', { class: 'order-needs' }, ...o.needs.map((n, k) =>
+            h('div', { class: `order-need${met[k] ? ' met' : ''}` },
+              h('div', { class: 'art', html: svgIcon(itemArt(n)) }),
+              h('b', {}, itemName(n)),
+              h('span', { class: 'state' }, met[k] ? '✓ آماده‌ست' : 'هنوز نداری')))),
+        ),
+        h('p', { class: 'muted' }, `جایزه: ${fa(o.stars)} ستاره و ${fa(o.coins)} سکه`),
+        h('button', { class: 'btn pink big', onclick: () => { close(); void this.app.deliverOrder(o.id, true); } },
+          `تحویل فوری با ${fa(price)}`, h('span', { html: svgIcon(ICONS.gem) })),
+        h('button', { class: 'btn plain', onclick: () => { close(); this.app.highlightNeeds(o); } }, 'خودم درستش می‌کنم'));
+    });
+  }
+
   gift(): Promise<void> {
     const s = this.app.s;
     return this.open('هدیه‌ی همسایه‌ها', (body, close) => {

@@ -510,23 +510,50 @@ export function findForOrder(s: GameState, order: Order): number[] | null {
   return [...used];
 }
 
-export function needsMet(s: GameState, order: Order): boolean[] {
+/** For each need of the order, the free board cell that holds it (null if none). */
+function matchCells(s: GameState, order: Order): (number | null)[] {
   const used = new Set<number>();
   return order.needs.map((need) => {
     for (let i = 0; i < CELLS; i++) {
       const c = s.board[i];
       if (used.has(i) || c.lock || !c.item) continue;
-      if (sameItem(c.item, need)) { used.add(i); return true; }
+      if (sameItem(c.item, need)) { used.add(i); return i; }
     }
-    return false;
+    return null;
   });
 }
 
-export function deliver(s: GameState, orderId: number): GameEvent[] {
+export function needsMet(s: GameState, order: Order): boolean[] {
+  return matchCells(s, order).map((i) => i !== null);
+}
+
+export const RUSH_MIN = 3;
+export const RUSH_LEVEL = 6;
+
+/** Gems to finish an order now: the missing items' worth, a little above the refill rate. */
+export function rushPrice(s: GameState, order: Order): number {
+  const met = needsMet(s, order);
+  const missing = order.needs.reduce((sum, n, k) => sum + (met[k] ? 0 : itemValue(n)), 0);
+  return missing ? Math.max(RUSH_MIN, Math.ceil(missing / 3)) : 0;
+}
+
+/** Delivers an order, paying gems for the items not on the board. */
+export function rushOrder(s: GameState, orderId: number): GameEvent[] {
   const order = s.orders.find((o) => o.id === orderId);
   if (!order) return [];
-  const cells = findForOrder(s, order);
-  if (!cells) return [{ type: 'fail', reason: 'missing' }];
+  const price = rushPrice(s, order);
+  if (s.gems < price) return [{ type: 'fail', reason: 'notEnoughGems' }];
+  s.gems -= price;
+  return deliver(s, orderId, true);
+}
+
+/** `rush`: items missing from the board were paid for (rushOrder) and are not needed. */
+export function deliver(s: GameState, orderId: number, rush = false): GameEvent[] {
+  const order = s.orders.find((o) => o.id === orderId);
+  if (!order) return [];
+  const matched = matchCells(s, order);
+  if (!rush && matched.includes(null)) return [{ type: 'fail', reason: 'missing' }];
+  const cells = matched.filter((i): i is number => i !== null);
   for (const i of cells) s.board[i] = { item: null };
   s.coins += order.coins;
   s.stars += order.stars;

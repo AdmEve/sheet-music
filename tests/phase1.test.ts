@@ -168,3 +168,33 @@ describe('late-game orders and level-ups', () => {
     expect(up?.gems).toBe(LEVEL_GEMS_MAX);
   });
 });
+
+describe('rush an order with gems', () => {
+  it('prices only the missing items and keeps the ones on the board', async () => {
+    const { RUSH_MIN, rushOrder, rushPrice } = await import('../src/game/model');
+    const s = emptyGame();
+    s.gems = 100;
+    s.board[0] = { item: { chain: 'tea', level: 3 } };
+    s.board[1] = { item: { chain: 'bread', level: 2 } };
+    s.orders = [{ id: 7, who: 'reza', needs: [{ chain: 'tea', level: 3 }, { chain: 'bread', level: 6 }], coins: 10, stars: 4 }];
+    const price = rushPrice(s, s.orders[0]);
+    expect(price).toBe(Math.max(RUSH_MIN, Math.ceil(32 / 3)));
+    const stars = s.stars;
+    const ev = rushOrder(s, 7);
+    expect(ev[0]).toMatchObject({ type: 'deliver', cells: [0] });
+    expect(s.gems).toBe(100 - price);
+    expect(s.stars).toBe(stars + 4);
+    expect(s.board[0].item).toBeNull();
+    expect(s.board[1].item).toEqual({ chain: 'bread', level: 2 }); // not part of the order
+  });
+
+  it('refuses when gems are short and changes nothing', async () => {
+    const { rushOrder } = await import('../src/game/model');
+    const s = emptyGame();
+    s.gems = 2;
+    s.orders = [{ id: 3, who: 'reza', needs: [{ chain: 'tea', level: 5 }], coins: 10, stars: 4 }];
+    expect(rushOrder(s, 3)).toEqual([{ type: 'fail', reason: 'notEnoughGems' }]);
+    expect(s.gems).toBe(2);
+    expect(s.orders).toHaveLength(1);
+  });
+});

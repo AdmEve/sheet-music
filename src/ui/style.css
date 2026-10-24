@@ -558,3 +558,15 @@ textarea.code::placeholder { font-family: 'Vazirmatn', sans-serif; font-size: 13
 @media (prefers-reduced-motion: reduce) {
   .scene .bulb, .scene .glowp, .scene .spk, .scene .steam, .wipe .spk { animation: none; }
 }
+
+/* ---------------------------------------------------------------- order details sheet */
+.order-sheet { display: flex; align-items: center; gap: 12px; margin: 4px 0 8px; }
+.order-sheet .who { width: 64px; height: 64px; flex: none; border-radius: 50%; overflow: hidden; background: var(--bg2); }
+.order-needs { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.order-need { display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: 12px; background: #f3e4c4; }
+.order-need .art { width: 40px; height: 40px; flex: none; }
+.order-need .art svg { width: 100%; height: 100%; }
+.order-need b { flex: 1; font-size: 14px; text-align: right; }
+.order-need .state { font-size: 12px; color: var(--accent-dark); font-weight: 700; }
+.order-need.met { background: #dff3e2; }
+.order-need.met .state { color: var(--green-dark); }

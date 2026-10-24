@@ -12,7 +12,7 @@ import { ensurePass, passClaimable, passProgress, passUnlocked, PASS_STEPS } fro
 import { OFFER_SKU, OfferId, PIGGY_CAP, activeOffers, giftReady, offerOnLevel, piggyFull, piggyUnlocked } from '../game/offers';
 import { CHAINS, Item, canMerge, isGenerator, itemName, maxLevel, sameItem } from '../game/items';
 import {
-  CELLS, ENERGY_CAP, GameEvent, GameState, Order, adsLeft, bubbleGemCost, ensureGenerators, buySheet, deliver, drop, findHint, msToNextEnergy, needsMet,
+  CELLS, ENERGY_CAP, GameEvent, GameState, Order, adsLeft, bubbleGemCost, ensureGenerators, buySheet, deliver, drop, findHint, msToNextEnergy, needsMet, RUSH_LEVEL, rushOrder,
   placeItem, popBubble, questsClaimable, refreshQuests, sellValue, sell, sheetGemCost, tap, tickBubbles, tickEnergy, toBag,
   xpForLevel,
 } from '../game/model';
@@ -329,13 +329,14 @@ export class App {
     );
     card.addEventListener('click', () => {
       if (ready) return this.doDeliver(o.id);
+      if (this.s.level >= RUSH_LEVEL && !this.busy) return void this.modals.order(o).then(() => this.renderAll());
       this.toast(`${CAST[o.who]?.name ?? ''}: ${o.needs.map((n) => itemName(n)).join(' و ')} می‌خواد`);
       this.highlightNeeds(o);
     });
     return card;
   }
 
-  private highlightNeeds(o: Order): void {
+  highlightNeeds(o: Order): void {
     this.cells.forEach((c, i) => {
       const it = this.s.board[i].item;
       if (it && !this.s.board[i].lock && o.needs.some((n) => sameItem(n, it))) {
@@ -345,28 +346,40 @@ export class App {
     });
   }
 
-  private async doDeliver(id: number): Promise<void> {
+  private doDeliver(id: number): Promise<void> {
+    return this.deliverOrder(id, false);
+  }
+
+  /** Delivers an order; with `rush`, the missing items are paid for in gems. */
+  async deliverOrder(id: number, rush: boolean): Promise<void> {
     if (this.busy) return;
     const card = this.ordersEl.querySelector(`[data-order="${id}"]`) as HTMLElement | null;
     const order = this.s.orders.find((o) => o.id === id);
     if (!order || !card) return;
     const prevLevel = this.s.level;
     const raceWasOpen = !!this.s.race.active && this.s.race.active.finishedAt === null;
-    const events = deliver(this.s, id);
+    const met = needsMet(this.s, order);
+    const events = rush ? rushOrder(this.s, id) : deliver(this.s, id);
     const ev = events.find((e) => e.type === 'deliver') as Extract<GameEvent, { type: 'deliver' }> | undefined;
     if (!ev) return this.fail(events);
     this.busy = true;
     sfx.deliver();
     buzz('medium');
-    // Items fly from the board into the customer's card.
+    // Items fly from the board into the customer's card; paid ones come from the gem counter.
     const target = card.getBoundingClientRect();
     if (this.selected !== null && ev.cells.includes(this.selected)) this.select(null);
-    await Promise.all(ev.cells.map((ci, k) => {
-      const art = itemArt(order.needs[k] ?? order.needs[0]);
-      const from = this.cells[ci].getBoundingClientRect();
-      this.renderCell(ci);
-      return this.fly(art, from, target, 380 + k * 60);
-    }));
+    const onBoard = order.needs.filter((_, k) => met[k]);
+    const paid = order.needs.filter((_, k) => !met[k]);
+    const gemsAt = document.getElementById('hud-gems')?.getBoundingClientRect() ?? target;
+    await Promise.all([
+      ...ev.cells.map((ci, k) => {
+        const art = itemArt(onBoard[k] ?? order.needs[0]);
+        const from = this.cells[ci].getBoundingClientRect();
+        this.renderCell(ci);
+        return this.fly(art, from, target, 380 + k * 60);
+      }),
+      ...(rush ? paid.map((n, k) => this.fly(itemArt(n), gemsAt, target, 460 + k * 80)) : []),
+    ]);
     card.classList.add('leaving');
     this.flyReward(ICONS.coin, target, 'hud-coins', Math.min(6, 2 + Math.floor(order.coins / 20)));
     this.flyReward(ICONS.star, target, 'nav-alley', Math.min(5, order.stars + 1));
