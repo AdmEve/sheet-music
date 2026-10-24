@@ -173,8 +173,19 @@ function calendarEvent(d: Date): { id: string; theme: ThemeId } | null {
 
 const plus = (d: Date, k: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + k);
 
+let dayCache = { day: '', ev: { id: '', theme: 'kite' as ThemeId } };
+
 /** Which event runs on the local day of `d`. */
 export function eventForDay(d: Date): { id: string; theme: ThemeId } {
+  // Asked every second for today: keep the last answer.
+  const key = dayKey(d);
+  if (dayCache.day === key) return { ...dayCache.ev };
+  const ev = findEventForDay(d);
+  dayCache = { day: key, ev };
+  return { ...ev };
+}
+
+function findEventForDay(d: Date): { id: string; theme: ThemeId } {
   const cal = calendarEvent(d);
   if (cal) return cal;
   // Persian week: Saturday (getDay 6) to Friday.
@@ -191,13 +202,20 @@ export function eventForDay(d: Date): { id: string; theme: ThemeId } {
 }
 
 /** Local midnight when the event running at `now` gives way to the next one. */
+let endCache = { day: '', end: new Date(0) };
+
 export function eventEnd(now: Date): Date {
+  // The UI asks every second; the answer only changes with the day.
+  const day = dayKey(now);
+  if (endCache.day === day) return new Date(endCache.end);
   const id = eventForDay(now).id;
+  let end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 30);
   for (let k = 1; k <= 30; k++) {
     const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + k);
-    if (eventForDay(d).id !== id) return d;
+    if (eventForDay(d).id !== id) { end = d; break; }
   }
-  return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 30);
+  endCache = { day, end };
+  return new Date(end);
 }
 
 export const isEventItem = (it: Item | null | undefined) => !!it && !!CHAINS[it.chain].event;
