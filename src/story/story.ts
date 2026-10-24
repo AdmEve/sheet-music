@@ -21,6 +21,7 @@ export const CAST: Record<string, Character> = {
   farokhi: { id: 'farokhi', name: 'آقای فرخی', role: 'سازنده‌ی پاساژ' },
   fakhri: { id: 'fakhri', name: 'فخری‌خانم', role: 'مادر کاوه' },
   bahman: { id: 'bahman', name: 'عمو بهمن', role: 'برادر حاج‌بابا، از هامبورگ' },
+  aydin: { id: 'aydin', name: 'آیدین', role: 'فرش‌فروش تبریزی' },
 };
 
 /** Short thank-you lines shown when an order is delivered (one picked at random). */
@@ -35,6 +36,7 @@ export const THANKS: Record<string, string[]> = {
   fakhri: ['…بد نیست. یعنی خوبه.', 'قبول.', 'سلیقه داری.'],
   farokhi: ['حرفه‌ای بود.', 'جالبه… خیلی جالبه.', 'باید قبول کنم، کارت خوبه.'],
   bahman: ['دستت درد نکنه بابا جان.', 'چهل سال دلم برای این بو تنگ شده بود.', 'آفرین! داداش بود کیف می‌کرد.'],
+  aydin: ['ساغ اول! یعنی دستت درد نکنه.', 'به این می‌گن کار تمیز، مثل گره‌ی فرش تبریز!', 'شیرین می‌گفت تو بهترینی. راست می‌گفت.'],
 };
 
 export interface Line {
@@ -705,6 +707,113 @@ export const PLACES: Place[] = [
       { who: 'mahin', text: 'برای شیرین خواستگار اومده. از تبریز!', mood: 'happy' },
       { who: 'shirin', text: 'خاله!!! قرار بود به کسی نگی!', mood: 'angry' },
       { who: 'narges', text: 'شیرین؟! … فصل بعد، باید همه‌چی رو برام تعریف کنی!', mood: 'happy' },
+    ],
+  },
+  // ------------------------------------------------------------------ season 6: خواستگار تبریزی
+  {
+    id: 'carpetshop',
+    name: 'حجره‌ی فرش آیدین',
+    intro: [
+      { who: 'shirin', text: 'باشه، باشه! اسمش آیدینه. فرش‌فروشه، از تبریز. اومده بود بازار تهران بار ببره…' },
+      { who: 'mahin', text: '…و سر از آرایشگاه زنونه‌ی تو درآورد؟!', mood: 'surprised' },
+      { who: 'shirin', text: 'خاله! اومده بود برای مادرش کارت هدیه بخره!', mood: 'angry' },
+      { who: 'aydin', text: 'سلام به همه. شیرین گفت از این کوچه جایی نمی‌ره. پس من میام این‌جا. مغازه‌ی خالی ته کوچه رو اجاره کردم.' },
+      { who: 'golab', text: 'پسر عاقلیه. تا حالا هیچ خواستگاری محله رو انتخاب نکرده بود.' },
+    ],
+    tasks: [
+      { id: 'carpet.hang', title: 'فرش‌های آویز', cost: 180, layer: 'hang', after: [{ who: 'aydin', text: 'این یکی کار مادربزرگمه. شیش ماه پاش نشست. هر گره‌ش یه دعاست.' }] },
+      { id: 'carpet.stack', title: 'دسته‌ی فرش‌های تاشده', cost: 182, layer: 'stack', after: [{ who: 'morteza', text: 'این همه فرش! قیمت دوستانه هم داری… برای همسایه‌ها؟' }, { who: 'aydin', text: 'برای همسایه‌ها، چای مجانی. فرش حساب‌کتاب داره!' }] },
+      { id: 'carpet.loom', title: 'دار قالی کوچک', cost: 184, layer: 'loom', after: [{ who: 'fakhri', text: 'من بچه که بودم قالی می‌بافتم. … دستم هنوز یادشه.' }] },
+      { id: 'carpet.lamp', title: 'چراغ حجره', cost: 186, layer: 'lamp', after: [{ who: 'kaveh', text: 'نور زرد برای فرش بهتره. رنگ‌ها گرم‌تر دیده می‌شن.' }] },
+      { id: 'carpet.sign', title: 'تابلوی «فرش آیدین»', cost: 188, layer: 'sign', after: [{ who: 'aydin', text: 'حالا که حجره راه افتاد… شیرین خانم، اجازه می‌دی خانواده‌م بیان خواستگاری؟', mood: 'happy' }, { who: 'shirin', text: '…اول تو باید خانواده‌ی من رو ببینی. یعنی کل این کوچه رو!' }] },
+    ],
+    outro: [
+      { who: 'aydin', text: 'پس کل کوچه بیاد تبریز! ننه‌م می‌گه مهمون حبیب خداست. هر چی بیشتر، بهتر.' },
+      { who: 'reza', text: 'تبریز؟ همه با هم؟ … من نونوایی رو چی کار کنم؟', mood: 'surprised' },
+      { who: 'golab', text: 'یه روز نون نپزی، دنیا به آخر نمی‌رسه، رضا. بلیط قطار رو بگیر!' },
+    ],
+  },
+  {
+    id: 'bazaar',
+    name: 'بازار تبریز',
+    intro: [
+      { who: 'aydin', text: 'به بازار تبریز خوش اومدید! یکی از بزرگ‌ترین بازارهای سرپوشیده‌ی دنیا. ثبت جهانیه.' },
+      { who: 'kaveh', text: 'این طاق‌ها… آجرکاری‌ش بی‌نظیره. ولی بعضی حجره‌ها خاک خورده.' },
+      { who: 'aydin', text: 'حجره‌ی پدربزرگم همین‌جاست. سال‌هاست بسته‌ست. می‌خوام قبل از خواستگاری بازش کنم.' },
+    ],
+    tasks: [
+      { id: 'baz.vaults', title: 'طاق‌های آجری', cost: 186, layer: 'vaults', after: [{ who: 'kaveh', text: 'هر طاق یه نورگیر داره. صدها سال پیش، بدون برق، کل بازار روشن بوده.' }] },
+      { id: 'baz.spices', title: 'حجره‌ی ادویه', cost: 188, layer: 'spices', after: [{ who: 'golab', text: 'زعفرون، سماق، زردچوبه… بوی بازار قدیم تهران رو می‌ده.' }] },
+      { id: 'baz.carpets', title: 'فرش‌های بازار', cost: 190, layer: 'carpets', after: [{ who: 'bahman', text: 'تو هامبورگ هم فرش تبریز داشتم. تنها چیزی بود که منو یاد خونه می‌نداخت.' }] },
+      { id: 'baz.lanterns', title: 'فانوس‌های بازار', cost: 192, layer: 'lanterns', after: [{ who: 'mahin', text: 'از این‌جا یه عکس بگیرم برای گروه خانوادگی. همه از حسودی می‌ترکن!' }] },
+      { id: 'baz.shop', title: 'حجره‌ی پدربزرگ', cost: 194, layer: 'shop', after: [{ who: 'aydin', text: 'پدربزرگم می‌گفت: «فرش خوب، مثل خانواده‌ی خوبه. گره‌هاش باید محکم باشه.»' }] },
+    ],
+    outro: [
+      { who: 'aydin', text: 'امشب ننه‌م منتظرمونه. ولی قبلش… شیرین، بیا بریم ائل‌گلی. یه حرفی دارم.' },
+      { who: 'mahin', text: 'ما هم میایم!' },
+      { who: 'narges', text: 'خاله… این دفعه نه. بذار تنها برن.', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'elgoli',
+    name: 'عمارت ائل‌گلی',
+    intro: [
+      { who: 'shirin', text: 'وای… عمارت وسط دریاچه! ولی چرا چراغاش خاموشه؟' },
+      { who: 'aydin', text: 'به شهرداری گفتم امشب روشنش کنن. گفتن «برای چی؟» گفتم «برای یه سؤال مهم.»' },
+      { who: 'mahin', text: '(از پشت درخت) … من اصلاً این‌جا نیستم.', mood: 'surprised' },
+    ],
+    tasks: [
+      { id: 'el.pavilion', title: 'عمارت وسط آب', cost: 192, layer: 'pavilion', after: [{ who: 'aydin', text: 'قاجارها این‌جا تابستون‌ها می‌اومدن. حالا مال همه‌ی مردمه.' }] },
+      { id: 'el.lake', title: 'آب دریاچه', cost: 194, layer: 'lake', after: [{ who: 'shirin', text: 'آب صاف شد! ماه افتاده توش.' }] },
+      { id: 'el.boats', title: 'قایق‌های پارویی', cost: 196, layer: 'boats', after: [{ who: 'aydin', text: 'پارو زدن بلدی؟ … نه؟ خب، من بلدم. تو فقط بشین.' }] },
+      { id: 'el.fountains', title: 'فواره‌ها', cost: 198, layer: 'fountains', after: [{ who: 'shirin', text: 'آیدین… داری دستت رو تو جیبت می‌کنی. چی تو جیبته؟', mood: 'surprised' }] },
+      { id: 'el.lights', title: 'چراغ‌های عمارت', cost: 200, layer: 'lights', after: [{ who: 'aydin', text: 'شیرین… با من ازدواج می‌کنی؟ قول می‌دم هیچ‌وقت از اون کوچه نبرمت.', mood: 'happy' }, { who: 'shirin', text: 'بله! … ولی اول باید ننه‌ت منو بپسنده!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'mahin', text: '(از پشت درخت بیرون میاد) گفت بله! گفت بله! همه بدونن!', mood: 'happy' },
+      { who: 'shirin', text: 'خاله!!!', mood: 'angry' },
+      { who: 'aydin', text: 'حالا نوبت ننه‌ست. خدا به دادمون برسه.' },
+    ],
+  },
+  {
+    id: 'tabrizhome',
+    name: 'خونه‌ی ننه‌ی آیدین',
+    intro: [
+      { who: 'aydin', text: 'ننه‌م فارسی کم بلده. ولی چشماش همه‌چی رو می‌فهمه.' },
+      { who: 'golab', text: 'من ترکی یه کم بلدم. مادرم از اردبیل بود. … «خوش گلمیسیز»!' },
+      { who: 'aydin', text: 'خونه‌ی ننه سرده، بخاری‌ش خرابه. تا ننه از بازار برگرده، گرمش کنیم.' },
+    ],
+    tasks: [
+      { id: 'th.window', title: 'پنجره‌ی برفی', cost: 198, layer: 'window', after: [{ who: 'reza', text: 'برف میاد! تهران دو ساله این‌جوری برف ندیده.' }] },
+      { id: 'th.rug', title: 'ورنی ارسباران', cost: 200, layer: 'rug', after: [{ who: 'fakhri', text: 'ورنی دستباف. گره‌هاش ریزه. ننه‌ت خانم باسلیقه‌ایه.' }] },
+      { id: 'th.samovar', title: 'سماور و بخاری', cost: 202, layer: 'samovar', after: [{ who: 'golab', text: 'خونه گرم شد. حالا یه چای تبریزی با قند… مثل خونه‌ی مادرم.' }] },
+      { id: 'th.saz', title: 'ساز عاشیقی پدربزرگ', cost: 204, layer: 'saz', after: [{ who: 'bahman', text: 'ساز عاشیقی! … یه آهنگ بلدم. مال جوونی‌مه. بذارید امتحان کنم.' }] },
+      { id: 'th.sofreh', title: 'سفره‌ی کوفته تبریزی', cost: 206, layer: 'sofreh', after: [{ who: 'aydin', text: 'ننه اومد! … داره به سفره نگاه می‌کنه… داره لبخند می‌زنه!', mood: 'happy' }, { who: 'shirin', text: 'یعنی… قبول کرد؟', mood: 'surprised' }] },
+    ],
+    outro: [
+      { who: 'aydin', text: 'ننه گفت: «این دختر با یه کوچه آدم اومده. همچین دختری رو نباید از دست داد.»', mood: 'happy' },
+      { who: 'golab', text: 'بله‌برون رو تو کوچه‌ی خودمون می‌گیریم. ننه‌ی آیدین هم مهمون ماست!' },
+    ],
+  },
+  {
+    id: 'balehboron',
+    name: 'جشن بله‌برون',
+    intro: [
+      { who: 'mahin', text: 'خانواده‌ی آیدین از تبریز اومدن، با سه تا ماشین شیرینی!' },
+      { who: 'morteza', text: 'سه ماشین؟! … من فقط یه جعبه‌ی نون‌برنجی خریدم.', mood: 'surprised' },
+      { who: 'narges', text: 'یه جشن ترکی‌ـ‌تهرونی! نصف ساز، نصف تنبک. یالا!' },
+    ],
+    tasks: [
+      { id: 'bb.rings', title: 'سینی حلقه و انگشتر', cost: 204, layer: 'rings', after: [{ who: 'aydin', text: 'این انگشتر مال ننه‌م بود. حالا مال توئه، شیرین.' }] },
+      { id: 'bb.sofreh', title: 'سفره‌ی بله‌برون', cost: 206, layer: 'sofreh', after: [{ who: 'fakhri', text: 'قرابیه‌ی تبریز و نون‌برنجی کرمانشاه، کنار هم. محله‌ی ما همینه دیگه.' }] },
+      { id: 'bb.ashiq', title: 'عاشیق و ساز', cost: 208, layer: 'ashiq', after: [{ who: 'bahman', text: 'عاشیق از تبریز اومده، من هم تار داداش رو آوردم. امشب دوتایی می‌زنیم.' }] },
+      { id: 'bb.lights', title: 'ریسه و فانوس', cost: 210, layer: 'lights', after: [{ who: 'reza', text: 'یالّی! همه دست همو بگیرید، دور حیاط!', mood: 'happy' }] },
+      { id: 'bb.sweets', title: 'سینی شیرینی تبریزی', cost: 212, layer: 'sweets', after: [{ who: 'shirin', text: 'خاله مهین… این دفعه می‌تونی به همه بگی. هر کی رو دوست داری.', mood: 'happy' }, { who: 'mahin', text: 'بهترین خبر عمرم! … البته بعد از سه تا خبر قبلی.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'morteza', text: 'آهای همسایه‌ها! یه نامه از دفتر اسناد رسمی اومده… به اسم من!', mood: 'surprised' },
+      { who: 'morteza', text: '«ارثیه‌ی عمه‌ی مرحوم: یه خونه‌باغ قدیمی تو شمیرانات»… من؟! عمه داشتم؟!', mood: 'surprised' },
+      { who: 'mahin', text: 'آقا مرتضی پولدار شد! فصل بعد خیلی خبر داره…', mood: 'happy' },
     ],
   },
 ];

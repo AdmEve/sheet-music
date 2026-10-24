@@ -6,8 +6,9 @@ import { SCENES2 } from './scenes2';
 import { SCENES3 } from './scenes3';
 import { SCENES4 } from './scenes4';
 import { SCENES5 } from './scenes5';
+import { SCENES6 } from './scenes6';
 
-const SCENES: Record<string, SceneDef> = { ...SCENES1, ...SCENES2, ...SCENES3, ...SCENES4, ...SCENES5 };
+const SCENES: Record<string, SceneDef> = { ...SCENES1, ...SCENES2, ...SCENES3, ...SCENES4, ...SCENES5, ...SCENES6 };
 
 /** `style` picks the decoration style of each restored layer (0 = traditional). */
 export function sceneSvg(placeId: string, done: (layer: string) => boolean, style: (layer: string) => number = () => 0): string {

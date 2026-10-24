@@ -93,7 +93,7 @@ const scarfFront = (fill: string) =>
 const dots = (color: string) =>
   [[34, 26], [46, 22], [58, 24], [68, 32], [28, 38], [72, 46]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2" fill="${color}"/>`).join('');
 
-export const CAST_IDS = ['narges', 'mahin', 'reza', 'shirin', 'kaveh', 'morteza', 'golab', 'fakhri', 'farokhi', 'bahman'];
+export const CAST_IDS = ['narges', 'mahin', 'reza', 'shirin', 'kaveh', 'morteza', 'golab', 'fakhri', 'farokhi', 'bahman', 'aydin'];
 export const MOOD_LIST: Mood[] = ['neutral', 'happy', 'sad', 'angry', 'surprised'];
 
 const PORTRAITS: Record<string, (m: FaceOpts) => string> = {
@@ -153,6 +153,13 @@ const PORTRAITS: Record<string, (m: FaceOpts) => string> = {
     `<path d="M38 61 C42 57 47 59 50 60 C53 59 58 57 62 61 C58 65 54 63 50 64 C46 63 42 65 38 61 Z" fill="#f0f0f0" ${THIN}/>` +
     `<circle cx="41" cy="52" r="6.5" fill="none" stroke="#6b4a2a" stroke-width="1.8"/><circle cx="59" cy="52" r="6.5" fill="none" stroke="#6b4a2a" stroke-width="1.8"/><path d="M47.5 52 h5" stroke="#6b4a2a" stroke-width="1.8"/>` +
     `<ellipse cx="50" cy="35" rx="30" ry="6" fill="#4a4a5a" ${O}/><path d="M32 34 C32 18 68 18 68 34 Z" fill="#4a4a5a" ${O}/><path d="M33 30 H67" stroke="#2a2a3a" stroke-width="4"/><path d="M44 21 Q50 25 56 21" fill="none" stroke="#2a2a3a" stroke-width="1.6"/>`,
+  aydin: (m) =>
+    bg('#fdebd0', '#e59866') +
+    shoulders('#f4f0e6', `<path d="M30 84 C34 80 40 80 44 84 L44 100 L30 100 Z M70 84 C66 80 60 80 56 84 L56 100 L70 100 Z" fill="url(#gCarpet)" ${THIN}/>`) +
+    face({ eyes: 'open', brows: 'thick', mouth: 'smile', skin: '#efc19a', ...m }) +
+    // Dark curls and a neat moustache.
+    [[32, 38, 8], [40, 30, 9], [50, 27, 9], [60, 30, 9], [68, 38, 8], [36, 34, 6], [64, 34, 6]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#24160e" ${THIN}/>`).join('') +
+    `<path d="M41 61 C44 58 48 59 50 60 C52 59 56 58 59 61 C56 63 53 62 50 62.5 C47 62 44 63 41 61 Z" fill="#24160e"/>`,
 };
 
 const cache = new Map<string, string>();
