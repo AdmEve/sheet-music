@@ -1026,6 +1026,108 @@ export const PLACES: Place[] = [
       { who: 'mahin', text: 'سفر شمال؟ با این همه آدم؟ … فصل بعد خیلی شلوغه!', mood: 'surprised' },
     ],
   },
+  // ------------------------------------------------------------------ season 9: سفر شمال
+  {
+    id: 'station',
+    name: 'ایستگاه قطار',
+    intro: [
+      { who: 'kaveh', text: 'قطار تهران ـ ساری، از روی پل ورسک. ننه‌گلاب، شصت سال پیش با همین قطار رفتید؟' },
+      { who: 'golab', text: 'با پدرم. هفت سالم بود. از پنجره دست بیرون آوردم، ابرها رو گرفتم.' },
+      { who: 'morteza', text: 'ایستگاه درب‌وداغونه! تا قطار بیاد، یه دستی به سر و روش بکشیم.' },
+    ],
+    tasks: [
+      { id: 'sta.benches', title: 'نیمکت‌های سکو', cost: 270, layer: 'benches', after: [{ who: 'reza', text: 'نیمکت‌ها رو رنگ زدیم. حالا مسافرها با خیال راحت منتظر می‌مونن.' }] },
+      { id: 'sta.clock', title: 'ساعت ایستگاه', cost: 272, layer: 'clock', after: [{ who: 'bahman', text: 'ساعت راه افتاد. چهل سال منتظر قطار برگشت بودم؛ این بار سر وقت رسیدم.' }] },
+      { id: 'sta.booth', title: 'باجه‌ی بلیط', cost: 274, layer: 'booth', after: [{ who: 'morteza', text: 'بیست و هفت تا بلیط! تخفیف گروهی گرفتم. … مفت، نه. ولی ارزون!' }] },
+      { id: 'sta.luggage', title: 'چمدون‌ها', cost: 276, layer: 'luggage', after: [{ who: 'fakhri', text: 'فقط هفت تا چمدون آوردم. برای یه هفته کمه، ولی کنار میام.' }, { who: 'kaveh', text: 'مادر… هفت تا؟!', mood: 'surprised' }] },
+      { id: 'sta.lamps', title: 'فانوس‌های سکو', cost: 278, layer: 'lamps', after: [{ who: 'narges', text: 'سوت قطار! همه سوار شید! گلاب کوچولو، اولین سفرت!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'golab', text: '(از پنجره‌ی قطار) ابرها… هنوز همون‌جان. فقط من پیر شدم.', mood: 'sad' },
+      { who: 'aydin', text: 'نه ننه‌گلاب. شما فقط بیشتر دیدی. بزرگ‌تر شدی.' },
+    ],
+  },
+  {
+    id: 'seavilla',
+    name: 'ویلای کنار دریا',
+    intro: [
+      { who: 'farokhi', text: 'ویلای دوستمه، کنار دریا. گفت «هر وقت خواستی». فکر نکنم منظورش بیست و هفت نفر بود.' },
+      { who: 'shirin', text: 'وای! دریا! … ولی ویلا چرا این‌قدر خاک‌گرفته‌ست؟' },
+      { who: 'golab', text: 'اول خونه رو آب و جارو کنیم. دریا جایی نمی‌ره، مادر.' },
+    ],
+    tasks: [
+      { id: 'sv.porch', title: 'ایوون چوبی', cost: 276, layer: 'porch', after: [{ who: 'kaveh', text: 'ایوون رو به دریاست. معمار این ویلا آدم باذوقی بوده.' }] },
+      { id: 'sv.hammock', title: 'ننو زیر درخت', cost: 278, layer: 'hammock', after: [{ who: 'morteza', text: 'من دیگه از این ننو پا نمی‌شم. بقالی؟ کدوم بقالی؟' }] },
+      { id: 'sv.grill', title: 'منقل کباب', cost: 280, layer: 'grill', after: [{ who: 'reza', text: 'جوجه‌کباب با برنج شمالی! سنگک ندارم، ولی کته‌ی خوبی بلدم.' }] },
+      { id: 'sv.umbrellas', title: 'چترهای ساحلی', cost: 282, layer: 'umbrellas', after: [{ who: 'aydin', text: 'دریاچه‌ی ائل‌گلی قشنگه، ولی دریا یه چیز دیگه‌ست!' }] },
+      { id: 'sv.lights', title: 'چراغ‌های ایوون', cost: 284, layer: 'lights', after: [{ who: 'golab', text: 'صدای موج… شب‌ها تا صبح بیدار می‌مونم و گوش می‌دم.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'fakhri', text: 'فردا می‌ریم شالیزار. پدرم یه زمانی این‌جا برنج می‌کاشت. … آره، منم شمالی‌ام. تعجب کردید؟' },
+      { who: 'mahin', text: 'فخری‌خانم شمالیه؟! چهل ساله تو این محله‌ام، این رو نمی‌دونستم!', mood: 'surprised' },
+    ],
+  },
+  {
+    id: 'paddy',
+    name: 'شالیزار',
+    intro: [
+      { who: 'fakhri', text: 'این‌جا خونه‌ی پدری منه. کومه‌ش هنوز سرپاست. شالیزار ولی سال‌هاست کاشته نشده.' },
+      { who: 'kaveh', text: 'مادر… هیچ‌وقت نگفته بودی.' },
+      { who: 'fakhri', text: 'آدم بعضی چیزها رو نمی‌گه، پسرم. تا وقتی که آماده باشه.' },
+    ],
+    tasks: [
+      { id: 'pad.water', title: 'آب کرت‌ها', cost: 282, layer: 'water', after: [{ who: 'fakhri', text: 'آب که تو کرت می‌افته، آسمون توش پیدا می‌شه. اینو پدرم یادم داد.' }] },
+      { id: 'pad.seedlings', title: 'نشای برنج', cost: 284, layer: 'seedlings', after: [{ who: 'shirin', text: 'تا زانو تو گل! ولی چه کیفی داره!', mood: 'happy' }] },
+      { id: 'pad.kumeh', title: 'کومه‌ی گالی‌پوش', cost: 286, layer: 'kumeh', after: [{ who: 'golab', text: 'سقف گالی‌پوش! بوی کاه نم‌خورده… بچگی‌م رو بهم برگردوندید.' }] },
+      { id: 'pad.scarecrow', title: 'مترسک', cost: 288, layer: 'scarecrow', after: [{ who: 'reza', text: 'مترسک رو شبیه آقا مرتضی ساختیم! کلاهش رو ببینید!' }, { who: 'morteza', text: 'خیلی هم شبیه نیست! … فقط یه کم.' }] },
+      { id: 'pad.sunset', title: 'غروب شالیزار', cost: 290, layer: 'sunset', after: [{ who: 'fakhri', text: 'بابا… شالیزارت دوباره سبز شد.', mood: 'sad' }, { who: 'golab', text: 'گریه کن، فخری‌جان. بعضی گریه‌ها قشنگن.' }] },
+    ],
+    outro: [
+      { who: 'aydin', text: 'فردا بریم ماسوله! یه روستا که پشت‌بوم هر خونه، حیاط خونه‌ی بالاییه.' },
+      { who: 'mahin', text: 'یعنی آدم رو سر همسایه راه می‌ره؟ عینهو محله‌ی خودمون!', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'masuleh',
+    name: 'روستای ماسوله',
+    intro: [
+      { who: 'kaveh', text: 'ماسوله! خونه‌ها پله‌پله روی کوه. هزار ساله این‌جوری زندگی می‌کنن.' },
+      { who: 'bahman', text: 'مه داره میاد. ماسوله تو مه، مثل یه نقاشی می‌مونه.' },
+      { who: 'narges', text: 'یه قهوه‌خونه‌ی کوچیک این بالاست. … شبیه قهوه‌خونه‌ی حاج‌بابا!' },
+    ],
+    tasks: [
+      { id: 'mas.roofs', title: 'پشت‌بوم‌های پله‌ای', cost: 288, layer: 'roofs', after: [{ who: 'kaveh', text: 'هر پشت‌بوم، کوچه‌ی خونه‌ی بالاییه. اینجا همسایه‌ها واقعاً روی هم زندگی می‌کنن.' }] },
+      { id: 'mas.windows', title: 'پنجره‌های چوبی', cost: 290, layer: 'windows', after: [{ who: 'shirin', text: 'قاب‌های زرد! همه‌ی خونه‌ها یه رنگن، مثل یه خونواده.' }] },
+      { id: 'mas.flowers', title: 'گلدون‌های لب پنجره', cost: 292, layer: 'flowers', after: [{ who: 'golab', text: 'شمعدونی، مثل حیاط خودمون. گل‌ها همه جا یه زبون دارن.' }] },
+      { id: 'mas.teahouse', title: 'قهوه‌خونه‌ی کوهستان', cost: 294, layer: 'teahouse', after: [{ who: 'narges', text: 'یه استکان چای تو ماسوله… حاج‌بابا، کاش این‌جا بودی.', mood: 'sad' }] },
+      { id: 'mas.lanterns', title: 'فانوس‌ها در مه', cost: 296, layer: 'lanterns', after: [{ who: 'bahman', text: 'فانوس‌ها تو مه… انگار ستاره‌ها اومدن پایین قدم بزنن.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'mahin', text: 'فردا سیزده‌به‌دره! کنار دریا. سبزه‌ها رو آوردید؟' },
+      { who: 'golab', text: 'سبزه‌م از قبل عید تو قطار همراهمه. می‌خوام خودم به آب بدمش.' },
+    ],
+  },
+  {
+    id: 'sizdah',
+    name: 'سیزده‌به‌در کنار دریا',
+    intro: [
+      { who: 'narges', text: 'روز آخر سفر. همه کنار دریا، با سفره و سبزه و بادبادک!' },
+      { who: 'reza', text: 'کاهو سکنجبین با من! سکنجبینش رو دیشب جوشوندم.' },
+      { who: 'shirin', text: 'دخترها! سبزه گره بزنیم، آرزو کنیم!' },
+    ],
+    tasks: [
+      { id: 'siz.sofreh', title: 'سفره‌ی کنار دریا', cost: 294, layer: 'sofreh', after: [{ who: 'fakhri', text: 'میرزاقاسمی و باقلاقاتق، غذای شمالی. … امروز آشپز منم.' }] },
+      { id: 'siz.kites', title: 'بادبادک‌ها', cost: 296, layer: 'kites', after: [{ who: 'aydin', text: 'بادبادک طاووسی کاوه بالاتر از همه! باد شمال یه چیز دیگه‌ست.' }] },
+      { id: 'siz.lettuce', title: 'کاهو سکنجبین', cost: 298, layer: 'lettuce', after: [{ who: 'morteza', text: 'یه کاسه‌ی دیگه بده رضا… نه، دو تا! امروز رژیم ندارم.' }] },
+      { id: 'siz.sabzeh', title: 'سبزه به آب', cost: 300, layer: 'sabzeh', after: [{ who: 'golab', text: 'سبزه‌م رو دادم به دریا. یه آرزو کردم… که این کوچه همیشه همین‌جوری بمونه.', mood: 'sad' }] },
+      { id: 'siz.photo', title: 'عکس کنار دریا', cost: 302, layer: 'photo', after: [{ who: 'golab', text: 'شصت سال منتظر بودم دوباره دریا رو ببینم. این بار با همه‌ی خونواده‌م.', mood: 'happy' }, { who: 'narges', text: 'ما همیشه خونواده‌تیم، ننه‌گلاب.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'kaveh', text: 'نرگس… یه ایمیل اومده. از اصفهان. می‌خوان من سرپرست مرمت یه خونه‌ی صفوی بشم.', mood: 'surprised' },
+      { who: 'narges', text: 'اصفهان؟! … یعنی از کوچه بریم؟', mood: 'sad' },
+      { who: 'mahin', text: 'نه! هیچ‌کس از این کوچه جایی نمی‌ره! … فصل بعد، باید یه فکری بکنیم.', mood: 'angry' },
+    ],
+  },
 ];
 
 export function findTask(id: string): { place: Place; task: Task; index: number } | null {

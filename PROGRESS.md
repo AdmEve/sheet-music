@@ -176,8 +176,14 @@ saves are written into localStorage `mahalle.save.v1`.
       simulated games finish all 40 episodes; energy-regen hours per episode rise smoothly
       from 0 (teahouse) to ~35 (wedding), ~65 (Season 5 end) and ~99 (Season 8 end)
 
+- [x] Phase 18: Season 9 «سفر شمال» (`src/art/scenes9.ts`: the old railway station, a seaside
+      villa, Fakhri's family rice paddy, Masuleh in the mist and Sizdah Bedar on the beach;
+      «دریا» chain + beach basket at level 50); map of 45 places; Season 10 teased (Kaveh's
+      job offer in Isfahan). The place screen lists seasons in one scrolling row and the
+      five episodes of the chosen season below it (45 chips no longer push the task off)
+
 Next (in order):
-1. Phase 18: Season 9 «سفر شمال»
+1. Phase 19: Season 10 «اصفهان»
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)

@@ -14,12 +14,15 @@ import { add, clear, fa, h, svgIcon, wait } from './dom';
 import { confetti, rays } from './celebrate';
 import { sfx } from './sound';
 
+const EPISODES_PER_SEASON = 5;
 export class PlaceScreen {
   readonly places = PLACES;
 
   private working = false;
   /** A finished place opened from the map or the episode chips (null = the current one). */
   private viewing: Place | null = null;
+  /** Season whose episode chips are listed (null = the season of the place shown). */
+  private seasonShown: number | null = null;
 
   constructor(private app: App) {}
 
@@ -28,6 +31,7 @@ export class PlaceScreen {
     return new Promise((resolve) => {
       const screen = h('div', { class: 'place' });
       this.viewing = null;
+      this.seasonShown = null;
       document.body.append(screen);
       const back = () => {
         screen.remove();
@@ -53,12 +57,30 @@ export class PlaceScreen {
     const visit = (k: number) => {
       if (k > p.placeIndex) return this.app.toast('اول قسمت‌های قبلی رو تموم کن!');
       this.viewing = k === p.placeIndex ? null : PLACES[k];
+      this.seasonShown = null;
       sfx.page();
       this.render(screen, back);
     };
     const shown = PLACES.indexOf(place);
-    const episodes = h('div', { class: 'episodes' }, ...PLACES.map((_, k) =>
-      h('button', { class: `ep${k < p.placeIndex ? ' done' : k === p.placeIndex ? ' cur' : ''}${k === shown ? ' shown' : ''}`, onclick: () => visit(k) }, `قسمت ${fa(k + 1)}`)));
+    // One row of seasons, then the five episodes of the chosen one: 45 chips at once would
+    // push the task card off the screen.
+    const seasonOf = (k: number) => Math.floor(k / EPISODES_PER_SEASON);
+    const curSeason = seasonOf(Math.min(p.placeIndex, PLACES.length - 1));
+    const sel = this.seasonShown ?? seasonOf(shown);
+    const seasons = h('div', { class: 'seasons' }, ...Array.from({ length: Math.ceil(PLACES.length / EPISODES_PER_SEASON) }, (_, n) =>
+      h('button', {
+        class: `sn${n < curSeason ? ' done' : n === curSeason ? ' cur' : ' locked'}${n === sel ? ' shown' : ''}`,
+        onclick: () => {
+          if (n > curSeason) return this.app.toast('اول فصل‌های قبلی رو تموم کن!');
+          this.seasonShown = n;
+          sfx.page();
+          this.render(screen, back);
+        },
+      }, `فصل ${fa(n + 1)}`)));
+    const episodes = h('div', { class: 'episodes' }, ...PLACES.slice(sel * EPISODES_PER_SEASON, (sel + 1) * EPISODES_PER_SEASON).map((_, j) => {
+      const k = sel * EPISODES_PER_SEASON + j;
+      return h('button', { class: `ep${k < p.placeIndex ? ' done' : k === p.placeIndex ? ' cur' : ''}${k === shown ? ' shown' : ''}`, onclick: () => visit(k) }, `قسمت ${fa(k + 1)}`);
+    }));
 
     const card = h('div', { class: 'card' });
     if (this.viewing) {
@@ -69,8 +91,8 @@ export class PlaceScreen {
       );
     } else if (!p.next || !p.place) {
       card.append(
-        h('div', { class: 'tasktitle' }, 'فصل هشتم تموم شد! 🎉'),
-        h('p', { class: 'muted' }, 'کوچه‌ی حاج‌بابا قهرمان جام محلات شد! ولی آرزوی ننه‌گلاب… فصل نهم، سفر شمال، به‌زودی با آپدیت بعدی میاد.'),
+        h('div', { class: 'tasktitle' }, 'فصل نهم تموم شد! 🎉'),
+        h('p', { class: 'muted' }, 'ننه‌گلاب بالاخره دوباره دریا رو دید. ولی پیشنهاد کاری کاوه از اصفهان… فصل دهم به‌زودی با آپدیت بعدی میاد.'),
         h('button', { class: 'btn', onclick: back }, 'برگرد به بازی'),
       );
     } else {
@@ -107,10 +129,13 @@ export class PlaceScreen {
         h('button', { class: 'chip', 'aria-label': 'نقشه‌ی محله', onclick: () => this.openMap(screen, back, visit) }, '🗺'),
         h('div', { class: 'chip' }, fa(s.stars), h('span', { html: svgIcon(ICONS.star) }))),
       scene,
+      seasons,
       episodes,
       card,
       list,
     );
+    // Keep the chosen season in view (the strip starts at season 1).
+    requestAnimationFrame(() => seasons.querySelector('.shown')?.scrollIntoView({ inline: 'center', block: 'nearest' }));
   }
 
   /** The whole alley: restored places in colour, the current one under scaffolding. */

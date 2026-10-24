@@ -124,11 +124,12 @@ const shots: Shot[] = [
       await ready(page);
       await page.click('#nav-alley', { force: true }); await page.waitForTimeout(500); await skipStory(page);
       // Revisit the restored cistern (episode 23) through its chip.
-      await page.click('.episodes .ep:nth-child(23)', { force: true }); await page.waitForTimeout(600);
+      await page.click('.seasons .sn:nth-child(5)', { force: true }); await page.waitForTimeout(300);
+      await page.click('.episodes .ep:nth-child(3)', { force: true }); await page.waitForTimeout(600);
       await page.evaluate(() => (window as any).__showLine?.('kaveh'));
       await page.waitForTimeout(900);
     } },
-  { name: '8-map', caption: '۴۰ قسمت، هشت فصل، یه محله', sub: 'آفلاین، بدون تبلیغ اجباری', state: lateState(20, 2),
+  { name: '8-map', caption: '۴۵ قسمت، نه فصل، یه محله', sub: 'آفلاین، بدون تبلیغ اجباری', state: lateState(20, 2),
     act: async (page) => {
       await ready(page);
       await page.click('#nav-alley', { force: true }); await page.waitForTimeout(500); await skipStory(page);

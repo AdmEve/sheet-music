@@ -5,7 +5,7 @@
 
 import { INK, O, THIN, sparkle } from './kit';
 
-export const MAP_H = 4400;
+export const MAP_H = 4930;
 const STEP = 106;
 const faDigits = (n: number) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 
@@ -164,6 +164,28 @@ const FACADES: Record<string, Facade> = {
     wall: '#e0b07a', w: 124, h: 60, door: 'gate',
     deco: `<path d="M-14 -62 H14 C14 -46 6 -42 0 -40 C-6 -42 -14 -46 -14 -62 Z" fill="url(#gGold)" ${THIN}/>` +
       Array.from({ length: 7 }, (_, i) => `<circle cx="${-48 + i * 16}" cy="${-70 - Math.sin((i / 6) * Math.PI) * 8}" r="4" fill="${['#2a9d4a', '#fffdf6', '#e0303f'][i % 3]}" ${THIN} stroke-width=".8"/>`).join(''),
+  },
+  station: {
+    wall: '#d8c8aa', roof: 'flat', door: 'arch', w: 136, sign: 'ایستگاه',
+    deco: `<circle cx="0" cy="-90" r="8" fill="#fffdf6" ${THIN}/><path d="M0 -90 V-95 M0 -90 L4 -88" stroke="${INK}" stroke-width="1.4"/>`,
+  },
+  seavilla: {
+    wall: '#f6e3b0', roof: 'gable', door: 'arch',
+    deco: `<path d="M-74 6 Q0 -4 74 6 V10 H-74 Z" fill="url(#gWater)" ${THIN}/>`,
+  },
+  paddy: {
+    wall: 'url(#gWood)', roof: 'gable', roofFill: '#d8b860', door: 'gate', h: 56,
+    deco: `<path d="M-74 0 H74" stroke="#9fd0e8" stroke-width="6"/>` + Array.from({ length: 10 }, (_, i) => `<path d="M${-68 + i * 15} -2 v-8" stroke="#3fae5a" stroke-width="2"/>`).join(''),
+  },
+  masuleh: {
+    wall: '#e8c99a', door: 'arch', w: 118,
+    deco: `<rect x="-50" y="-100" width="44" height="22" fill="#e8c99a" ${O}/><rect x="6" y="-100" width="44" height="22" fill="#e8c99a" ${O}/>` +
+      [-40, -18, 16, 38].map((x) => `<rect x="${x - 5}" y="-96" width="10" height="12" fill="url(#gYellow)" ${THIN} stroke-width="1"/>`).join(''),
+  },
+  sizdah: {
+    wall: '#f2d8a0', w: 128, h: 40, door: 'gate',
+    deco: `<path d="M-30 -80 L-22 -70 L-30 -60 L-38 -70 Z" fill="url(#gRed)" ${THIN}/><path d="M24 -90 L32 -80 L24 -70 L16 -80 Z" fill="url(#gTurq)" ${THIN}/>` +
+      `<path d="M-30 -60 q4 8 0 16 M24 -70 q4 8 0 16" fill="none" stroke="${INK}" stroke-width="1"/>`,
   },
   wedding: {
     wall: 'url(#gWood)', w: 120, h: 70, door: 'gate',

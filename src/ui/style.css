@@ -305,6 +305,13 @@ svg { display: block; }
 .place .task.cur .mark { background: var(--accent); color: #fff; }
 .place .task .cost { display: inline-flex; align-items: center; gap: 2px; font-weight: 900; }
 .place .task .cost svg { width: 16px; height: 16px; }
+.place .seasons { display: flex; gap: 6px; padding: 5px 10px 4px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.place .seasons::-webkit-scrollbar { display: none; }
+.place .sn { flex: none; font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 12px; background: #ecd7ae; }
+.place .sn.done { background: #c8e6c9; color: var(--green-dark); }
+.place .sn.cur { background: var(--accent); color: #fff; }
+.place .sn.locked { opacity: .55; }
+.place .sn.shown { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--ink); }
 .place .episodes { display: flex; gap: 6px; justify-content: center; padding: 0 10px; flex-wrap: wrap; }
 .place .ep { font-size: 11px; padding: 3px 8px; border-radius: 10px; background: #ecd7ae; }
 .place .ep.cur { background: var(--accent); color: #fff; }

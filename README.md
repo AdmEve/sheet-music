@@ -9,7 +9,8 @@ alley (5 episodes), season 2 «عروسی» follows Narges' wedding, season 3 «
 «طرح تعریض خیابان» saves the alley from the bulldozers for good and season 6 «خواستگار تبریزی»
 takes the neighbours to Tabriz for Shirin's engagement; in season 7 «ارثیه‌ی آقا مرتضی» the
 stingy grocer inherits a Qajar garden-house and opens it to everyone; season 8 «رادیو محله» puts
-Khale Mahin on the radio and the alley in a football final (5 episodes each).
+Khale Mahin on the radio and the alley in a football final; season 9 «سفر شمال» takes everyone
+to the Caspian for Golab's wish (5 episodes each).
 
 - Fully **offline**; progress is saved on the phone.
 - Monetization through store in-app billing (two Android flavors: **Cafe Bazaar** via
