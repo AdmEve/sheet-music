@@ -36,7 +36,21 @@ import { rateOnStore, shareGame } from '../platform/social';
 import { writeSetting } from '../platform/storage';
 import type { App } from './app';
 import { add, clear, dateKey, fa, faClock, faLeft, faNum, faTime, h, svgIcon } from './dom';
+import { confetti, rays } from './celebrate';
 import { musicEnabled, setMusic, setSound, sfx, soundOn } from './sound';
+import { EVENT_LEVEL as EV_LEVEL } from '../game/events';
+import { GIFT_LEVEL, PIGGY_LEVEL } from '../game/offers';
+import { PASS_LEVEL } from '../game/pass';
+import { RACE_LEVEL } from '../game/race';
+
+/** What opens at each level (shown in the level-up window). */
+const UNLOCKS: Record<number, string> = {
+  [PASS_LEVEL]: 'مسیر ماه: نشان جمع کن و جایزه بگیر',
+  [GIFT_LEVEL]: 'هدیه‌ی همسایه‌ها',
+  [PIGGY_LEVEL]: 'قلک الماس',
+  [EV_LEVEL]: 'رویدادهای محله',
+  [RACE_LEVEL]: 'مسابقه‌ی محله',
+};
 
 const today = () => dateKey();
 
@@ -707,13 +721,15 @@ export class Modals {
 
   levelUp(level: number, gems: number, gift: Item | null): Promise<void> {
     sfx.levelUp();
+    confetti(40);
+    const chip = (icon: string, text: string) => h('span', { class: 'got' }, h('span', { html: svgIcon(icon) }), text);
     return this.open(`سطح ${fa(level)}!`, (body, close) => {
       add(body,
-        h('div', { style: 'width:80px;height:80px;margin:0 auto', html: svgIcon(ICONS.star) }),
-        h('p', {}, `جایزه: ${fa(gems)} الماس و ۲۰ انرژی`),
-        gift ? h('div', { style: 'width:80px;height:80px;margin:0 auto', html: svgIcon(itemArt(gift)) }) : null,
-        gift ? h('p', {}, `«${itemName(gift)}» به صفحه اضافه شد!`) : null,
-        h('button', { class: 'btn', onclick: close }, 'عالیه!'),
+        h('div', { class: 'hero-wrap' }, rays(), h('div', { class: 'hero bounce', html: svgIcon(ICONS.star) }, h('b', {}, fa(level)))),
+        h('div', { class: 'contents' }, chip(ICONS.gem, faNum(gems)), chip(ICONS.energy, '۲۰'), gift ? chip(itemArt(gift), itemName(gift)) : null),
+        gift ? h('p', { style: 'font-size:13px' }, `«${itemName(gift)}» به صفحه اضافه شد!`) : null,
+        UNLOCKS[level] ? h('div', { class: 'unlock' }, '🔓 تازه باز شد: ', h('b', {}, UNLOCKS[level])) : null,
+        h('button', { class: 'btn big', onclick: close }, 'عالیه!'),
       );
     }, false);
   }

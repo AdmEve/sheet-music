@@ -25,6 +25,7 @@ import { CAST, THANKS } from '../story/story';
 import { add, animDone, clear, dateKey, fa, faClock, faLeft, faNum, faTime, h, svgIcon, wait } from './dom';
 import { Modals, bundleArt } from './modals';
 import { PlaceScreen } from './place';
+import { confetti, flash } from './celebrate';
 import { sfx } from './sound';
 
 const SHEET_COVER = svgIcon(
@@ -525,8 +526,12 @@ export class App {
           this.cells[e.at].append(h('div', { class: 'merge-burst' }));
           setTimeout(() => this.cells[e.at].querySelector('.merge-burst')?.remove(), 500);
           this.sparkles(this.cells[e.at].getBoundingClientRect(), e.item.level >= 6 ? 12 : 6);
-          if (e.item.level === maxLevel(e.item.chain)) sfx.bigMerge();
-          else sfx.merge(e.item.level);
+          if (e.item.level === maxLevel(e.item.chain)) {
+            sfx.bigMerge();
+            const r = this.cells[e.at].getBoundingClientRect();
+            flash(r, 1.4);
+            if (!isGenerator(e.item)) confetti(22, { x: r.left + r.width / 2, y: r.top + r.height / 2 });
+          } else sfx.merge(e.item.level);
           buzz(e.item.level >= 6 ? 'medium' : 'light');
           this.select(e.at);
           ordersChanged = true;
@@ -587,15 +592,19 @@ export class App {
           this.select(null);
           break;
         }
-        case 'chest':
+        case 'chest': {
+          const r = this.cells[e.at].getBoundingClientRect();
+          flash(r, 1.2);
+          this.sparkles(r, 14);
           for (const sp of e.spawned) {
             this.renderCell(sp.to);
             this.animateFrom(sp.to, e.at);
           }
-          sfx.unlock();
+          sfx.bigMerge();
           buzz('medium');
           ordersChanged = true;
           break;
+        }
         case 'sell': {
           const r = this.cells[e.at].getBoundingClientRect();
           this.renderCell(e.at);

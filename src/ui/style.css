@@ -476,3 +476,41 @@ svg { display: block; }
 .decor-opt .thumb svg { width: 100%; height: 100%; }
 .decor-opt.on { box-shadow: inset 0 0 0 3px var(--accent), 0 3px 0 var(--accent-dark); background: #fff0f4; }
 .place .task .chip { margin-inline-start: auto; padding: 4px 8px; font-size: 12px; }
+
+/* ------------------------------------------------------------------ celebrations */
+.confetti { position: fixed; z-index: 120; pointer-events: none; border-radius: 2px; }
+.flash-burst {
+  position: fixed; z-index: 97; pointer-events: none; border-radius: 50%; transform: translate(-50%, -50%) scale(0.2);
+  background: radial-gradient(circle, #fff 0, rgba(255, 245, 190, 0.95) 25%, rgba(255, 210, 90, 0.5) 50%, rgba(255, 200, 60, 0) 70%);
+  animation: flashBurst 0.65s ease-out forwards;
+}
+@keyframes flashBurst { 40% { opacity: 1; } to { transform: translate(-50%, -50%) scale(2.2); opacity: 0; } }
+.hero-wrap { position: relative; width: 150px; height: 150px; margin: -6px auto 0; display: grid; place-items: center; }
+.hero-wrap.small { width: auto; height: 46px; }
+.rays {
+  position: absolute; inset: -20px; border-radius: 50%; pointer-events: none;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 211, 107, 0.55) 0deg 10deg, rgba(255, 211, 107, 0) 10deg 20deg);
+  -webkit-mask: radial-gradient(circle, #000 30%, transparent 70%); mask: radial-gradient(circle, #000 30%, transparent 70%);
+  animation: spin 14s linear infinite;
+}
+.hero-wrap.small .rays { inset: -40px 30%; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.hero { position: relative; width: 112px; height: 112px; }
+.hero svg { width: 100%; height: 100%; filter: drop-shadow(0 6px 8px #0003); }
+.hero b { position: absolute; left: 50%; top: 56%; transform: translate(-50%, -50%); font-size: 30px; font-weight: 900; color: #8a4b0c; text-shadow: 0 2px 0 #fff4c2; }
+.bounce { animation: bounceIn 0.7s cubic-bezier(0.3, 1.7, 0.5, 1); }
+@keyframes bounceIn { from { transform: scale(0.2) rotate(-30deg); } }
+.unlock { margin: 8px 0 2px; padding: 8px; border-radius: 12px; text-align: center; font-size: 14px; background: linear-gradient(#e9fbe9, #c9f0cf); box-shadow: inset 0 0 0 2px #7ccf8c; }
+.ep-name { position: relative; font-size: 18px; color: var(--accent-dark); }
+.wipe { position: relative; width: 100%; height: 0; padding-bottom: 66.67%; border-radius: 14px; overflow: hidden; box-shadow: inset 0 0 0 3px #c9a46a; margin-top: 8px; }
+.wipe > div { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
+.wipe svg { width: 100%; height: 100%; }
+.w-before { filter: saturate(0.6) brightness(0.9); }
+.w-after { -webkit-clip-path: inset(0 0 0 100%); clip-path: inset(0 0 0 100%); transition: clip-path 1.8s ease-in-out, -webkit-clip-path 1.8s ease-in-out; }
+.w-line { left: 100% !important; right: auto !important; width: 4px; background: #fff; box-shadow: 0 0 10px #fff, 0 0 2px #0005; transition: left 1.8s ease-in-out; }
+.wipe.go .w-after { -webkit-clip-path: inset(0 0 0 0); clip-path: inset(0 0 0 0); }
+.wipe.go .w-line { left: 0 !important; opacity: 0; transition: left 1.8s ease-in-out, opacity 0.3s 1.8s; }
+.w-tag { position: absolute; top: 8px; padding: 1px 8px; border-radius: 8px; font-size: 11px; font-weight: 900; color: #fff; background: rgba(40, 20, 10, 0.6); }
+.w-tag.b { left: 8px; }
+.w-tag.a { right: 8px; background: var(--green); }
+.wipe.go .w-tag.b { opacity: 0; transition: opacity 0.3s 1.6s; }

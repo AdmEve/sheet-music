@@ -10,6 +10,7 @@ import { buzz } from '../platform/haptics';
 import { CAST, Line, PLACES, Place } from '../story/story';
 import type { App } from './app';
 import { add, clear, fa, h, svgIcon, wait } from './dom';
+import { confetti, rays } from './celebrate';
 import { sfx } from './sound';
 
 export class PlaceScreen {
@@ -125,6 +126,30 @@ export class PlaceScreen {
     }, !fresh);
   }
 
+  /** Episode finished: the place wipes from how it was to how it is now, with confetti. */
+  episodeDone(place: Place): Promise<void> {
+    const n = PLACES.indexOf(place) + 1;
+    const before = sceneSvg(place.id, () => false);
+    const after = this.scene(place);
+    sfx.levelUp();
+    return this.app.modals.open(`قسمت ${fa(n)} تموم شد!`, (body, close) => {
+      const wipe = h('div', { class: 'wipe' },
+        h('div', { class: 'w-before', html: before }),
+        h('div', { class: 'w-after', html: after }),
+        h('div', { class: 'w-line' }),
+        h('span', { class: 'w-tag b' }, 'قبل'), h('span', { class: 'w-tag a' }, 'بعد'));
+      add(body,
+        h('div', { class: 'hero-wrap small' }, rays(), h('b', { class: 'ep-name' }, place.name)),
+        wipe,
+        h('p', {}, 'همسایه‌ها باورشون نمی‌شه! ببین چی بود و چی شد.'),
+        h('button', { class: 'btn big', onclick: close }, 'ادامه‌ی قصه'));
+      setTimeout(() => {
+        wipe.classList.add('go');
+        confetti(50);
+      }, 400);
+    }, false);
+  }
+
   private layerDone(place: Place, layer: string): boolean {
     const t = place.tasks.find((x) => x.layer === layer);
     return !!t && this.app.s.tasksDone.includes(t.id);
@@ -162,6 +187,7 @@ export class PlaceScreen {
     }
     await this.dialogue(r.task.after);
     if (r.placeFinished) {
+      await this.episodeDone(r.place);
       if (markSeen(s, outroKey(r.place.id))) await this.dialogue(r.place.outro);
       if (r.place.id === PLACES[0].id && markSeen(s, 'ask:rate')) await this.app.modals.rateAsk();
       if (r.nextPlace && markSeen(s, introKey(r.nextPlace.id))) {
