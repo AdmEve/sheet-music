@@ -1,7 +1,7 @@
 // Balance check: a greedy bot plays the real rules and reports, per place, how many
 // generator taps (energy) and orders it took. Usage: npx tsx scripts/simulate.ts [games]
 
-import { CHAINS, GENERATOR_CHAINS, Item, canMerge, isGenerator, sameItem } from '../src/game/items';
+import { CHAINS, GENERATOR_CHAINS, Item, canMerge, isGenerator, maxLevel, sameItem } from '../src/game/items';
 import { CELLS, GameState, deliver, drop, findForOrder, newGame, sell, tap, tickBubbles } from '../src/game/model';
 import { completeNextTask, progress } from '../src/game/progress';
 import { PLACES } from '../src/story/story';
@@ -24,6 +24,11 @@ function step(s: GameState, now: number): boolean {
   // 3. merge: prefer pairs that progress toward a needed item; never merge needed items away
   const needs = neededFor(s);
   const isNeeded = (it: Item) => needs.some((n) => sameItem(n, it));
+  // Top-level items are never ordered: sell them like a player clearing the board would.
+  for (let i = 0; i < CELLS; i++) {
+    const c = s.board[i];
+    if (c.item && !c.lock && !isGenerator(c.item) && !CHAINS[c.item.chain].collectible && c.item.chain !== 'chest' && c.item.level === maxLevel(c.item.chain)) { sell(s, i); return true; }
+  }
   const free: number[] = [];
   for (let i = 0; i < CELLS; i++) if (s.board[i].item && s.board[i].lock !== 'box' && s.board[i].lock !== 'bubble') free.push(i);
   let best: [number, number, number] | null = null;
@@ -76,7 +81,7 @@ for (let g = 0; g < GAMES; g++) {
   const s = newGame(1000 + g, now);
   let energyUsed = 0, placeStart = { taps: 0, orders: 0, time: 0 };
   let idx = 0;
-  for (let it = 0; it < 200000 && idx < PLACES.length; it++) {
+  for (let it = 0; it < 600000 && idx < PLACES.length; it++) {
     tickBubbles(s, now);
     const before = s.energy;
     const acted = step(s, now);

@@ -40,6 +40,9 @@ const BOX_COVER = svgIcon(
   'box-cover',
 );
 
+const STREAK_MS = 2500;
+const STREAK_WORDS: Record<number, string> = { 3: 'آفرین!', 5: 'عالیه!', 8: 'محشره!', 12: 'ترکوندی!', 20: 'استاد ادغام!' };
+
 export class App {
   s: GameState;
   root: HTMLElement;
@@ -226,6 +229,8 @@ export class App {
   }
 
   private eventIntroPending = false;
+  /** Quick merges in a row (each within STREAK_MS of the last) and when the last one was. */
+  private streak = { n: 0, at: 0 };
 
   /** Starts/ends live events with the calendar and plays a new event's intro once. */
   checkEvent(): void {
@@ -549,6 +554,7 @@ export class App {
             if (!isGenerator(e.item)) confetti(22, { x: r.left + r.width / 2, y: r.top + r.height / 2 });
           } else sfx.merge(e.item.level);
           buzz(e.item.level >= 6 ? 'medium' : 'light');
+          this.praiseStreak(this.cells[e.at].getBoundingClientRect());
           this.select(e.at);
           ordersChanged = true;
           break;
@@ -842,6 +848,14 @@ export class App {
         target.classList.add('bump');
       }), k * 70);
     }
+  }
+
+  /** A word of praise when merges come quickly one after another. */
+  private praiseStreak(at: DOMRect): void {
+    const now = Date.now();
+    this.streak = { n: now - this.streak.at < STREAK_MS ? this.streak.n + 1 : 1, at: now };
+    const word = STREAK_WORDS[this.streak.n];
+    if (word) this.floatText(word, at, 'praise');
   }
 
   /** Little stars bursting out of a merge. */
