@@ -213,10 +213,17 @@ saves are written into localStorage `mahalle.save.v1`.
       wedding and the پاتختی; «عروسی» chain + dowry-bundle generator with the first
       episode); new character Sona-khanum (Aydin's mother, kelaghayi scarf); later neighbours
       (Fakhri, Farokhi, Bahman, Aydin, Sona) now place orders once the story brings them in;
-      map of 65 places; Season 14 teased (a caravanserai on the road to Kashan)
+      map of 65 places; Season 14 teased (a caravanserai on the road to Kashan). Balance sim:
+      20 of 20 games finish all 64 episodes the bot reaches; no-pay regen hours per episode
+      rise smoothly to ~153
+- [x] Phase 24: Season 14 «کاروانسرا» (`src/art/scenes14.ts`: a roadside teahouse, the Safavid
+      caravanserai courtyard, a guest chamber, a desert night and the eco-lodge opening;
+      «کویر» chain + saddlebag generator; new character Uncle Yadollah, the caretaker, and
+      his camel Qandi); map of 70 places; sim step cap raised to 800k; Season 15 teased
+      (a photo of Haj-Baba with «سفر یزد، به یاد رفیقم…»)
 
 Next (in order):
-1. Season 14 «کاروانسرا»
+1. Season 15 «رفیق یزدی»
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)

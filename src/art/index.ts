@@ -15,6 +15,7 @@ import { CRAFT, GEN_CRAFT } from './chainsL';
 import { CALLIGRAPHY, GEN_CALLIGRAPHY } from './chainsM';
 import { GEN_PARTY, PARTY } from './chainsN';
 import { GEN_WEDDING, WEDDING } from './chainsO';
+import { DESERT, GEN_DESERT } from './chainsP';
 import {
   ASH, GEN_ASH, GEN_ICECREAM, GEN_KITE, GEN_LAVASHAK, GEN_NOWRUZ, GEN_SCHOOL, GEN_SURI, GEN_YALDA, ICECREAM, KITE, LAVASHAK, NOWRUZ, SCHOOL, SURI, YALDA,
 } from './events';
@@ -38,6 +39,7 @@ const ART: Record<ChainId, string[]> = {
   callig: CALLIGRAPHY,
   party: PARTY,
   wed: WEDDING,
+  desert: DESERT,
   genTea: GEN_TEA,
   genBread: GEN_BREAD,
   genGarden: GEN_GARDEN,
@@ -56,6 +58,7 @@ const ART: Record<ChainId, string[]> = {
   genCallig: GEN_CALLIGRAPHY,
   genParty: GEN_PARTY,
   genWed: GEN_WEDDING,
+  genDesert: GEN_DESERT,
   chest: CHEST,
   coins: COINS,
   energy: ENERGY,

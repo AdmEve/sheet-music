@@ -132,6 +132,8 @@ describe('generator catch-up', () => {
     expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genParty']);
     finish(60);
     expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genWed']);
+    finish(65);
+    expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genDesert']);
   });
 });
 
@@ -148,6 +150,9 @@ describe('customers', () => {
     expect(customers(s)).not.toContain('aydin');
     finish('henna');
     expect(customers(s)).toEqual(expect.arrayContaining(['bahman', 'aydin', 'sona']));
+    expect(customers(s)).not.toContain('yadollah');
+    finish('caravan');
+    expect(customers(s)).toContain('yadollah');
   });
 });
 

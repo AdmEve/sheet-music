@@ -93,7 +93,7 @@ const scarfFront = (fill: string) =>
 const dots = (color: string) =>
   [[34, 26], [46, 22], [58, 24], [68, 32], [28, 38], [72, 46]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2" fill="${color}"/>`).join('');
 
-export const CAST_IDS = ['narges', 'mahin', 'reza', 'shirin', 'kaveh', 'morteza', 'golab', 'fakhri', 'farokhi', 'bahman', 'aydin', 'sona'];
+export const CAST_IDS = ['narges', 'mahin', 'reza', 'shirin', 'kaveh', 'morteza', 'golab', 'fakhri', 'farokhi', 'bahman', 'aydin', 'sona', 'yadollah'];
 export const MOOD_LIST: Mood[] = ['neutral', 'happy', 'sad', 'angry', 'surprised'];
 
 const PORTRAITS: Record<string, (m: FaceOpts) => string> = {
@@ -167,6 +167,18 @@ const PORTRAITS: Record<string, (m: FaceOpts) => string> = {
     face({ eyes: 'smile', brows: 'soft', mouth: 'smile', wrinkles: true, skin: '#efc39c', blush: true, lashes: true, ...m }) +
     `<circle cx="29" cy="63" r="2.4" fill="url(#gGold)" ${THIN}/><circle cx="71" cy="63" r="2.4" fill="url(#gGold)" ${THIN}/>` +
     scarfFront('#8e1230') + `<path d="M30 70 C34 82 42 87 50 88 C58 87 66 82 70 70" fill="none" stroke="#f6c945" stroke-width="1.6" stroke-dasharray="2 3"/>`,
+  yadollah: (m) =>
+    bg('#ffe7b8', '#e0a050') +
+    // Striped camel-hair cloak (aba) over a white shirt.
+    shoulders('#7a5232', `<path d="M40 80 L50 92 L60 80" fill="#f4f0e6" ${THIN}/><path d="M24 90 L30 80 M76 90 L70 80" stroke="#c9a26b" stroke-width="3"/>`) +
+    face({ eyes: 'narrow', brows: 'thick', mouth: 'smile', skin: '#d9a072', wrinkles: true, ...m }) +
+    // White beard and moustache.
+    `<path d="M30 58 C30 80 40 90 50 90 C60 90 70 80 70 58 C66 70 60 72 50 72 C40 72 34 70 30 58 Z" fill="#f0f0ea" ${THIN}/>` +
+    `<path d="M39 63 C43 59 47 61 50 62 C53 61 57 59 61 63 C57 66 54 64 50 65 C46 64 43 66 39 63 Z" fill="#f0f0ea" ${THIN}/>` +
+    (m.mouth === 'open' ? `<ellipse cx="50" cy="69" rx="4" ry="3" fill="#a8423a" ${THIN}/>` : '') +
+    // Felt cap (kolah namadi).
+    `<path d="M29 42 C27 20 73 20 71 42 Z" fill="#8a6a48" ${O}/><path d="M29 42 Q50 36 71 42" fill="none" stroke="#5e4630" stroke-width="2"/>` +
+    `<path d="M40 26 q10 -4 20 0" fill="none" stroke="#a8885e" stroke-width="1.6"/>`,
 };
 
 const cache = new Map<string, string>();

@@ -4,9 +4,10 @@
 // the rest wait in grey.
 
 import { WEDDING } from './chainsO';
+import { camel } from './chainsP';
 import { INK, O, THIN, sparkle } from './kit';
 
-export const MAP_H = 7050;
+export const MAP_H = 7580;
 const STEP = 106;
 const faDigits = (n: number) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 
@@ -255,6 +256,27 @@ const FACADES: Record<string, Facade> = {
   patakhti: {
     wall: '#ffe0ef', roof: 'gable', roofFill: 'url(#gRed)', door: 'arch',
     deco: [[24, 14, 'url(#gBlue)'], [38, 10, 'url(#gYellow)']].map(([x, w, c]) => `<rect x="${x}" y="${-Number(w)}" width="${w}" height="${w}" fill="${c}" ${THIN} stroke-width="1"/><path d="M${Number(x) + Number(w) / 2} ${-Number(w)} V0" stroke="#fffdf6" stroke-width="2"/>`).join(''),
+  },
+  roadhouse: {
+    wall: '#c99a62', h: 60, door: 'arch', sign: 'چای داغ',
+    deco: `<path d="M56 0 V-50 H44" fill="none" stroke="#5a5a60" stroke-width="3"/><circle cx="44" cy="-46" r="4" fill="#fff6a8" ${THIN} stroke-width="1"/>`,
+  },
+  caravan: {
+    wall: '#e0b07a', w: 136, h: 66, door: 'gate',
+    deco: `<rect x="-24" y="-92" width="48" height="30" fill="#e0b07a" ${O}/><rect x="-20" y="-88" width="40" height="9" fill="url(#gTurq)" ${THIN} stroke-width="1"/>` +
+      [-50, -34, 34, 50].map((x) => `<path d="M${x - 6} -30 V-40 Q${x} -50 ${x + 6} -40 V-30 Z" fill="#7a4a2a" ${THIN} stroke-width="1"/>`).join(''),
+  },
+  hojreh: {
+    wall: '#d8a86a', roof: 'dome', roofFill: 'url(#gTerracotta)', door: 'arch', w: 120,
+    deco: [-34, 34].map((x) => `<path d="M${x - 7} -8 V-22 Q${x} -32 ${x + 7} -22 V-8 Z" fill="#5e3418" ${THIN} stroke-width="1"/>`).join(''),
+  },
+  desertnight: {
+    wall: '#4a3a5a', w: 116, h: 46, door: 'gate',
+    deco: Array.from({ length: 7 }, (_, i) => `<circle cx="${-50 + i * 16}" cy="${-62 - (i % 3) * 8}" r="${i % 2 ? 1.6 : 2.4}" fill="#fff6d0"/>`).join('') + camel(40, -46, 0.4),
+  },
+  ecolodge: {
+    wall: '#e0b07a', w: 132, h: 70, door: 'gate', sign: 'بوم‌گردی',
+    deco: camel(-58, 0, 0.42, `<path d="M-8 -38 C-4 -48 10 -48 12 -38 L14 -28 H-10 Z" fill="url(#gTurq)" ${THIN}/>`),
   },
   wedding: {
     wall: 'url(#gWood)', w: 120, h: 70, door: 'gate',

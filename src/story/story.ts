@@ -23,6 +23,7 @@ export const CAST: Record<string, Character> = {
   bahman: { id: 'bahman', name: 'عمو بهمن', role: 'برادر حاج‌بابا، از هامبورگ' },
   aydin: { id: 'aydin', name: 'آیدین', role: 'فرش‌فروش تبریزی' },
   sona: { id: 'sona', name: 'سونا‌خانم', role: 'مادر آیدین، از تبریز' },
+  yadollah: { id: 'yadollah', name: 'عمو یدالله', role: 'سرایدار کاروانسرا' },
 };
 
 /** Short thank-you lines shown when an order is delivered (one picked at random). */
@@ -39,6 +40,7 @@ export const THANKS: Record<string, string[]> = {
   bahman: ['دستت درد نکنه بابا جان.', 'چهل سال دلم برای این بو تنگ شده بود.', 'آفرین! داداش بود کیف می‌کرد.'],
   aydin: ['ساغ اول! یعنی دستت درد نکنه.', 'به این می‌گن کار تمیز، مثل گره‌ی فرش تبریز!', 'شیرین می‌گفت تو بهترینی. راست می‌گفت.'],
   sona: ['ساغ اول قیزیم! الهی خیر ببینی.', 'آیدین راست می‌گفت، این کوچه یه چیز دیگه‌ست.', 'به این می‌گن سلیقه! مثل گل‌های ائل‌گلی.'],
+  yadollah: ['خدا قوت جوون!', 'قندی هم ازت ممنونه.', 'دستت درد نکنه. مثل بارون تو کویر بودی.'],
 };
 
 export interface Line {
@@ -1535,6 +1537,110 @@ export const PLACES: Place[] = [
       { who: 'kaveh', text: 'راستش… یه نامه از میراث فرهنگی اومده. یه کاروانسرای چهارصد ساله سر راه کاشان داره فرو می‌ریزه.' },
       { who: 'narges', text: 'یعنی… کل محله بریم کویر؟', mood: 'surprised' },
       { who: 'mahin', text: 'کویر؟! … من کرم ضدآفتاب کم دارم. همین الان برم بخرم!', mood: 'surprised' },
+    ],
+  },
+  // ------------------------------------------------------------------ season 14: کاروانسرا
+  {
+    id: 'roadhouse',
+    name: 'قهوه‌خونه‌ی بین‌راهی',
+    intro: [
+      { who: 'kaveh', text: 'جاده‌ی کاشان. دو ساعت دیگه می‌رسیم کاروانسرا… اگه پیکان آقا مرتضی دووم بیاره.' },
+      { who: 'morteza', text: 'پیکان من دووم میاره! … فقط یه کم آب رادیاتش جوش اومده.', mood: 'angry' },
+      { who: 'mahin', text: 'یه قهوه‌خونه‌ی متروکه کنار جاده‌ست! … کسی چای نمی‌خواد؟', mood: 'happy' },
+    ],
+    tasks: [
+      { id: 'rh.sign', title: 'تابلوی «چای داغ»', cost: 420, layer: 'sign', after: [{ who: 'reza', text: 'بچه که بودم، بابام می‌گفت چای جاده یه مزه‌ی دیگه داره. راست می‌گفت.' }] },
+      { id: 'rh.benches', title: 'تخت‌های چوبی', cost: 422, layer: 'benches', after: [{ who: 'golab', text: 'رو همین تخت‌ها مسافرها شب رو صبح می‌کردن، زیر آسمون پرستاره.' }] },
+      { id: 'rh.samovar', title: 'سماور ذغالی', cost: 424, layer: 'samovar', after: [{ who: 'narges', text: 'سماور ذغالی! حاج‌بابا همیشه می‌گفت چای ذغالی یه چیز دیگه‌ست.', mood: 'happy' }] },
+      { id: 'rh.dizi', title: 'دیزی سنگی', cost: 426, layer: 'dizi', after: [{ who: 'reza', text: 'دیزی سنگی و سنگک داغ… کی گفته غذای جاده باید بد باشه؟', mood: 'happy' }, { who: 'aydin', text: 'تو تبریز بهش می‌گیم «پیتی». ولی این هم بد نیست!', mood: 'happy' }] },
+      { id: 'rh.lights', title: 'چراغ‌های جاده', cost: 428, layer: 'lights', after: [{ who: 'shirin', text: 'چراغ‌ها روشن شد! حالا اولین ماشینی که رد شه، وایمیسه.' }, { who: 'mahin', text: 'یه کامیون وایساد! راننده‌ش می‌پرسه: «باز کردید؟»', mood: 'surprised' }] },
+    ],
+    outro: [
+      { who: 'yadollah', text: 'سلام علیکم. من یدالله‌ام، سی ساله سرایدار کاروانسرای این‌جام. شنیدم یه کوچه اومده که خرابه‌ها رو زنده می‌کنه.' },
+      { who: 'kaveh', text: 'شما نامه رو نوشتید؟', mood: 'surprised' },
+      { who: 'yadollah', text: 'نوشتم، ولی فکر نمی‌کردم کسی بیاد. بیاید بریم، قندی منتظره.' },
+      { who: 'narges', text: 'قندی کیه؟', mood: 'surprised' },
+      { who: 'yadollah', text: 'شترم!', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'caravan',
+    name: 'کاروانسرای صفوی',
+    intro: [
+      { who: 'narges', text: 'چهارصد سال! هنوز آجرهاش سرپاست، ولی نصف ایوون‌ها ریخته.', mood: 'surprised' },
+      { who: 'yadollah', text: 'یه زمانی صد تا شتر این‌جا بار می‌انداختن. حالا فقط من موندم و قندی.', mood: 'sad' },
+      { who: 'kaveh', text: 'مثل روز اول کوچه‌ی خودمون. شروع کنیم!' },
+    ],
+    tasks: [
+      { id: 'cv.gate', title: 'سردر آجری', cost: 426, layer: 'gate', after: [{ who: 'kaveh', text: 'بنّاهای صفوی نقش‌ها رو با خود آجر می‌ساختن. ببینید، بالای در نوشته: «بنا شد».' }] },
+      { id: 'cv.pool', title: 'حوض وسط حیاط', cost: 428, layer: 'pool', after: [{ who: 'golab', text: 'حوض پر آب شد. مسافرها اول از همه این‌جا گرد راه رو از صورتشون می‌شستن.' }] },
+      { id: 'cv.iwans', title: 'ایوون‌های حیاط', cost: 430, layer: 'iwans', after: [{ who: 'farokhi', text: 'من یه عمر ساختمون ساختم. ولی این رو با دست ساختن، بدون حتی یه جرثقیل.', mood: 'surprised' }] },
+      { id: 'cv.platforms', title: 'سکوهای بار', cost: 432, layer: 'platforms', after: [{ who: 'bahman', text: 'پدرمون می‌گفت پدربزرگش با کاروان ابریشم می‌آورد. شاید یه شب همین‌جا خوابیده.' }] },
+      { id: 'cv.tree', title: 'درخت انار حیاط', cost: 434, layer: 'tree', after: [{ who: 'yadollah', text: 'این انار رو پدرم کاشت. بیست ساله میوه نداده. … ببین! یه شکوفه!', mood: 'surprised' }] },
+    ],
+    outro: [
+      { who: 'yadollah', text: 'حیاط زنده شد. ولی حجره‌ها… مسافر کجا بخوابه؟' },
+      { who: 'shirin', text: 'ما! من و آیدین ماه عسل اومدیم. اولین مسافرهای حجره‌ها ما باشیم!', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'hojreh',
+    name: 'حجره‌های کاروانسرا',
+    intro: [
+      { who: 'aydin', text: 'هر حجره یه داستان داره. رو دیوار این یکی، یه تاجر شعر نوشته.' },
+      { who: 'fakhri', text: 'حجره‌ها باید گرم و تمیز باشن. مهمون حبیب خداست.' },
+    ],
+    tasks: [
+      { id: 'hj.door', title: 'درهای گره‌چینی', cost: 432, layer: 'door', after: [{ who: 'kaveh', text: 'درهای گره‌چینی. یه دونه میخ هم توشون نیست، همه‌ش چفت و بست چوبیه.' }] },
+      { id: 'hj.rugs', title: 'گلیم‌های کاشان', cost: 434, layer: 'rugs', after: [{ who: 'aydin', text: 'گلیم کاشان، فرش تبریز… امشب این حجره یه تیکه از کل ایرانه!', mood: 'happy' }] },
+      { id: 'hj.cushions', title: 'پشتی و متکا', cost: 436, layer: 'cushions', after: [{ who: 'morteza', text: 'متکای پر قو؟ … نه، پنبه‌ایه. ولی گفتن مجانیه، پس عالیه!', mood: 'happy' }] },
+      { id: 'hj.niche', title: 'طاقچه و پیه‌سوز', cost: 438, layer: 'niche', after: [{ who: 'golab', text: 'پیه‌سوز روشن شد. مادرم می‌گفت مسافرها تو نور همین چراغ‌ها قصه می‌گفتن.' }] },
+      { id: 'hj.curtain', title: 'پرده‌ی کرباس', cost: 440, layer: 'curtain', after: [{ who: 'shirin', text: 'حجره‌ی ما آماده‌ست! … آیدین، این‌جا از هر هتلی قشنگ‌تره.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'yadollah', text: 'امشب ماه نیست. یعنی کویر پرستاره‌ترین شبش رو داره. بیاید بریم رو تپه‌ها.' },
+      { who: 'mahin', text: 'تو تاریکی؟ با عقرب و مار؟!', mood: 'surprised' },
+      { who: 'yadollah', text: 'نترس خانم. قندی راه رو بلده.' },
+    ],
+  },
+  {
+    id: 'desertnight',
+    name: 'شب کویر',
+    intro: [
+      { who: 'narges', text: 'تا حالا این‌همه ستاره ندیده بودم. انگار یکی آسمون رو پر از نقل کرده.', mood: 'surprised' },
+      { who: 'yadollah', text: 'اون نوار سفید رو می‌بینی؟ شما می‌گید «راه شیری». مادربزرگم می‌گفت «کاه‌کشون».' },
+    ],
+    tasks: [
+      { id: 'dn.fire', title: 'آتیش هیزم', cost: 438, layer: 'fire', after: [{ who: 'reza', text: 'آتیش روشن شد! … حالا می‌شه سیب‌زمینی تو خاکستر پخت؟', mood: 'happy' }] },
+      { id: 'dn.rug', title: 'گلیم روی شن', cost: 440, layer: 'rug', after: [{ who: 'golab', text: 'رو شن دراز بکش دخترم، ستاره‌ها رو بشمار. بچه که بودم تا صد می‌شمردم و خوابم می‌برد.' }] },
+      { id: 'dn.telescope', title: 'تلسکوپ', cost: 442, layer: 'telescope', after: [{ who: 'kaveh', text: 'تلسکوپ مدرسه‌ی مرمته. … زحل! حلقه‌هاش رو ببینید!', mood: 'surprised' }] },
+      { id: 'dn.tea', title: 'چای آتیشی', cost: 444, layer: 'tea', after: [{ who: 'bahman', text: 'چای رو آتیش، زیر ستاره‌ها. تو هامبورگ چهل سال دلم برای همین تنگ بود.', mood: 'sad' }] },
+      { id: 'dn.camel', title: 'قندی و زنگوله‌ش', cost: 446, layer: 'camel', after: [{ who: 'yadollah', text: 'قندی هم اومد. صدای زنگوله‌ش رو که می‌شنوم، یاد کاروان‌های قدیم میفتم.' }, { who: 'mahin', text: 'قندی من رو بو کرد! … فکر کنم ازم خوشش اومد!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'yadollah', text: 'من یه عمر این‌جا تنها بودم. امشب اولین باره که کاروانسرا صدای خنده داره.', mood: 'sad' },
+      { who: 'narges', text: 'عمو یدالله، بیاید این‌جا رو اقامتگاه بوم‌گردی کنیم. مسافر بیاد، کاروانسرا زنده بمونه.', mood: 'happy' },
+      { who: 'yadollah', text: 'یعنی… دیگه تنها نیستم؟', mood: 'surprised' },
+    ],
+  },
+  {
+    id: 'ecolodge',
+    name: 'اقامتگاه بوم‌گردی',
+    intro: [
+      { who: 'mahin', text: 'خبر داغ! اولین مهمون‌ها رزرو کردن! یه خانواده از شیراز، یه زوج از رشت و یه گروه دانشجو از تبریز!', mood: 'happy' },
+      { who: 'yadollah', text: 'یه هفته پیش این‌جا فقط من بودم و باد. حالا رزرو داریم؟!', mood: 'surprised' },
+    ],
+    tasks: [
+      { id: 'el.sign', title: 'تابلوی اقامتگاه', cost: 444, layer: 'sign', after: [{ who: 'narges', text: 'اسمش رو چی بذاریم؟ … «کاروانسرای قندی»! همه موافقن؟', mood: 'happy' }, { who: 'yadollah', text: 'قندی موافقه. سرش رو تکون داد!', mood: 'happy' }] },
+      { id: 'el.sofreh', title: 'سفره‌ی محلی', cost: 446, layer: 'sofreh', after: [{ who: 'fakhri', text: 'کشک بادمجون، آش کاشی، شیرینی گل‌محمدی. غذای محلی، دست‌پخت محلی.' }] },
+      { id: 'el.crafts', title: 'بازارچه‌ی صنایع دستی', cost: 448, layer: 'crafts', after: [{ who: 'shirin', text: 'گلاب کاشان، گلیم، سفال… هر مهمون با یه یادگاری برمی‌گرده.' }] },
+      { id: 'el.ride', title: 'سواری با قندی', cost: 450, layer: 'ride', after: [{ who: 'reza', text: 'من سوار شتر شدم! … حالا چطوری پیاده شم؟!', mood: 'surprised' }] },
+      { id: 'el.book', title: 'دفتر یادبود', cost: 452, layer: 'book', after: [{ who: 'yadollah', text: 'اولین جمله‌ی دفتر رو نرگس نوشت: «هر خرابه منتظر یه نفره که دوستش داشته باشه.»', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'yadollah', text: 'نرگس خانم، یه چیزی برات دارم. چهل سال پیش یه مسافر این جعبه رو جا گذاشت.' },
+      { who: 'narges', text: 'این… عکس حاج‌باباست! جلوی همین کاروانسرا. پشتش نوشته: «سفر یزد، به یاد رفیقم…»', mood: 'surprised' },
+      { who: 'mahin', text: 'رفیق یزدیِ حاج‌بابا؟ … خبر داغ‌تر از این نداریم!', mood: 'surprised' },
     ],
   },
 ];
