@@ -1,6 +1,7 @@
-# خونه‌ی مادرجون (Madarjoon's House) — progress log
+# محله‌ی ما (Our Neighbourhood) — progress log
 
-Persian merge-2 + story + house-renovation game for Android (Cafe Bazaar / Myket).
+Persian merge-2 game with an ongoing neighbourhood drama, for Android (Cafe Bazaar / Myket).
+Full market map: `docs/market-research.md`.
 This file is the hand-off between work sessions: read it first, update it last.
 
 ## Why this game (research, Oct 2026)
@@ -15,23 +16,31 @@ This file is the hand-off between work sessions: read it first, update it last.
 | Amirza: 3M+ MAU, mostly women; Iranian gamers 38% women, avg age 29 | Core audience: women 20–45, story lovers |
 | International internet cuts (2025–2026); domestic Bazaar billing + domestic ad networks keep working | Must be 100% offline; monetize only through domestic rails |
 
-Rejected after research: Amirza-style word game (dominant incumbent), Hokm card game
+Rejected after research: "restore an old house" theme (Bagh Negar 6.2M + Golmorad 6.5M own
+it), Amirza-style word game (dominant incumbent), Hokm card game
 (fragmented but small: leader ~330k–600k installs; needs servers), strategy MMO (needs a
 studio + servers), card battler (Pesarkhande owns the theme; PvP needs servers).
 
 ## Game design (v1)
 
-- **Story:** Narges (Tehran, late 20s) returns to her late grandmother's (مادرجون) old house
-  in Kashan. Aunt Mahin wants to sell it to tower developer Mr. Farokhi. Neighbour's son
-  Kaveh, a restoration architect, helps. Madarjoon's hidden letters reveal a family secret
-  chapter by chapter. Tone: warm, funny, Iranian-TV-family-drama.
-- **Core loop:** tap generators (costs ⚡ energy) → items drop on a 7×9 board → merge two
-  identical items into the next level → fill characters' **orders** → earn coins + ⭐ stars →
-  spend stars on **renovation tasks** in the house → story dialogue → next room/chapter.
-- **Chains (Persian items):** tea (برگ چای→…→سماور طلایی), bread (آرد→…→سفره), garden
-  (دانه→…→گل محمدی), tools, textile/carpet, pottery/tile, sweets, fruit (انار…).
+- **Setting:** an old alley in central Tehran. Developer Mr. Farokhi wants to buy the whole
+  alley and build a shopping mall. Narges (late 20s) comes back to reopen her late
+  grandfather's teahouse and rallies the neighbours to save the alley.
+- **Cast:** Narges; Khaleh Mahin (gossip queen, knows everything first); Ousta Reza (sangak
+  baker); Shirin (hairdresser, Narges' childhood friend); Kaveh (restoration architect,
+  slow-burn romance); Agha Morteza (grocer, stingy, funny); Naneh Golab (old lady from
+  Kashan, rosewater); Farokhi (developer, antagonist with a secret).
+- **Not** an old-house renovation (Bagh Negar / Golmorad own that); the hook is the
+  neighbourhood drama, served as episodes like a TV serial — new episodes ship as updates.
+- **Core loop:** tap generators (costs ⚡) → items drop on a 7×9 board → merge two identical
+  items into the next level → fill neighbours' **orders** → coins + ⭐ → spend ⭐ on
+  **restoration tasks** for alley places (teahouse, bakery, courtyard, hammam, tailor…) →
+  story dialogue → next episode.
+- **Chains (Persian items):** tea (برگ چای→…→سماور طلایی), bread (خوشه گندم→…→سفره صبحانه),
+  garden (دانه→…→گلاب‌پاش), tools, textile (پشم→…→فرش کاشان), pottery/tile (گل رس→…→گلدان مینا).
+  Board pieces covered by **dust sheets / crates** are unlocked by merging onto them.
 - **Economy:** energy (100 cap, +1 / 2 min), coins (soft), gems (hard, Bazaar IAP),
-  rewarded ads for energy / bubble items / doubled rewards. Daily login gift.
+  rewarded ads for energy / doubled rewards. Daily gift. Later: weekly prize events.
 - **Monetization rails:** Cafe Bazaar in-app billing (Poolakey), domestic rewarded video
   (Tapsell). Both behind interfaces with offline-safe fallbacks.
 
