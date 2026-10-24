@@ -1,5 +1,5 @@
 // Offline local notifications: energy full, tomorrow's daily gift, an event about to end,
-// and a race that has finished. Scheduled when the app goes to the background, cleared
+// a race that has finished, and the welcome-back gift after two days away. Scheduled when the app goes to the background, cleared
 // when it comes back.
 
 import { Capacitor } from '@capacitor/core';
@@ -9,6 +9,7 @@ const ENERGY_ID = 1;
 const DAILY_ID = 2;
 const EVENT_ID = 3;
 const RACE_ID = 4;
+const AWAY_ID = 5;
 let permitted: boolean | null = null;
 
 /** Checks permission; only prompts the player when `ask` is true. */
@@ -36,6 +37,8 @@ export interface Reminders {
   event?: { title: string; endsAt: number } | null;
   /** When the running race closes (only if the player has not finished it). */
   raceEndsAt?: number | null;
+  /** The player is old enough for the welcome-back gift (offers.welcomeBack). */
+  awayGift?: boolean;
 }
 
 const HOUR = 3_600_000;
@@ -57,8 +60,14 @@ export async function scheduleReminders(r: Reminders): Promise<void> {
   if (r.raceEndsAt && r.raceEndsAt > now + 5 * 60_000) {
     list.push({ id: RACE_ID, title: 'مسابقه‌ی محله تموم شد 🏁', body: 'ببین نفر چندم شدی و جایزه‌ت رو بگیر!', schedule: { at: new Date(r.raceEndsAt) } });
   }
+  if (r.awayGift) {
+    // Two days away is when the welcome-back gift is ready; evening is when people play.
+    const at = new Date(now + 2 * 24 * HOUR);
+    if (at.getHours() < 18) at.setHours(18, 30, 0, 0);
+    list.push({ id: AWAY_ID, title: 'کوچه دلش برات تنگ شده 💌', body: 'خاله مهین: کجایی؟ همسایه‌ها برات یه هدیه کنار گذاشتن!', schedule: { at } });
+  }
   try {
-    await LocalNotifications.cancel({ notifications: [{ id: ENERGY_ID }, { id: DAILY_ID }, { id: EVENT_ID }, { id: RACE_ID }] });
+    await LocalNotifications.cancel({ notifications: [{ id: ENERGY_ID }, { id: DAILY_ID }, { id: EVENT_ID }, { id: RACE_ID }, { id: AWAY_ID }] });
     await LocalNotifications.schedule({ notifications: list });
   } catch {
     /* notifications are a bonus; never break the game */
@@ -68,7 +77,7 @@ export async function scheduleReminders(r: Reminders): Promise<void> {
 export async function clearReminders(): Promise<void> {
   if (!permitted) return;
   try {
-    await LocalNotifications.cancel({ notifications: [{ id: ENERGY_ID }, { id: EVENT_ID }, { id: RACE_ID }] });
+    await LocalNotifications.cancel({ notifications: [{ id: ENERGY_ID }, { id: EVENT_ID }, { id: RACE_ID }, { id: AWAY_ID }] });
   } catch {
     /* ignore */
   }

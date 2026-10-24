@@ -7,7 +7,7 @@ import { DEFS } from './art/defs';
 import { itemArt } from './art/index';
 import { ENERGY_CAP, ENERGY_REGEN_MS, claimDaily, loadState, newGame, refreshQuests, tickEnergy } from './game/model';
 import { MILESTONES, THEMES, eventActive, eventEnd } from './game/events';
-import { welcomeBack } from './game/offers';
+import { GIFT_LEVEL, welcomeBack } from './game/offers';
 import { RACE_MS } from './game/race';
 import { clearReminders, scheduleReminders } from './platform/notify';
 import { initAds } from './platform/ads';
@@ -101,6 +101,7 @@ async function boot(): Promise<void> {
         event: eventActive(s) && s.event.claimed < MILESTONES.length && s.event.theme
           ? { title: THEMES[s.event.theme].title, endsAt: eventEnd(new Date()).getTime() } : null,
         raceEndsAt: r && r.finishedAt === null ? r.start + RACE_MS : null,
+        awayGift: s.level >= GIFT_LEVEL,
       });
     } else {
       clearReminders();

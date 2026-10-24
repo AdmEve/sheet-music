@@ -329,7 +329,8 @@ export class App {
     );
     card.addEventListener('click', () => {
       if (ready) return this.doDeliver(o.id);
-      if (this.s.level >= RUSH_LEVEL && !this.busy) return void this.modals.order(o).then(() => this.renderAll());
+      // A rush started from the sheet is animating by the time it closes; leave it be.
+      if (this.s.level >= RUSH_LEVEL && !this.busy) return void this.modals.order(o).then(() => { if (!this.busy) this.renderAll(); });
       this.toast(`${CAST[o.who]?.name ?? ''}: ${o.needs.map((n) => itemName(n)).join(' و ')} می‌خواد`);
       this.highlightNeeds(o);
     });
