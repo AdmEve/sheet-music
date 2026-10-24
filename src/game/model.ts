@@ -56,6 +56,10 @@ export interface GameState {
   lastDaily: string | null;
   dailyStreak: number;
   stats: { merges: number; orders: number; taps: number };
+  /** Rewarded videos watched today (capped). */
+  ads: { day: string; count: number };
+  /** One-time shop offers already bought. */
+  bought: string[];
 }
 
 export type GameEvent =
@@ -156,6 +160,8 @@ export function newGame(seed: number, now: number): GameState {
     lastDaily: null,
     dailyStreak: 0,
     stats: { merges: 0, orders: 0, taps: 0 },
+    ads: { day: '', count: 0 },
+    bought: [],
   };
   const put = (r: number, c: number, item: Item, lock?: Lock) => {
     s.board[idx(r, c)] = lock ? { item, lock } : { item };
@@ -167,26 +173,26 @@ export function newGame(seed: number, now: number): GameState {
   put(6, 3, { chain: 'tea', level: 1 });
   put(6, 4, { chain: 'tea', level: 1 });
   put(8, 5, { chain: 'coins', level: 1 });
-  // Upper part of the board: sheets near the open area, crates further up.
-  const sheetItems: Item[] = [
-    { chain: 'tea', level: 2 }, { chain: 'bread', level: 1 }, { chain: 'tea', level: 1 },
-    { chain: 'bread', level: 2 }, { chain: 'tea', level: 3 }, { chain: 'bread', level: 1 },
-    { chain: 'tea', level: 2 },
+  // Upper part of the board: dust sheets near the open area, crates further up. Merging next
+  // to a crate opens it into a sheet, so the board reveals itself as the player plays.
+  const sheetRows: Item[][] = [
+    [{ chain: 'bread', level: 1 }, { chain: 'tea', level: 3 }, { chain: 'coins', level: 1 }, { chain: 'tea', level: 2 }, { chain: 'energy', level: 1 }, { chain: 'bread', level: 3 }, { chain: 'tea', level: 1 }],
+    [{ chain: 'tea', level: 2 }, { chain: 'bread', level: 1 }, { chain: 'tea', level: 1 }, { chain: 'bread', level: 2 }, { chain: 'tea', level: 3 }, { chain: 'bread', level: 1 }, { chain: 'tea', level: 2 }],
   ];
-  for (let c = 0; c < COLS; c++) put(4, c, sheetItems[c], 'sheet');
-  for (let r = 0; r < 4; r++) {
+  sheetRows.forEach((row, k) => row.forEach((item, c) => put(3 + k, c, item, 'sheet')));
+  for (let r = 0; r < 3; r++) {
     for (let c = 0; c < COLS; c++) {
       const roll = rand(s);
       const item: Item =
-        roll < 0.08 ? { chain: 'chest', level: 1 } :
-        roll < 0.14 ? { chain: 'energy', level: 1 } :
-        roll < 0.2 ? { chain: 'coins', level: 1 } :
-        { chain: pick(s, ['tea', 'bread', 'tea', 'bread', 'garden'] as ChainId[]), level: 1 + Math.floor(rand(s) * (r < 2 ? 3 : 2)) };
+        roll < 0.1 ? { chain: 'chest', level: 1 } :
+        roll < 0.17 ? { chain: 'energy', level: 1 } :
+        roll < 0.24 ? { chain: 'coins', level: r === 0 ? 2 : 1 } :
+        { chain: pick(s, ['tea', 'bread', 'tea', 'bread', 'garden'] as ChainId[]), level: 1 + Math.floor(rand(s) * (r === 0 ? 4 : 3)) };
       put(r, c, item, 'box');
     }
   }
   // Garden generator waits in a crate near the top for level 2.
-  put(1, 3, { chain: 'genGarden', level: 1 }, 'box');
+  put(0, 3, { chain: 'genGarden', level: 1 }, 'box');
   fillOrders(s);
   return s;
 }
@@ -484,25 +490,25 @@ function levelGift(level: number): Item | null {
 }
 
 /** Hand-written first orders so the opening teaches the loop. */
-const SCRIPTED: { who: string; needs: Need[] }[] = [
-  { who: 'narges', needs: [{ chain: 'tea', level: 2 }] },
-  { who: 'mahin', needs: [{ chain: 'tea', level: 3 }] },
-  { who: 'reza', needs: [{ chain: 'bread', level: 2 }] },
-  { who: 'mahin', needs: [{ chain: 'tea', level: 4 }] },
-  { who: 'reza', needs: [{ chain: 'bread', level: 3 }, { chain: 'tea', level: 2 }] },
-  { who: 'shirin', needs: [{ chain: 'tea', level: 4 }, { chain: 'bread', level: 3 }] },
+const SCRIPTED: { who: string; needs: Need[]; stars?: number }[] = [
+  { who: 'narges', needs: [{ chain: 'tea', level: 2 }], stars: 1 },
+  { who: 'mahin', needs: [{ chain: 'tea', level: 3 }], stars: 2 },
+  { who: 'reza', needs: [{ chain: 'bread', level: 2 }], stars: 2 },
+  { who: 'mahin', needs: [{ chain: 'tea', level: 4 }], stars: 3 },
+  { who: 'reza', needs: [{ chain: 'bread', level: 3 }, { chain: 'tea', level: 2 }], stars: 3 },
+  { who: 'shirin', needs: [{ chain: 'tea', level: 4 }, { chain: 'bread', level: 3 }], stars: 4 },
 ];
 
 const CUSTOMERS = ['mahin', 'reza', 'shirin', 'morteza', 'golab', 'kaveh', 'narges'];
 
-function makeOrder(s: GameState, who: string, needs: Need[]): Order {
+function makeOrder(s: GameState, who: string, needs: Need[], stars?: number): Order {
   const value = needs.reduce((sum, n) => sum + itemValue(n), 0);
   return {
     id: s.nextOrderId++,
     who,
     needs,
     coins: Math.round(value * 1.6 + 4),
-    stars: Math.max(1, Math.round(value / 5)),
+    stars: stars ?? Math.max(1, Math.round(value / 5)),
   };
 }
 
@@ -529,7 +535,7 @@ export function fillOrders(s: GameState): Order[] {
     let o: Order;
     if (s.scriptStep < SCRIPTED.length) {
       const step = SCRIPTED[s.scriptStep++];
-      o = makeOrder(s, step.who, step.needs);
+      o = makeOrder(s, step.who, step.needs, step.stars);
     } else {
       o = generateOrder(s);
     }
@@ -541,4 +547,27 @@ export function fillOrders(s: GameState): Order[] {
 
 export function allProductChains(): ChainId[] {
   return PRODUCT_CHAINS;
+}
+
+/** Parses a save, filling fields added in later versions. Returns null if unusable. */
+export function loadState(json: string | null): GameState | null {
+  if (!json) return null;
+  try {
+    const raw = JSON.parse(json) as Partial<GameState>;
+    if (raw.v !== 1 || !Array.isArray(raw.board) || raw.board.length !== CELLS) return null;
+    const base = newGame(raw.rng ?? 1, raw.energyAt ?? Date.now());
+    return { ...base, ...raw, stats: { ...base.stats, ...raw.stats }, ads: raw.ads ?? base.ads, bought: raw.bought ?? [] } as GameState;
+  } catch {
+    return null;
+  }
+}
+
+export function adsLeft(s: GameState, today: string, max: number): number {
+  if (s.ads.day !== today) return max;
+  return Math.max(0, max - s.ads.count);
+}
+
+export function countAd(s: GameState, today: string): void {
+  if (s.ads.day !== today) s.ads = { day: today, count: 0 };
+  s.ads.count++;
 }

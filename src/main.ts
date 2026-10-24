@@ -1,0 +1,73 @@
+// Boot: load the save (or start a new game), show the splash, then the board.
+
+import './ui/style.css';
+import { DEFS } from './art/defs';
+import { itemArt } from './art/index';
+import { claimDaily, loadState, newGame, tickEnergy } from './game/model';
+import { initAds } from './platform/ads';
+import { connectBilling, recoverPending } from './platform/billing';
+import { loadSave, loadSetting } from './platform/storage';
+import { App } from './ui/app';
+import { h, svgIcon } from './ui/dom';
+import { initToggles } from './ui/modals';
+
+const dateKey = (d: Date) => d.toLocaleDateString('en-CA');
+
+async function boot(): Promise<void> {
+  document.body.insertAdjacentHTML('afterbegin', DEFS);
+  const [save, sound, haptics] = await Promise.all([loadSave(), loadSetting('sound'), loadSetting('haptics')]);
+  initToggles(sound !== '0', haptics !== '0');
+  const fresh = !save;
+  const state = loadState(save) ?? newGame((Math.random() * 2 ** 32) >>> 0, Date.now());
+  tickEnergy(state, Date.now());
+
+  const root = document.getElementById('app')!;
+  const app = new App(root, state);
+  app.mount();
+
+  await splash();
+
+  // Store connections happen in the background; the game never waits on them.
+  connectBilling().then(async (ok) => {
+    if (!ok) return;
+    for (const p of await recoverPending()) app.modals.grant(p.sku);
+  });
+  initAds();
+
+  if (fresh) await app.firstRun();
+  const now = new Date();
+  const yesterday = new Date(now.getTime() - 86_400_000);
+  const daily = claimDaily(app.s, dateKey(now), dateKey(yesterday));
+  if (daily !== null && !fresh) {
+    await app.modals.daily(daily);
+    app.renderHud();
+  }
+  app.dirty();
+  app.tutorial();
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') app.saveNow();
+    else {
+      tickEnergy(app.s, Date.now());
+      app.renderHud();
+    }
+  });
+}
+
+function splash(): Promise<void> {
+  return new Promise((resolve) => {
+    const el = h('div', { class: 'splash' },
+      h('div', { class: 'logo' },
+        h('div', { html: svgIcon(itemArt({ chain: 'tea', level: 10 })) }),
+        h('h1', {}, 'محله‌ی ما'),
+        h('div', { class: 'sub' }, 'ادغام کن، کوچه رو نجات بده!'),
+        h('div', { class: 'tap' }, 'برای شروع بزن')));
+    document.body.append(el);
+    el.addEventListener('click', () => {
+      el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 250 }).finished.then(() => el.remove());
+      resolve();
+    });
+  });
+}
+
+boot();
