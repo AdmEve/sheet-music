@@ -1,8 +1,8 @@
 {
-  "name": "kot-hokm",
+  "name": "mahalle",
   "private": true,
   "version": "0.1.0",
-  "description": "کُت — Persian Hokm card game (offline vs AI + online), Android via Capacitor",
+  "description": "محله‌ی ما — Persian merge-2 story game for Android (Cafe Bazaar / Myket) via Capacitor",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,7 +11,6 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "sim": "tsx scripts/simulate.ts",
-    "server": "tsx server/index.ts",
     "android:sync": "npm run build && cap sync android"
   },
   "devDependencies": {
