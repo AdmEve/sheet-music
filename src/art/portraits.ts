@@ -93,7 +93,7 @@ const scarfFront = (fill: string) =>
 const dots = (color: string) =>
   [[34, 26], [46, 22], [58, 24], [68, 32], [28, 38], [72, 46]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2" fill="${color}"/>`).join('');
 
-export const CAST_IDS = ['narges', 'mahin', 'reza', 'shirin', 'kaveh', 'morteza', 'golab', 'fakhri', 'farokhi', 'bahman', 'aydin'];
+export const CAST_IDS = ['narges', 'mahin', 'reza', 'shirin', 'kaveh', 'morteza', 'golab', 'fakhri', 'farokhi', 'bahman', 'aydin', 'sona'];
 export const MOOD_LIST: Mood[] = ['neutral', 'happy', 'sad', 'angry', 'surprised'];
 
 const PORTRAITS: Record<string, (m: FaceOpts) => string> = {
@@ -160,6 +160,13 @@ const PORTRAITS: Record<string, (m: FaceOpts) => string> = {
     // Dark curls and a neat moustache.
     [[32, 38, 8], [40, 30, 9], [50, 27, 9], [60, 30, 9], [68, 38, 8], [36, 34, 6], [64, 34, 6]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#24160e" ${THIN}/>`).join('') +
     `<path d="M41 61 C44 58 48 59 50 60 C52 59 56 58 59 61 C56 63 53 62 50 62.5 C47 62 44 63 41 61 Z" fill="#24160e"/>`,
+  sona: (m) =>
+    bg('#fbe3d6', '#c86b5a') + shoulders('#2e3a6a', `<path d="M40 82 q10 6 20 0" fill="none" stroke="url(#gGold)" stroke-width="2.4"/>`) +
+    // Tabrizi silk kelaghayi: deep red with a gold paisley border.
+    scarf('#8e1230', [[29, 40], [35, 29], [44, 23], [55, 22], [65, 27], [71, 38]].map(([x, y], i) => `<path d="M0 4 C-5 4 -6 -3 -1.5 -6 C1.5 -8 4.5 -7 3.5 -10 C6.5 -6.5 6 4 0 4 Z" fill="#f6c945" stroke="#5a0a20" stroke-width=".8" transform="translate(${x} ${y}) rotate(${i * 30 - 75}) scale(.6)"/>`).join(''), '#4a3a32') +
+    face({ eyes: 'smile', brows: 'soft', mouth: 'smile', wrinkles: true, skin: '#efc39c', blush: true, lashes: true, ...m }) +
+    `<circle cx="29" cy="63" r="2.4" fill="url(#gGold)" ${THIN}/><circle cx="71" cy="63" r="2.4" fill="url(#gGold)" ${THIN}/>` +
+    scarfFront('#8e1230') + `<path d="M30 70 C34 82 42 87 50 88 C58 87 66 82 70 70" fill="none" stroke="#f6c945" stroke-width="1.6" stroke-dasharray="2 3"/>`,
 };
 
 const cache = new Map<string, string>();

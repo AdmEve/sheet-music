@@ -3,9 +3,10 @@
 // top. Restored places are in colour, the one being worked on has scaffolding and a pin,
 // the rest wait in grey.
 
+import { WEDDING } from './chainsO';
 import { INK, O, THIN, sparkle } from './kit';
 
-export const MAP_H = 6520;
+export const MAP_H = 7050;
 const STEP = 106;
 const faDigits = (n: number) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 
@@ -231,6 +232,29 @@ const FACADES: Record<string, Facade> = {
   birthday: {
     wall: '#ffe0ef', w: 124, h: 60, door: 'gate',
     deco: [[-50, '#e0303f'], [-30, '#f6c945'], [30, '#14879a'], [50, '#ff7a9c']].map(([x, c]) => `<ellipse cx="${x}" cy="-82" rx="7" ry="9" fill="${c}" ${THIN}/><path d="M${x} -73 V-60" stroke="${INK}" stroke-width="1"/>`).join(''),
+  },
+  nest: {
+    wall: '#f3e6d0', h: 84, door: 'shop',
+    deco: `<rect x="-14" y="-76" width="28" height="24" rx="3" fill="#ffe08a" ${THIN}/><path d="M-14 -76 q8 12 0 24 Z M14 -76 q-8 12 0 24 Z" fill="url(#gRose)" ${THIN}/>` +
+      `<rect x="-17" y="-53" width="34" height="5" rx="2" fill="url(#gTerracotta)" ${THIN}/>` + [-10, -3, 4, 11].map((x) => `<circle cx="${x}" cy="-56" r="2.6" fill="#e0303f" ${THIN} stroke-width=".6"/>`).join(''),
+  },
+  henna: {
+    wall: 'url(#gTerracotta)', h: 58, door: 'gate',
+    deco: `<path d="M-60 -64 Q0 -48 60 -64" fill="none" stroke="${INK}" stroke-width="1"/>` +
+      Array.from({ length: 7 }, (_, i) => { const x = -54 + i * 18; return `<circle cx="${x}" cy="${-62 + (1 - (x / 60) ** 2) * 8}" r="3" fill="${['#ffd36b', '#ff7a9c'][i % 2]}" ${THIN} stroke-width=".8"/>`; }).join(''),
+  },
+  paykan: {
+    wall: '#cfc6b4', h: 70, door: 'shop',
+    deco: [-30, -24, -18, -12, -6].map((y) => `<path d="M-26 ${y} H26" stroke="#9a948a" stroke-width="1.4"/>`).join('') + `<g transform="translate(28 -30) scale(.34)">${WEDDING[7]}</g>`,
+  },
+  gardenwed: {
+    wall: '#e9e0c9', w: 132, h: 56, door: 'gate',
+    deco: Array.from({ length: 9 }, (_, i) => { const a = Math.PI + (i / 8) * Math.PI; return `<circle cx="${Math.cos(a) * 26}" cy="${-34 + Math.sin(a) * 26}" r="3.4" fill="${['#e0303f', '#fffdf6', '#ff9ec4'][i % 3]}" ${THIN} stroke-width=".8"/>`; }).join('') +
+      [-60, 60].map((x) => `<path d="M${x} -50 C${x - 9} -66 ${x - 5} -90 ${x} -104 C${x + 5} -90 ${x + 9} -66 ${x} -50 Z" fill="url(#gLeafDark)" ${THIN}/>`).join(''),
+  },
+  patakhti: {
+    wall: '#ffe0ef', roof: 'gable', roofFill: 'url(#gRed)', door: 'arch',
+    deco: [[24, 14, 'url(#gBlue)'], [38, 10, 'url(#gYellow)']].map(([x, w, c]) => `<rect x="${x}" y="${-Number(w)}" width="${w}" height="${w}" fill="${c}" ${THIN} stroke-width="1"/><path d="M${Number(x) + Number(w) / 2} ${-Number(w)} V0" stroke="#fffdf6" stroke-width="2"/>`).join(''),
   },
   wedding: {
     wall: 'url(#gWood)', w: 120, h: 70, door: 'gate',

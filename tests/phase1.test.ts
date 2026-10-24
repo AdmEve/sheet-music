@@ -130,6 +130,24 @@ describe('generator catch-up', () => {
     expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genSaz', 'genTile', 'genFootball', 'genSea', 'genCraft', 'genCallig']);
     finish(55);
     expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genParty']);
+    finish(60);
+    expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genWed']);
+  });
+});
+
+describe('customers', () => {
+  it('adds later neighbours to the order queue as the story brings them to the alley', async () => {
+    const { customers } = await import('../src/game/model');
+    const { PLACES } = await import('../src/story/story');
+    const s = newGame(3, 0);
+    const finish = (id: string) => { const k = PLACES.findIndex((p) => p.id === id); s.tasksDone = PLACES.slice(0, k).flatMap((p) => p.tasks.map((t) => t.id)); };
+    expect(customers(s)).toHaveLength(7);
+    expect(customers(s)).not.toContain('farokhi'); // still the developer with the bulldozers
+    finish('khastegari');
+    expect(customers(s)).toEqual(expect.arrayContaining(['fakhri', 'farokhi']));
+    expect(customers(s)).not.toContain('aydin');
+    finish('henna');
+    expect(customers(s)).toEqual(expect.arrayContaining(['bahman', 'aydin', 'sona']));
   });
 });
 

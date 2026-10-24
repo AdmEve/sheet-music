@@ -656,6 +656,12 @@ const SCRIPTED: { who: string; needs: Need[]; stars?: number }[] = [
 ];
 
 const CUSTOMERS = ['mahin', 'reza', 'shirin', 'morteza', 'golab', 'kaveh', 'narges'];
+/** Neighbours who start placing orders once the story has reached the given place. */
+const LATE_CUSTOMERS: [who: string, from: string][] = [['fakhri', 'khastegari'], ['farokhi', 'khastegari'], ['bahman', 'cinema'], ['aydin', 'carpetshop'], ['sona', 'henna']];
+
+export function customers(s: GameState): string[] {
+  return CUSTOMERS.concat(LATE_CUSTOMERS.filter(([, from]) => placeReached(s, from)).map(([who]) => who));
+}
 
 function makeOrder(s: GameState, who: string, needs: Need[], stars?: number): Order {
   const value = needs.reduce((sum, n) => sum + itemValue(n), 0);
@@ -670,9 +676,10 @@ function makeOrder(s: GameState, who: string, needs: Need[], stars?: number): Or
 
 function generateOrder(s: GameState): Order {
   const chains = unlockedProducts(s);
+  const all = customers(s);
   const busy = new Set(s.orders.map((o) => o.who));
-  const free = CUSTOMERS.filter((c) => !busy.has(c));
-  const who = pick(s, free.length ? free : CUSTOMERS);
+  const free = all.filter((c) => !busy.has(c));
+  const who = pick(s, free.length ? free : all);
   const count = s.level < 3 ? 1 : rand(s) < 0.45 ? 2 : 1;
   const needs: Need[] = [];
   for (let k = 0; k < count; k++) {

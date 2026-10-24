@@ -208,8 +208,15 @@ saves are written into localStorage `mahalle.save.v1`.
       wedding). Balance sim with story-based unlocks: 20 of 20 games finish all 55 tested
       episodes, regen hours rising smoothly to ~133
 
+- [x] Phase 23: Season 13 «عروسی شیرین و آیدین» (`src/art/scenes13.ts`: the flat above the
+      grocery, the henna night, Morteza's Paykan as the wedding car, the Shemiran garden
+      wedding and the پاتختی; «عروسی» chain + dowry-bundle generator with the first
+      episode); new character Sona-khanum (Aydin's mother, kelaghayi scarf); later neighbours
+      (Fakhri, Farokhi, Bahman, Aydin, Sona) now place orders once the story brings them in;
+      map of 65 places; Season 14 teased (a caravanserai on the road to Kashan)
+
 Next (in order):
-1. Season 13 «عروسی شیرین و آیدین»
+1. Season 14 «کاروانسرا»
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)

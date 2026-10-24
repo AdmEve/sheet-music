@@ -12,7 +12,9 @@ stingy grocer inherits a Qajar garden-house and opens it to everyone; season 8 �
 Khale Mahin on the radio and the alley in a football final; season 9 «سفر شمال» takes everyone
 to the Caspian for Golab's wish; season 10 «اصفهان» follows Kaveh's job offer to Isfahan and
 ends with a restoration school in the alley; season 11 «ثبت جهانی» takes the alley to UNESCO
-and season 12 «تولد ننه‌گلاب» throws Golab a surprise party (5 episodes each).
+season 12 «تولد ننه‌گلاب» throws Golab a surprise party and season 13 «عروسی شیرین و آیدین» marries
+Shirin and Aydin with a Tabrizi henna night and Morteza's old Paykan as the wedding car (5 episodes
+each).
 
 - Fully **offline**; progress is saved on the phone.
 - Monetization through store in-app billing (two Android flavors: **Cafe Bazaar** via
