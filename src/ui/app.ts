@@ -580,7 +580,7 @@ export class App {
           const r = this.cells[e.at].getBoundingClientRect();
           this.renderCell(e.at);
           if (e.kind === 'event') {
-            sfx.bigMerge();
+            sfx.chime();
             this.sparkles(r, 12);
             this.flyReward(this.eventIcon(), r, 'side-event', 4);
           } else if (e.kind === 'coins') {

@@ -628,7 +628,7 @@ export class Modals {
             h('div', { class: 'race-prizes' }, ...RACE_REWARDS.slice(0, 3).map((rw, k) => h('div', {}, h('b', {}, ['🥇', '🥈', '🥉'][k]), this.passRewardEl(rw)))),
             h('button', { class: 'btn big', disabled: left <= 0, onclick: () => {
               if (!startRace(s, Date.now(), today(), Math.random)) return;
-              sfx.task();
+              sfx.zarb();
               this.app.renderSide();
               this.app.dirty();
               render();

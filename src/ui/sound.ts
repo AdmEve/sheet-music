@@ -72,6 +72,10 @@ export const sfx = {
   task: () => [7, 4, 2, 4, 7, 11].forEach((s, i) => pluck(freq(s), i * 0.11, 0.15)),
   page: () => tone(880, 0, 0.05, 'sine', 0.06),
   discover: () => [7, 9, 11].forEach((s, i) => pluck(freq(s), i * 0.06, 0.11)),
+  /** Zarb (zurkhaneh drum) roll: race start. */
+  zarb: () => [0, 0.12, 0.2, 0.28, 0.34, 0.4, 0.46, 0.6].forEach((t, i) => tone(i === 7 ? 70 : 95 + (i % 2) * 25, t, 0.16, 'sine', i === 7 ? 0.3 : 0.18, 50)),
+  /** Event item collected: a bright rising chime. */
+  chime: () => [4, 7, 9, 11].forEach((s, i) => pluck(freq(s + 2), i * 0.05, 0.12)),
 };
 
 // ---------------------------------------------------------------- background music
