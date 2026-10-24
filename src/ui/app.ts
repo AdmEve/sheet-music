@@ -102,6 +102,9 @@ export class App {
     const cur = xpForLevel(s.level), next = xpForLevel(s.level + 1);
     const pct = Math.round(((s.xp - cur) / Math.max(1, next - cur)) * 100);
     const toNext = msToNextEnergy(s, Date.now());
+    const key = `${s.level}|${pct}|${s.energy}|${s.energy < ENERGY_CAP ? faTime(toNext) : ''}|${s.coins}|${s.gems}`;
+    if (key === this.hudKey) return;
+    this.hudKey = key;
     clear(this.hud);
     const level = h('div', { class: 'level-badge', id: 'hud-level', style: `--xp:${pct}%` }, h('span', {}, fa(s.level)));
     const energy = h('button', { class: 'pill', id: 'hud-energy', onclick: () => this.modals.energy() },
@@ -140,7 +143,15 @@ export class App {
 
   // ------------------------------------------------------------------ orders
 
+  private ordersKey = '';
+  private navKey = '';
+  private hudKey = '';
+
+  /** Rebuilds the order cards only when an order or its ready-state actually changed. */
   renderOrders(entering: number[] = []): void {
+    const key = this.s.orders.map((o) => `${o.id}:${needsMet(this.s, o).map(Number).join('')}`).join('|');
+    if (key === this.ordersKey && !entering.length) return;
+    this.ordersKey = key;
     clear(this.ordersEl);
     for (const o of this.s.orders) this.ordersEl.append(this.orderCard(o, entering.includes(o.id)));
   }
@@ -516,10 +527,13 @@ export class App {
   // ------------------------------------------------------------------ nav
 
   renderNav(): void {
-    clear(this.navEl);
     const p = progress(this.s);
     const ready = !!p.next && this.s.stars >= p.next.cost;
     const bagCount = this.s.bag.filter(Boolean).length;
+    const key = `${this.s.stars}|${p.next?.id}|${bagCount}|${questsClaimable(this.s)}`;
+    if (key === this.navKey) return;
+    this.navKey = key;
+    clear(this.navEl);
     const claimable = questsClaimable(this.s);
     this.navEl.append(
       h('button', { class: 'navbtn', onclick: () => this.modals.settings() }, h('span', { html: svgIcon(ICONS.gear) }), 'تنظیمات'),
