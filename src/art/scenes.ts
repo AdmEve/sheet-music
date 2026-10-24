@@ -3,9 +3,9 @@
 
 import { INK, O, THIN, estekan, samovar, sparkle } from './kit';
 
-type Layer = (done: boolean) => string;
+export type Layer = (done: boolean) => string;
 
-const brickWall = (fill = '#d9a873', line = '#b5804d', h = 170) => {
+export const brickWall = (fill = '#d9a873', line = '#b5804d', h = 170) => {
   let s = `<rect x="0" y="0" width="360" height="${h}" fill="${fill}"/>`;
   for (let y = 14; y < h; y += 14) {
     s += `<path d="M0 ${y} H360" stroke="${line}" stroke-width="1.2" opacity=".6"/>`;
@@ -14,26 +14,26 @@ const brickWall = (fill = '#d9a873', line = '#b5804d', h = 170) => {
   }
   return s;
 };
-const floor = (fill = '#b98652', y = 170) =>
+export const floor = (fill = '#b98652', y = 170) =>
   `<rect x="0" y="${y}" width="360" height="${240 - y}" fill="${fill}"/>` +
   Array.from({ length: 9 }, (_, i) => `<path d="M${i * 45} ${y} L${i * 45 - 30} 240" stroke="${INK}" stroke-width="1" opacity=".2"/>`).join('') +
   `<path d="M0 ${y} H360" stroke="${INK}" stroke-width="2" opacity=".4"/>`;
 
-const cobweb = (x: number, y: number, s = 1, flip = false) =>
+export const cobweb = (x: number, y: number, s = 1, flip = false) =>
   `<g transform="translate(${x} ${y}) scale(${flip ? -s : s} ${s})" stroke="#f4f0e6" stroke-width="1.2" fill="none" opacity=".9">` +
   `<path d="M0 0 L40 0 M0 0 L0 40 M0 0 L32 32 M0 0 L40 18 M0 0 L18 40"/>` +
   `<path d="M12 0 Q10 10 0 12 M24 0 Q20 20 0 24 M36 0 Q30 30 0 36"/></g>`;
 
-const dustPile = (x: number, y: number) =>
+export const dustPile = (x: number, y: number) =>
   `<ellipse cx="${x}" cy="${y}" rx="22" ry="6" fill="#9b8a76" opacity=".7"/><ellipse cx="${x - 6}" cy="${y - 3}" rx="10" ry="4" fill="#b3a28d" opacity=".8"/>`;
 
-const plank = (x: number, y: number, w: number, rot: number) =>
+export const plank = (x: number, y: number, w: number, rot: number) =>
   `<rect x="${x}" y="${y}" width="${w}" height="9" rx="2" fill="#a77a4f" ${THIN} transform="rotate(${rot} ${x} ${y})"/>`;
 
-const glow = (x: number, y: number, r: number, op = 0.55) =>
+export const glow = (x: number, y: number, r: number, op = 0.55) =>
   `<circle cx="${x}" cy="${y}" r="${r}" fill="url(#rGlow)" opacity="${op}"/>`;
 
-const stringLights = (y: number, colors = ['#ffd36b', '#ff7a9c', '#5fe0e0', '#9be36b']) =>
+export const stringLights = (y: number, colors = ['#ffd36b', '#ff7a9c', '#5fe0e0', '#9be36b']) =>
   `<path d="M0 ${y} Q90 ${y + 22} 180 ${y} T360 ${y}" fill="none" stroke="${INK}" stroke-width="1.5"/>` +
   Array.from({ length: 13 }, (_, i) => {
     const x = 14 + i * 27;
@@ -43,7 +43,7 @@ const stringLights = (y: number, colors = ['#ffd36b', '#ff7a9c', '#5fe0e0', '#9b
   }).join('');
 
 /** Wooden lattice (gereh-chini) double door. */
-const latticeDoor = (x: number, y: number, w: number, hgt: number) => {
+export const latticeDoor = (x: number, y: number, w: number, hgt: number) => {
   let s = `<rect x="${x}" y="${y}" width="${w}" height="${hgt}" rx="${w / 2}" ry="${w / 3}" fill="url(#gWoodDark)" ${O}/>`;
   s += `<path d="M${x + w / 2} ${y + 6} V${y + hgt}" ${THIN}/>`;
   for (let r = 0; r < 4; r++)
@@ -54,19 +54,19 @@ const latticeDoor = (x: number, y: number, w: number, hgt: number) => {
   return s + `<circle cx="${x + w / 2 - 6}" cy="${y + hgt * 0.6}" r="2.6" fill="url(#gGold)" ${THIN}/><circle cx="${x + w / 2 + 6}" cy="${y + hgt * 0.6}" r="2.6" fill="url(#gGold)" ${THIN}/>`;
 };
 
-const boardedDoor = (x: number, y: number, w: number, hgt: number) =>
+export const boardedDoor = (x: number, y: number, w: number, hgt: number) =>
   `<rect x="${x}" y="${y}" width="${w}" height="${hgt}" rx="${w / 2}" ry="${w / 3}" fill="#6b5a4a" ${O}/>` +
   plank(x - 4, y + hgt * 0.35, w + 8, 12) + plank(x - 4, y + hgt * 0.62, w + 8, -10) +
   `<path d="M${x + 10} ${y + 30} l14 20 M${x + w - 14} ${y + 50} l-8 26" stroke="${INK}" stroke-width="1.5" opacity=".6"/>`;
 
-const takht = (x: number, y: number, w: number) =>
+export const takht = (x: number, y: number, w: number) =>
   `<rect x="${x}" y="${y}" width="${w}" height="16" rx="3" fill="url(#gWood)" ${O}/>` +
   `<path d="M${x + 6} ${y + 16} V${y + 38} M${x + w - 6} ${y + 16} V${y + 38}" ${O} stroke-width="5"/>` +
   `<rect x="${x + 4}" y="${y - 6}" width="${w - 8}" height="8" fill="#c0392b" ${THIN}/>` +
   Array.from({ length: Math.floor((w - 8) / 10) }, (_, i) => `<path d="M${x + 9 + i * 10} ${y - 6} l4 8" stroke="#f6c945" stroke-width="1.4"/>`).join('') +
   `<rect x="${x + 8}" y="${y - 26}" width="26" height="22" rx="8" fill="url(#gCarpet)" ${THIN}/><rect x="${x + w - 34}" y="${y - 26}" width="26" height="22" rx="8" fill="url(#gNavy)" ${THIN}/>`;
 
-const sign = (x: number, y: number, text: string, hanging: boolean) =>
+export const sign = (x: number, y: number, text: string, hanging: boolean) =>
   hanging
     ? `<path d="M${x + 20} ${y - 14} L${x + 30} ${y} M${x + 130} ${y - 14} L${x + 120} ${y}" stroke="${INK}" stroke-width="2"/>` +
       `<rect x="${x}" y="${y}" width="150" height="34" rx="6" fill="url(#gNavy)" ${O}/><rect x="${x + 5}" y="${y + 5}" width="140" height="24" rx="4" fill="none" stroke="#f6c945" stroke-width="1.6"/>` +
@@ -211,14 +211,14 @@ const HAMMAM: Record<string, Layer> = {
   lights: (d) => (d ? stringLights(4, ['#ffd36b', '#5fe0e0']) + glow(180, 100, 120, 0.25) : `<rect x="0" y="0" width="360" height="240" fill="#0e0a1e" opacity=".45"/>`),
 };
 
-interface SceneDef {
+export interface SceneDef {
   base: string;
   /** Layers in draw order (not task order). */
   order: string[];
   layers: Record<string, Layer>;
 }
 
-const SCENES: Record<string, SceneDef> = {
+export const SCENES1: Record<string, SceneDef> = {
   teahouse: { base: brickWall() + floor(), order: ['door', 'dust', 'sign', 'samovar', 'takht', 'lights'], layers: TEAHOUSE },
   bakery: { base: brickWall('#e8c99a', '#c4a070') + floor('#a98a6a'), order: ['oven', 'pebbles', 'counter', 'flour', 'awning', 'fire'], layers: BAKERY },
   garden: { base: `<rect width="360" height="170" fill="url(#gSky)"/>` + brickWall('#d9a873', '#b5804d', 120) + `<rect y="120" width="360" height="50" fill="#c69260"/>` + floor('#b98652'), order: ['weeds', 'pool', 'roses', 'bench', 'distill'], layers: GARDEN },
@@ -226,9 +226,3 @@ const SCENES: Record<string, SceneDef> = {
   hammam: { base: `<rect width="360" height="190" fill="#e8dcc6"/><path d="M0 40 Q180 -30 360 40" fill="#d8c8aa" ${O}/>` + floor('#c9b48f', 190), order: ['tiles', 'door', 'pool', 'box', 'lights'], layers: HAMMAM },
 };
 
-export function sceneSvg(placeId: string, done: (layer: string) => boolean): string {
-  const def = SCENES[placeId];
-  if (!def) return '';
-  const body = def.order.map((k) => def.layers[k](done(k))).join('');
-  return `<svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">${def.base}${body}</svg>`;
-}

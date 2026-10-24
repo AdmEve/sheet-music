@@ -2,7 +2,7 @@
 import { writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { DEFS } from '../src/art/defs';
-import { sceneSvg } from '../src/art/scenes';
+import { sceneSvg } from '../src/art/places';
 import { PLACES } from '../src/story/story';
 const { chromium } = createRequire(import.meta.url)('playwright');
 const out = process.argv[2] ?? 'scenes.png';

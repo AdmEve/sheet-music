@@ -2,7 +2,7 @@
 
 import { ICONS } from '../art/icons';
 import { portrait } from '../art/portraits';
-import { sceneSvg } from '../art/scenes';
+import { sceneSvg } from '../art/places';
 import { completeNextTask, introKey, markSeen, outroKey, progress } from '../game/progress';
 import { buzz } from '../platform/haptics';
 import { CAST, Line, PLACES, Place } from '../story/story';
@@ -43,8 +43,8 @@ export class PlaceScreen {
     const card = h('div', { class: 'card' });
     if (!p.next || !p.place) {
       card.append(
-        h('div', { class: 'tasktitle' }, 'فصل اول تموم شد!'),
-        h('p', { class: 'muted' }, 'کوچه نجات پیدا کرد. فصل دوم (عروسی!) به‌زودی با آپدیت بعدی میاد.'),
+        h('div', { class: 'tasktitle' }, 'فصل دوم تموم شد! 💍'),
+        h('p', { class: 'muted' }, 'کوچه نجات پیدا کرد و عروسی هم برگزار شد. فصل سوم («نامه‌ای از اون ور دنیا») به‌زودی با آپدیت بعدی میاد.'),
         h('button', { class: 'btn', onclick: back }, 'برگرد به بازی'),
       );
     } else {

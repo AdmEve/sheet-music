@@ -8,7 +8,8 @@ import { ART_ROWS } from '../src/art/index';
 import { svg } from '../src/art/kit';
 
 const out = process.argv[2] ?? 'gallery.png';
-const rows = ART_ROWS.map(({ title, items, names }) =>
+const only = process.env.ONLY?.split(',');
+const rows = ART_ROWS.filter((r) => !only || only.includes(r.id)).map(({ title, items, names }) =>
   `<h3>${title}</h3><div class="row">${items.map((it, i) => `<figure><div class="cell">${svg(it)}</div><figcaption>${names[i] ?? i + 1}</figcaption></figure>`).join('')}</div>`,
 ).join('');
 const html = `<!doctype html><meta charset="utf-8"><body dir="rtl" style="margin:12px;font-family:sans-serif;background:#f6ead2">${DEFS}

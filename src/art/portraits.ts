@@ -113,6 +113,12 @@ export const PORTRAITS: Record<string, string> = {
     scarf('#f4f0e6', `<path d="M30 34 q20 -10 40 0" fill="none" stroke="#c0392b" stroke-width="1.6" opacity=".5"/>`, '#d8d8d8') +
     face({ eyes: 'smile', brows: 'soft', mouth: 'smile', wrinkles: true, skin: '#eebd96', blush: true }) +
     scarfFront('#f4f0e6'),
+  fakhri:
+    bg('#e6f0e0', '#8fb98a') + shoulders('#1f3b2d', `<path d="M38 84 q12 8 24 0" fill="none" stroke="#f4f0e6" stroke-width="3" stroke-dasharray="1 4" stroke-linecap="round"/>`) +
+    scarf('#1f3b2d', `<path d="M28 34 Q50 16 72 34" fill="none" stroke="#f6c945" stroke-width="2.4"/><path d="M26 44 Q50 30 74 44" fill="none" stroke="#f6c945" stroke-width="1.4" opacity=".8"/>`, '#5a5a5a') +
+    face({ eyes: 'narrow', brows: 'raised', mouth: 'small', wrinkles: true, skin: '#efc39c', lashes: true }) +
+    `<circle cx="29" cy="62" r="2.6" fill="url(#gGold)" ${THIN}/><circle cx="71" cy="62" r="2.6" fill="url(#gGold)" ${THIN}/>` +
+    scarfFront('#1f3b2d'),
   farokhi:
     bg('#e6e6e6', '#9aa4ae') + shoulders('#1b1b1b', `<path d="M42 80 L50 92 L58 80 Z" fill="#fff" ${THIN}/><path d="M48 84 L52 84 L53 96 L50 99 L47 96 Z" fill="#c0392b" ${THIN}/>`) +
     face({ eyes: 'narrow', brows: 'stern', mouth: 'smirk' }) +

@@ -17,6 +17,7 @@ export const CAST: Record<string, Character> = {
   morteza: { id: 'morteza', name: 'آقا مرتضی', role: 'بقال سر کوچه' },
   golab: { id: 'golab', name: 'ننه‌گلاب', role: 'قدیمی‌ترین همسایه' },
   farokhi: { id: 'farokhi', name: 'آقای فرخی', role: 'سازنده‌ی پاساژ' },
+  fakhri: { id: 'fakhri', name: 'فخری‌خانم', role: 'مادر کاوه' },
 };
 
 export interface Line {
@@ -239,6 +240,113 @@ export const PLACES: Place[] = [
       { who: 'narges', text: 'چه شرطی؟' },
       { who: 'farokhi', text: 'یه چای از سماور حاج‌بابا. پدرم می‌گفت بهترین چای تهران بود.' },
       { who: 'mahin', text: 'این قصه تموم نشده‌ها… فصل بعد: عروسی! کی؟ نمی‌گم!' },
+    ],
+  },
+  // ------------------------------------------------------------------ season 2: عروسی
+  {
+    id: 'khastegari',
+    name: 'مهمانخانه‌ی نرگس',
+    intro: [
+      { who: 'mahin', text: 'نرگـــس! خبر داری؟ امشب خواستگاری داری!' },
+      { who: 'narges', text: 'چی؟! کی گفته؟' },
+      { who: 'mahin', text: 'خود کاوه به اوستا رضا گفت، اوستا رضا به آقا مرتضی، آقا مرتضی هم به من. یعنی کل محله.' },
+      { who: 'narges', text: 'وای… مهمانخانه هنوز پر از اسباب‌کشیه!' },
+      { who: 'golab', text: 'غصه نخور مادر. تا غروب وقت داریم. فقط مادرش… فخری‌خانم… خیلی سخت‌گیره.' },
+    ],
+    tasks: [
+      { id: 'khastegari.carpet', title: 'پهن کردن فرش کاشان', cost: 40, layer: 'carpet', after: [{ who: 'golab', text: 'این فرش جهیزیه‌ی مادرجونته. پنجاه سال پیش با همین فرش عروس شد.' }] },
+      { id: 'khastegari.curtain', title: 'پرده‌های ترمه', cost: 44, layer: 'curtain', after: [{ who: 'shirin', text: 'پرده‌ها رو که زدی، حالا نوبت موهای توئه. بشین ببینم!' }] },
+      { id: 'khastegari.fruit', title: 'چیدن میوه و شیرینی', cost: 48, layer: 'fruit', after: [{ who: 'morteza', text: 'این سیب‌ها رو از بهترین جعبه‌م دادم. قیمتش رو بعداً… نه، هدیه‌ست. هدیه!' }, { who: 'mahin', text: 'آقا مرتضی هدیه داد؟ دنیا داره تموم می‌شه!' }] },
+      { id: 'khastegari.tea', title: 'سماور و سینی چای', cost: 52, layer: 'tea', after: [{ who: 'fakhri', text: 'چای رو خود عروس خانم آورد؟ رنگش خوبه. ببینیم دستپختش هم همین‌قدر خوبه یا نه.' }] },
+      { id: 'khastegari.flowers', title: 'گلدان گل محمدی', cost: 56, layer: 'flowers', after: [{ who: 'kaveh', text: 'نرگس… من حرف زیادی بلد نیستم. فقط می‌دونم می‌خوام این کوچه رو با تو ادامه بدم.' }, { who: 'narges', text: '…' }, { who: 'mahin', text: 'بگو بله دیگه دختر! چایی‌مون یخ کرد!' }] },
+    ],
+    outro: [
+      { who: 'narges', text: 'بله.' },
+      { who: 'fakhri', text: 'مبارکه. ولی یه شرط دارم: شیرینی عروسی باید از بهترین قنادی تهران باشه.' },
+      { who: 'reza', text: 'قنادی محله ما ده ساله بسته‌ست خانم…' },
+      { who: 'narges', text: 'پس بازش می‌کنیم.' },
+    ],
+  },
+  {
+    id: 'sweetshop',
+    name: 'قنادی قدیمی محله',
+    intro: [
+      { who: 'golab', text: 'قنادی آقا جلال… زولبیا بامیه‌هاش تا سر خیابون بو می‌داد.' },
+      { who: 'reza', text: 'آقا جلال رفت شهرستان. کلیدش پیش منه. فقط بلد نیستم شیرینی بپزم!' },
+      { who: 'narges', text: 'یاد می‌گیریم. قابلمه‌ی شیره رو بیارید!' },
+    ],
+    tasks: [
+      { id: 'sweetshop.sign', title: 'تابلوی قنادی', cost: 50, layer: 'sign', after: [{ who: 'mahin', text: 'تابلوش رو که زدی، ده نفر اومدن پرسیدن «کی باز می‌کنید؟» من گفتم فردا. ببخشید!' }] },
+      { id: 'sweetshop.shelves', title: 'قفسه‌های شیشه‌ای', cost: 55, layer: 'shelves', after: [{ who: 'shirin', text: 'این شیشه‌های نقل و نبات رو ببین! مثل مغازه‌ی عروسکیه.' }] },
+      { id: 'sweetshop.oven', title: 'روشن کردن فر قنادی', cost: 60, layer: 'oven', after: [{ who: 'reza', text: 'فر قنادی با تنور سنگکی فرق داره… ولی بوی آرد همه‌جا یکیه.' }] },
+      { id: 'sweetshop.counter', title: 'ویترین شیرینی', cost: 65, layer: 'counter', after: [{ who: 'fakhri', text: 'باقلواش… قبول. سوهانش… قبول. ولی کیک عروسی چی؟' }] },
+      { id: 'sweetshop.cake', title: 'کیک سه‌طبقه‌ی عروسی', cost: 70, layer: 'cake', after: [{ who: 'fakhri', text: 'خب… خوبه. خیلی خوبه. از کاوه نگید که من گفتم.' }, { who: 'mahin', text: 'فخری‌خانم لبخند زد! ثبتش کنید تو تاریخ محله!' }] },
+    ],
+    outro: [
+      { who: 'shirin', text: 'نرگس، لباس عروس چی؟ نگو که هنوز نخریدی!' },
+      { who: 'narges', text: 'پول لباس‌های بالاشهر رو ندارم شیرین.' },
+      { who: 'golab', text: 'خیاطی ترمه‌دوز ته کوچه… چرخ خیاطی مادرجونت هنوز اونجاست.' },
+    ],
+  },
+  {
+    id: 'tailor',
+    name: 'خیاطی ترمه‌دوز',
+    intro: [
+      { who: 'golab', text: 'مادرجونت لباس عروس نصف دخترای این محله رو با همین چرخ دوخته بود.' },
+      { who: 'narges', text: 'من خیاطی بلد نیستم ننه‌گلاب…' },
+      { who: 'golab', text: 'من بلدم. دستام دیگه نمی‌لرزه وقتی برای نوه‌ی مریم‌خانم می‌دوزم.' },
+    ],
+    tasks: [
+      { id: 'tailor.machine', title: 'تعمیر چرخ خیاطی', cost: 60, layer: 'machine', after: [{ who: 'kaveh', text: 'یه قطره روغن، یه پیچ… چرخ مادرجون مثل روز اول کار می‌کنه.' }] },
+      { id: 'tailor.fabric', title: 'قفسه‌ی پارچه و ترمه', cost: 66, layer: 'fabric', after: [{ who: 'shirin', text: 'این ترمه‌ی سفید رو ببین! با گل‌دوزی نقره‌ای… محشره.' }] },
+      { id: 'tailor.dress', title: 'دوختن لباس عروس', cost: 72, layer: 'dress', after: [{ who: 'golab', text: 'آستین بلند، دامن بلند، تور ظریف… مثل لباس مادرجونت.' }, { who: 'narges', text: 'ننه‌گلاب… گریه‌م گرفت.' }] },
+      { id: 'tailor.mirror', title: 'آینه‌ی قدی', cost: 78, layer: 'mirror', after: [{ who: 'mahin', text: 'فخری‌خانم لباس رو دید، گفت «ایراد نداره». یعنی عاشقش شده!' }] },
+      { id: 'tailor.lights', title: 'چراغ‌های ویترین', cost: 84, layer: 'lights', after: [{ who: 'shirin', text: 'سه تا عروس دیگه هم سفارش لباس دادن! خیاطی دوباره راه افتاد.' }] },
+    ],
+    outro: [
+      { who: 'fakhri', text: 'عقد باید طبق رسم باشه. سفره‌ی عقد کامل: آینه، شمعدان، نقل، نبات… همه‌چی.' },
+      { who: 'narges', text: 'چشم فخری‌خانم.' },
+      { who: 'fakhri', text: 'می‌تونی بگی… مادر.' },
+    ],
+  },
+  {
+    id: 'aghd',
+    name: 'سفره‌ی عقد',
+    intro: [
+      { who: 'mahin', text: 'سفره‌ی عقد رو تو حیاط ننه‌گلاب می‌چینیم. من مسئول نقل و شایعات… یعنی نقل و شیرینی!' },
+      { who: 'golab', text: 'آینه و شمعدان مادرجونت تو صندوقخونه‌ست. صد ساله‌ست مادر.' },
+    ],
+    tasks: [
+      { id: 'aghd.cloth', title: 'پهن کردن سفره‌ی ترمه', cost: 70, layer: 'cloth', after: [{ who: 'shirin', text: 'ترمه‌ی کرمانی! این سفره عکس‌خورش عالیه.' }] },
+      { id: 'aghd.mirror', title: 'آینه و شمعدان', cost: 77, layer: 'mirror', after: [{ who: 'golab', text: 'اولین چیزی که عروس تو آینه می‌بینه، باید روشنایی باشه.' }] },
+      { id: 'aghd.bread', title: 'نان سنگک «مبارک باد»', cost: 84, layer: 'bread', after: [{ who: 'reza', text: 'رو این سنگک با زعفرون نوشتم «مبارک باد». بهترین نونیه که تو عمرم پختم.' }] },
+      { id: 'aghd.sweets', title: 'نقل، نبات و عسل', cost: 91, layer: 'sweets', after: [{ who: 'mahin', text: 'عسل رو گذاشتم که زندگی‌تون شیرین باشه. نقل رو هم که سرتون بریزیم!' }] },
+      { id: 'aghd.candles', title: 'گل و شمع', cost: 98, layer: 'candles', after: [{ who: 'kaveh', text: 'نرگس… آماده‌ای؟' }, { who: 'narges', text: 'با اجازه‌ی بزرگترها… بله!' }, { who: 'mahin', text: 'کِل بکشید! کِــــل!' }] },
+    ],
+    outro: [
+      { who: 'farokhi', text: 'تبریک می‌گم. اجازه بدید جشن عروسی رو من… تو کوچه بگیرم. به یاد پدرم و حاج‌بابا.' },
+      { who: 'narges', text: 'آقای فرخی؟!' },
+      { who: 'farokhi', text: 'کوچه‌ای که نجاتش دادید، لایق یه جشن درسته.' },
+    ],
+  },
+  {
+    id: 'wedding',
+    name: 'جشن عروسی در کوچه',
+    intro: [
+      { who: 'mahin', text: 'کل محله دعوتن! حتی پسرخاله‌ی آقا مرتضی که ده ساله باهاش قهره.' },
+      { who: 'morteza', text: 'آشتی می‌کنیم. ولی شامش با فرخیه، نه با من!' },
+    ],
+    tasks: [
+      { id: 'wedding.lights', title: 'چراغونی کوچه', cost: 80, layer: 'lights', after: [{ who: 'shirin', text: 'کوچه شبیه شب یلدا شده! نه، قشنگ‌تر!' }] },
+      { id: 'wedding.tables', title: 'میزهای مهمون‌ها', cost: 88, layer: 'tables', after: [{ who: 'reza', text: 'سیصد تا سنگک داغ. دستام دیگه حس ندارن، دلم ولی خوشه.' }] },
+      { id: 'wedding.music', title: 'تار و تنبک', cost: 96, layer: 'music', after: [{ who: 'golab', text: 'این همون ترانه‌ایه که حاج‌بابا و مادرجون باهاش رقصیدن.' }] },
+      { id: 'wedding.arch', title: 'طاق گل عروس', cost: 104, layer: 'arch', after: [{ who: 'fakhri', text: 'نرگس… قدمت به خانواده‌مون خوش باشه. مادرجونت حتماً الان خوشحاله.' }] },
+      { id: 'wedding.fireworks', title: 'آتش‌بازی', cost: 112, layer: 'fireworks', after: [{ who: 'kaveh', text: 'این کوچه، این آدم‌ها، تو… هیچ پاساژی جاشونو نمی‌گیره.' }, { who: 'narges', text: 'خونه یعنی همین.' }] },
+    ],
+    outro: [
+      { who: 'mahin', text: 'خب بچه‌ها، عروسی تموم شد. ولی من یه خبری دارم…' },
+      { who: 'narges', text: 'باز چی شده خاله؟' },
+      { who: 'mahin', text: 'یه نفر از اون ور دنیا یه نامه برای حاج‌بابا فرستاده! فصل بعد…' },
     ],
   },
 ];

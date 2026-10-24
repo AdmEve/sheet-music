@@ -3,6 +3,7 @@ import { ChainId, CHAINS, Item } from '../game/items';
 import { BREAD, GEN_BREAD, GEN_TEA, TEA } from './chainsA';
 import { GARDEN, GEN_GARDEN, GEN_POTTERY, GEN_TEXTILE, GEN_TOOLS, POTTERY, TEXTILE, TOOLS } from './chainsB';
 import { CHEST, COINS, ENERGY } from './chainsC';
+import { GEN_SWEETS, SWEETS } from './chainsD';
 
 const ART: Record<ChainId, string[]> = {
   tea: TEA,
@@ -11,12 +12,14 @@ const ART: Record<ChainId, string[]> = {
   tools: TOOLS,
   textile: TEXTILE,
   pottery: POTTERY,
+  sweets: SWEETS,
   genTea: GEN_TEA,
   genBread: GEN_BREAD,
   genGarden: GEN_GARDEN,
   genTools: GEN_TOOLS,
   genTextile: GEN_TEXTILE,
   genPottery: GEN_POTTERY,
+  genSweets: GEN_SWEETS,
   chest: CHEST,
   coins: COINS,
   energy: ENERGY,
@@ -27,6 +30,7 @@ export function itemArt(it: Item): string {
 }
 
 export const ART_ROWS = (Object.keys(ART) as ChainId[]).map((id) => ({
+  id,
   title: CHAINS[id].name,
   items: ART[id],
   names: CHAINS[id].levels,

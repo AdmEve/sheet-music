@@ -2,7 +2,7 @@
 // generator taps (energy) and orders it took. Usage: npx tsx scripts/simulate.ts [games]
 
 import { CHAINS, GENERATOR_CHAINS, Item, canMerge, isGenerator, sameItem } from '../src/game/items';
-import { CELLS, GameState, deliver, drop, findForOrder, newGame, sell, tap } from '../src/game/model';
+import { CELLS, GameState, deliver, drop, findForOrder, newGame, sell, tap, tickBubbles } from '../src/game/model';
 import { completeNextTask, progress } from '../src/game/progress';
 import { PLACES } from '../src/story/story';
 
@@ -25,7 +25,7 @@ function step(s: GameState, now: number): boolean {
   const needs = neededFor(s);
   const isNeeded = (it: Item) => needs.some((n) => sameItem(n, it));
   const free: number[] = [];
-  for (let i = 0; i < CELLS; i++) if (s.board[i].item && s.board[i].lock !== 'box') free.push(i);
+  for (let i = 0; i < CELLS; i++) if (s.board[i].item && s.board[i].lock !== 'box' && s.board[i].lock !== 'bubble') free.push(i);
   let best: [number, number, number] | null = null;
   for (const a of free) for (const b of free) {
     if (a === b) continue;
@@ -77,8 +77,10 @@ for (let g = 0; g < GAMES; g++) {
   let energyUsed = 0, placeStart = { taps: 0, orders: 0, time: 0 };
   let idx = 0;
   for (let it = 0; it < 200000 && idx < PLACES.length; it++) {
+    tickBubbles(s, now);
     const before = s.energy;
     const acted = step(s, now);
+    now += 4_000; // a few seconds per action, so bubbles expire like in real play
     if (s.energy < before) energyUsed += before - s.energy;
     // buy tasks as soon as affordable
     let r = completeNextTask(s);
