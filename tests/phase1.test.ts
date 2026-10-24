@@ -139,3 +139,32 @@ describe('clock set back', () => {
     expect(s.board[0].until! - T0).toBeLessThanOrEqual(5 * 60_000);
   });
 });
+
+describe('late-game orders and level-ups', () => {
+  it('never asks for the two top levels of a chain', async () => {
+    const { fillOrders } = await import('../src/game/model');
+    const s = emptyGame();
+    s.scriptStep = 99;
+    s.level = 40;
+    for (let k = 0; k < 200; k++) {
+      s.orders = [];
+      fillOrders(s);
+      for (const n of s.orders.flatMap((o) => o.needs)) {
+        expect(n.level).toBeGreaterThanOrEqual(2);
+        expect(n.level).toBeLessThanOrEqual(maxLevel(n.chain) - 2);
+      }
+    }
+  });
+
+  it('caps the gems a level-up gives', async () => {
+    const { LEVEL_GEMS_MAX, deliver, xpForLevel } = await import('../src/game/model');
+    const s = emptyGame();
+    s.level = 40;
+    s.xp = xpForLevel(41) - 1;
+    s.board[0] = { item: { chain: 'tea', level: 2 } };
+    s.orders = [{ id: 1, who: 'mahin', needs: [{ chain: 'tea', level: 2 }], coins: 1, stars: 5 }];
+    const ev = deliver(s, 1);
+    const up = ev.find((e) => e.type === 'levelUp') as { gems: number } | undefined;
+    expect(up?.gems).toBe(LEVEL_GEMS_MAX);
+  });
+});

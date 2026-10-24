@@ -56,7 +56,7 @@
 4. به سلیقه‌ی خودت بچینش (`4-decor`)
 5. شب یلدا و نوروز تو محله (`5-yalda`)
 6. مسابقه با کوچه‌های بغل! (`6-race`)
-7. فصل سوم: نامه‌ای از اون ور دنیا 💌 (`7-season3`)
+7. کوچه رو از تخریب نجات بده! (`7-season5`)
 8. ۲۵ قسمت، پنج فصل، یه محله (`8-map`)
 
 **Content rating:** 3+ (no violence, no gambling, all female characters wear hijab).

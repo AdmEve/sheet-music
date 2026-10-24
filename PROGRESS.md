@@ -137,6 +137,11 @@ saves are written into localStorage `mahalle.save.v1`.
       teahouse rooftop at night, a Qajar cistern in cutaway, the neighbourhood museum and
       the national-registration street party; «چراغ» lamp chain + coppersmith's anvil at
       level 30); the map holds 25 places; Season 6 teased (Shirin's suitor from Tabriz)
+- [x] Late-game balance: orders never ask for a chain's two top levels (and the second item
+      of a pair is a level easier) — the sim had 8 of 20 games deadlocked on orders like
+      "two tea level 10"; now 18 of 20 finish all 25 episodes at the same energy per
+      episode. Level-up gems capped at 20 (were 5 + level, i.e. free refills late on).
+      Store shots 7 and 8 now show Season 5 and the 25-place map.
 
 Next (in order):
 1. Phase 13: polish pass (store screenshots for the new seasons, perf re-check with 25

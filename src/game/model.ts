@@ -174,6 +174,7 @@ export function nearestEmpty(s: GameState, from: number): number | null {
   return best;
 }
 
+export const LEVEL_GEMS_MAX = 20;
 export const XP_LEVELS = [0, 6, 18, 36, 62, 96, 140, 195, 260, 340, 430, 540, 660, 800, 960];
 export function xpForLevel(level: number): number {
   return level - 1 < XP_LEVELS.length ? XP_LEVELS[level - 1] : XP_LEVELS[XP_LEVELS.length - 1] + (level - XP_LEVELS.length) * 180;
@@ -546,7 +547,8 @@ function gainXp(s: GameState, xp: number): GameEvent[] {
   const events: GameEvent[] = [];
   while (s.xp >= xpForLevel(s.level + 1)) {
     s.level++;
-    const gems = 5 + s.level;
+    // Grows with the early levels, then holds: late levels must not hand out free refills.
+    const gems = Math.min(LEVEL_GEMS_MAX, 5 + s.level);
     s.gems += gems;
     addEnergy(s, 20);
     const gift = levelGift(s.level);
@@ -631,8 +633,10 @@ function generateOrder(s: GameState): Order {
   const needs: Need[] = [];
   for (let k = 0; k < count; k++) {
     const chain = pick(s, chains);
-    // Target level grows slowly with player level and stays inside the chain.
-    const top = Math.min(maxLevel(chain), 3 + Math.floor(s.level / 2));
+    // Target level grows slowly with player level. The two top levels of a chain are
+    // collection pieces, never asked for: one order must not cost a day of energy or fill
+    // the board with half-merged items. The second item of a pair is a level easier.
+    const top = Math.min(maxLevel(chain) - 2, 3 + Math.floor(s.level / 2)) - k;
     const low = Math.max(2, top - 3);
     needs.push({ chain, level: low + Math.floor(rand(s) * (top - low + 1)) });
   }

@@ -119,14 +119,16 @@ const shots: Shot[] = [
     act: async (page) => { await page.waitForTimeout(1500); await skipStory(page); await page.waitForTimeout(400); } },
   { name: '6-race', caption: 'مسابقه با کوچه‌های بغل!', sub: 'اول کی سفارش‌ها رو تحویل می‌ده؟', state: raceState(),
     act: async (page) => { await ready(page); await page.click('#side-race', { force: true }); await page.waitForTimeout(500); } },
-  { name: '7-season3', caption: 'فصل سوم: نامه‌ای از اون ور دنیا 💌', sub: 'بعد از چهل سال، عمو بهمن برمی‌گرده…', state: lateState(14, 3),
+  { name: '7-season5', caption: 'کوچه رو از تخریب نجات بده!', sub: 'یه آب‌انبار قاجاری زیر خیابون پیدا شد…', state: lateState(23, 1),
     act: async (page) => {
       await ready(page);
       await page.click('#nav-alley', { force: true }); await page.waitForTimeout(500); await skipStory(page);
-      await page.evaluate(() => (window as any).__showLine?.('bahman'));
+      // Revisit the restored cistern (episode 23) through its chip.
+      await page.click('.episodes .ep:nth-child(23)', { force: true }); await page.waitForTimeout(600);
+      await page.evaluate(() => (window as any).__showLine?.('kaveh'));
       await page.waitForTimeout(900);
     } },
-  { name: '8-map', caption: '۱۵ قسمت، سه فصل، یه محله', sub: 'آفلاین، بدون تبلیغ اجباری', state: lateState(10, 2),
+  { name: '8-map', caption: '۲۵ قسمت، پنج فصل، یه محله', sub: 'آفلاین، بدون تبلیغ اجباری', state: lateState(20, 2),
     act: async (page) => {
       await ready(page);
       await page.click('#nav-alley', { force: true }); await page.waitForTimeout(500); await skipStory(page);
@@ -148,6 +150,7 @@ for (const shot of shots) {
       mahin: 'خبر داغ! زن فرخی دیروز با یه ماشین به این گندگی اومده بود سنگک بخره!',
       farokhi: 'همه‌چی فروشیه خانم. حتی این کوچه.',
       bahman: 'چهل سال… درخت توت حیاط هنوز هست. ولی خونه‌ی پدری…',
+      kaveh: 'نور از نورگیر می‌افته رو آب. این‌ها رو دویست سال پیش حساب کردن.',
     };
     (window as any).__showLine = (who = 'mahin') => document.dispatchEvent(new CustomEvent('debug-line', { detail: { who, text: LINES[who] } }));
   });
