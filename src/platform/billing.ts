@@ -33,9 +33,12 @@ interface BazaarPlugin {
   consume(opts: { purchaseToken: string }): Promise<void>;
   /** Purchases made but not yet consumed (e.g. app killed mid-purchase). */
   pending(): Promise<{ purchases: { sku: string; purchaseToken: string }[] }>;
+  /** Opens Bazaar's rating screen for this app. */
+  rate(): Promise<void>;
 }
 
-const Bazaar = registerPlugin<BazaarPlugin>('Bazaar');
+/** The one registration of the native Bazaar plugin (registering twice breaks it). */
+export const Bazaar = registerPlugin<BazaarPlugin>('Bazaar');
 let connected = false;
 
 export function billingAvailable(): boolean {

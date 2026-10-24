@@ -1,14 +1,10 @@
 // Rating on Cafe Bazaar and sharing the game.
 
-import { Capacitor, registerPlugin } from '@capacitor/core';
+import { Capacitor } from '@capacitor/core';
 import { Share } from '@capacitor/share';
+import { Bazaar } from './billing';
 
 export const STORE_URL = 'https://cafebazaar.ir/app/com.admeve.mahalle';
-
-interface BazaarRate {
-  rate(): Promise<void>;
-}
-const Bazaar = registerPlugin<BazaarRate>('Bazaar');
 
 export async function rateOnBazaar(): Promise<void> {
   if (Capacitor.isNativePlatform()) {

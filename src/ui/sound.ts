@@ -3,7 +3,11 @@
 
 let ctx: AudioContext | null = null;
 let enabled = true;
-export const setSound = (on: boolean) => (enabled = on);
+export const setSound = (on: boolean) => {
+  enabled = on;
+  if (on) startMusic();
+  else stopMusic();
+};
 export const soundOn = () => enabled;
 
 function ac(): AudioContext | null {
@@ -68,3 +72,92 @@ export const sfx = {
   task: () => [7, 4, 2, 4, 7, 11].forEach((s, i) => pluck(freq(s), i * 0.11, 0.15)),
   page: () => tone(880, 0, 0.05, 'sine', 0.06),
 };
+
+// ---------------------------------------------------------------- background music
+// A slow santur-like phrase in Shur over a soft drone, generated live and varied each loop.
+
+let musicOn = false; // switched on after the first user gesture (see main.ts)
+let musicTimer = 0;
+let droneNodes: { osc: OscillatorNode; gain: GainNode }[] = [];
+export const musicEnabled = () => musicOn;
+
+const PHRASES = [
+  [0, 2, 3, 2, 0, -1, 0, null, 3, 4, 3, 2, 3, null, 0, null],
+  [4, 3, 2, 3, 4, 5, 4, null, 3, 2, 0, 2, 0, null, null, null],
+  [0, 3, 2, 3, 0, 2, 3, 4, 5, 4, 3, 2, 3, 2, 0, null],
+];
+
+function musicNote(step: number, at: number, vol: number): void {
+  const a = ac();
+  if (!a) return;
+  const f = (BASE / 2) * 2 ** (SHUR[Math.max(0, step + 1)] / 12);
+  const t = a.currentTime + at;
+  for (const [mul, v, d] of [[1, vol, 1.1], [2, vol * 0.25, 0.5], [1.004, vol * 0.4, 0.9]] as const) {
+    const o = a.createOscillator();
+    const g = a.createGain();
+    o.type = mul === 1 ? 'triangle' : 'sine';
+    o.frequency.value = f * mul;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(v, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    o.connect(g).connect(a.destination);
+    o.start(t);
+    o.stop(t + d + 0.05);
+  }
+}
+
+function startDrone(): void {
+  const a = ac();
+  if (!a || droneNodes.length) return;
+  for (const [f, v] of [[BASE / 4, 0.018], [(BASE / 4) * 1.5, 0.01]] as const) {
+    const osc = a.createOscillator();
+    const gain = a.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = f;
+    gain.gain.setValueAtTime(0.0001, a.currentTime);
+    gain.gain.exponentialRampToValueAtTime(v, a.currentTime + 3);
+    osc.connect(gain).connect(a.destination);
+    osc.start();
+    droneNodes.push({ osc, gain });
+  }
+}
+
+function stopDrone(): void {
+  for (const { osc, gain } of droneNodes) {
+    try {
+      gain.gain.cancelScheduledValues(0);
+      gain.gain.value = 0;
+      osc.stop();
+    } catch {
+      /* already stopped */
+    }
+  }
+  droneNodes = [];
+}
+
+export function startMusic(): void {
+  if (!musicOn || !enabled || musicTimer) return;
+  startDrone();
+  const beat = 0.46;
+  let k = 0;
+  const loop = () => {
+    const phrase = PHRASES[k++ % PHRASES.length];
+    phrase.forEach((n, i) => {
+      if (n !== null) musicNote(n + (Math.random() < 0.12 ? 1 : 0), i * beat, 0.05);
+    });
+  };
+  loop();
+  musicTimer = window.setInterval(loop, PHRASES[0].length * beat * 1000 + 1400);
+}
+
+export function stopMusic(): void {
+  clearInterval(musicTimer);
+  musicTimer = 0;
+  stopDrone();
+}
+
+export function setMusic(on: boolean): void {
+  musicOn = on;
+  if (on) startMusic();
+  else stopMusic();
+}

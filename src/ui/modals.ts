@@ -16,14 +16,15 @@ import { rateOnBazaar, shareGame } from '../platform/social';
 import { writeSetting } from '../platform/storage';
 import type { App } from './app';
 import { add, clear, fa, faNum, faTime, h, svgIcon } from './dom';
-import { setSound, sfx, soundOn } from './sound';
+import { musicEnabled, setMusic, setSound, sfx, soundOn } from './sound';
 
 export const REFILL_GEMS = 20;
 const today = () => new Date().toLocaleDateString('en-CA');
 
 let hapticsOn = true;
-export const initToggles = (sound: boolean, haptics: boolean) => {
+export const initToggles = (sound: boolean, haptics: boolean, music: boolean) => {
   setSound(sound);
+  setMusic(music);
   setHaptics(haptics);
   hapticsOn = haptics;
 };
@@ -271,6 +272,7 @@ export class Modals {
         return btn;
       };
       body.append(
+        toggle('موسیقی', musicEnabled, (v) => { setMusic(v); writeSetting('music', v ? '1' : '0'); }),
         toggle('صدا', soundOn, (v) => { setSound(v); writeSetting('sound', v ? '1' : '0'); }),
         toggle('لرزش', () => hapticsOn, (v) => { hapticsOn = v; setHaptics(v); writeSetting('haptics', v ? '1' : '0'); }),
         h('button', { class: 'btn gold', onclick: () => rateOnBazaar() }, '⭐ امتیاز در بازار'),

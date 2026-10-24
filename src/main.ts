@@ -13,13 +13,15 @@ import { loadSave, loadSetting } from './platform/storage';
 import { App } from './ui/app';
 import { h, svgIcon } from './ui/dom';
 import { initToggles } from './ui/modals';
+import { setMusic, startMusic, stopMusic } from './ui/sound';
 
 const dateKey = (d: Date) => d.toLocaleDateString('en-CA');
 
 async function boot(): Promise<void> {
   document.body.insertAdjacentHTML('afterbegin', DEFS);
-  const [save, sound, haptics] = await Promise.all([loadSave(), loadSetting('sound'), loadSetting('haptics')]);
-  initToggles(sound !== '0', haptics !== '0');
+  const [save, sound, haptics, music] = await Promise.all([loadSave(), loadSetting('sound'), loadSetting('haptics'), loadSetting('music')]);
+  // Music starts only after the splash tap (browsers/WebViews need a user gesture).
+  initToggles(sound !== '0', haptics !== '0', false);
   const fresh = !save;
   const state = loadState(save) ?? newGame((Math.random() * 2 ** 32) >>> 0, Date.now());
   tickEnergy(state, Date.now());
@@ -29,6 +31,7 @@ async function boot(): Promise<void> {
   app.mount();
 
   await splash();
+  setMusic(music !== '0');
 
   // Store connections happen in the background; the game never waits on them.
   connectBilling().then(async (ok) => {
@@ -68,10 +71,12 @@ async function boot(): Promise<void> {
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') {
       app.saveNow();
+      stopMusic();
       const s = app.s;
       scheduleReminders(s.energy >= ENERGY_CAP ? null : s.energyAt + (ENERGY_CAP - s.energy) * ENERGY_REGEN_MS);
     } else {
       clearReminders();
+      startMusic();
       tickEnergy(app.s, Date.now());
       app.renderHud();
     }
