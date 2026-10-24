@@ -172,7 +172,9 @@ saves are written into localStorage `mahalle.save.v1`.
       behind the cistern, the stands, the «جام محلات» final under floodlights and the
       victory parade; «فوتبال» chain + sports bag at level 45); map of 40 places; Season 9
       teased (a Nowruz trip north for Golab's wish). Balance bot fixed: it counted a need
-      as met when one of two was on the board, and sells top-level items
+      as met when one of two was on the board, and sells top-level items. With it, 20 of 20
+      simulated games finish all 40 episodes; energy-regen hours per episode rise smoothly
+      from 0 (teahouse) to ~35 (wedding), ~65 (Season 5 end) and ~99 (Season 8 end)
 
 Next (in order):
 1. Phase 18: Season 9 «سفر شمال»
