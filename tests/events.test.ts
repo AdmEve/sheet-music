@@ -31,7 +31,9 @@ describe('event schedule', () => {
     expect(eventForDay(new Date(2026, 9, 30)).id).toBe(sat.id); // Friday, same week
     const next = eventForDay(new Date(2026, 9, 31));
     expect(next.id).toBe('week-2026-10-31');
-    expect(next.theme).not.toBe(sat.theme); // themes alternate
+    expect(next.theme).not.toBe(sat.theme); // themes rotate
+    const four = [0, 7, 14, 21].map((d) => eventForDay(new Date(2026, 9, 24 + d)).theme);
+    expect(new Set(four).size).toBe(4);
   });
 
   it('finds the end of the running event', () => {

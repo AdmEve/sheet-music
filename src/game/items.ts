@@ -6,7 +6,8 @@ export type ChainId =
   | 'tea' | 'bread' | 'garden' | 'tools' | 'textile' | 'pottery' | 'sweets' | 'post'
   | 'genTea' | 'genBread' | 'genGarden' | 'genTools' | 'genTextile' | 'genPottery' | 'genSweets' | 'genPost'
   | 'chest' | 'coins' | 'energy'
-  | 'yalda' | 'genYalda' | 'nowruz' | 'genNowruz' | 'kite' | 'genKite' | 'lavashak' | 'genLavashak';
+  | 'yalda' | 'genYalda' | 'nowruz' | 'genNowruz' | 'kite' | 'genKite' | 'lavashak' | 'genLavashak'
+  | 'ash' | 'genAsh' | 'icecream' | 'genIcecream';
 
 export interface ChainDef {
   id: ChainId;
@@ -83,6 +84,10 @@ export const CHAINS: Record<ChainId, ChainDef> = {
   genKite: { id: 'genKite', name: 'جعبه‌ی کاردستی', levels: ['جعبه‌ی کاردستی'], produces: 'kite', event: 'kite' },
   lavashak: { id: 'lavashak', name: 'لواشک', levels: ['آلوچه', 'زردآلو', 'کاسه‌ی آلو', 'لواشک لوله‌ای', 'سینی لواشک', 'سبد سوغاتی'], event: 'lavashak' },
   genLavashak: { id: 'genLavashak', name: 'زنبیل میوه', levels: ['زنبیل میوه'], produces: 'lavashak', event: 'lavashak' },
+  ash: { id: 'ash', name: 'آش رشته', levels: ['سبزی آش', 'رشته', 'کاسه‌ی کشک', 'پیازداغ و نعناداغ', 'کاسه‌ی آش رشته', 'دیگ آش'], event: 'ash' },
+  genAsh: { id: 'genAsh', name: 'سبد سبزی', levels: ['سبد سبزی'], produces: 'ash', event: 'ash' },
+  icecream: { id: 'icecream', name: 'بستنی سنتی', levels: ['شیشه‌ی شیر', 'زعفران', 'بستنی نونی', 'فالوده', 'بستنی سنتی', 'گاری بستنی'], event: 'icecream' },
+  genIcecream: { id: 'genIcecream', name: 'بستنی‌ساز', levels: ['بستنی‌ساز دستی'], produces: 'icecream', event: 'icecream' },
 };
 
 export const PRODUCT_CHAINS: ChainId[] = ['tea', 'bread', 'garden', 'tools', 'textile', 'pottery', 'sweets', 'post'];

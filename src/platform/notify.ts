@@ -1,11 +1,14 @@
-// Offline local notifications: energy full, and tomorrow's daily gift. Scheduled when the
-// app goes to the background, cleared when it comes back.
+// Offline local notifications: energy full, tomorrow's daily gift, an event about to end,
+// and a race that has finished. Scheduled when the app goes to the background, cleared
+// when it comes back.
 
 import { Capacitor } from '@capacitor/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
 
 const ENERGY_ID = 1;
 const DAILY_ID = 2;
+const EVENT_ID = 3;
+const RACE_ID = 4;
 let permitted: boolean | null = null;
 
 /** Checks permission; only prompts the player when `ask` is true. */
@@ -27,19 +30,35 @@ export async function askNotifications(): Promise<void> {
   await allowed(true);
 }
 
-export async function scheduleReminders(energyFullAt: number | null): Promise<void> {
+export interface Reminders {
+  energyFullAt: number | null;
+  /** The live event, if the player still has milestones to win. */
+  event?: { title: string; endsAt: number } | null;
+  /** When the running race closes (only if the player has not finished it). */
+  raceEndsAt?: number | null;
+}
+
+const HOUR = 3_600_000;
+
+export async function scheduleReminders(r: Reminders): Promise<void> {
   if (!(await allowed(false))) return;
   const now = Date.now();
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   tomorrow.setHours(19, 30, 0, 0);
   const list = [];
-  if (energyFullAt && energyFullAt - now > 10 * 60_000) {
-    list.push({ id: ENERGY_ID, title: 'انرژی پر شد! ⚡', body: 'سماور قهوه‌خانه جوش اومده… همسایه‌ها منتظرتن!', schedule: { at: new Date(energyFullAt) } });
+  if (r.energyFullAt && r.energyFullAt - now > 10 * 60_000) {
+    list.push({ id: ENERGY_ID, title: 'انرژی پر شد! ⚡', body: 'سماور قهوه‌خانه جوش اومده… همسایه‌ها منتظرتن!', schedule: { at: new Date(r.energyFullAt) } });
   }
   list.push({ id: DAILY_ID, title: 'هدیه‌ی امروزت آماده‌ست 🎁', body: 'خاله مهین یه خبر داغ داره… سر بزن!', schedule: { at: tomorrow } });
+  if (r.event && r.event.endsAt - 6 * HOUR > now + HOUR) {
+    list.push({ id: EVENT_ID, title: `«${r.event.title}» داره تموم می‌شه ⏳`, body: 'فقط ۶ ساعت وقت داری جایزه‌ها و جامش رو ببری!', schedule: { at: new Date(r.event.endsAt - 6 * HOUR) } });
+  }
+  if (r.raceEndsAt && r.raceEndsAt > now + 5 * 60_000) {
+    list.push({ id: RACE_ID, title: 'مسابقه‌ی محله تموم شد 🏁', body: 'ببین نفر چندم شدی و جایزه‌ت رو بگیر!', schedule: { at: new Date(r.raceEndsAt) } });
+  }
   try {
-    await LocalNotifications.cancel({ notifications: [{ id: ENERGY_ID }, { id: DAILY_ID }] });
+    await LocalNotifications.cancel({ notifications: [{ id: ENERGY_ID }, { id: DAILY_ID }, { id: EVENT_ID }, { id: RACE_ID }] });
     await LocalNotifications.schedule({ notifications: list });
   } catch {
     /* notifications are a bonus; never break the game */
@@ -49,7 +68,7 @@ export async function scheduleReminders(energyFullAt: number | null): Promise<vo
 export async function clearReminders(): Promise<void> {
   if (!permitted) return;
   try {
-    await LocalNotifications.cancel({ notifications: [{ id: ENERGY_ID }] });
+    await LocalNotifications.cancel({ notifications: [{ id: ENERGY_ID }, { id: EVENT_ID }, { id: RACE_ID }] });
   } catch {
     /* ignore */
   }

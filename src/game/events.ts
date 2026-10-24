@@ -1,5 +1,5 @@
 // Live events, scheduled offline from the device date. One event is always running:
-// a weekly theme (Saturday to Friday, alternating kites / lavashak), replaced by Yalda
+// a weekly theme (Saturday to Friday, rotating lavashak / kites / ash / ice cream), replaced by Yalda
 // (25 Azar – 1 Dey) and Nowruz (25 Esfand – 13 Farvardin) when they come round.
 //
 // While an event runs, its generator sits on the board. Tapping it (1 energy) drops event
@@ -13,7 +13,7 @@ import { CHAINS, ChainId, Item, maxLevel } from './items';
 import type { GameState } from './model';
 import type { PassReward } from './pass';
 
-export type ThemeId = 'yalda' | 'nowruz' | 'kite' | 'lavashak';
+export type ThemeId = 'yalda' | 'nowruz' | 'kite' | 'lavashak' | 'ash' | 'icecream';
 
 export interface Theme {
   id: ThemeId;
@@ -65,7 +65,29 @@ export const THEMES: Record<ThemeId, Theme> = {
       { who: 'narges', text: 'زنبیل میوه آماده‌ست. آلوچه‌ها رو ادغام کن تا سبد سوغاتی درست شه!' },
     ],
   },
+  ash: {
+    id: 'ash', title: 'آش‌پزون محله', chain: 'ash', gen: 'genAsh',
+    blurb: 'یه دیگ آش رشته برای کل کوچه، با کشک و پیازداغ و نعناداغ.',
+    intro: [
+      { who: 'golab', text: 'هوا سرد شده. بیاید یه دیگ آش رشته بار بذاریم، برای کل محله!' },
+      { who: 'reza', text: 'رشته‌ش با من. نون سنگک داغ هم کنارش!' },
+      { who: 'mahin', text: 'کشکش رو من میارم. پیازداغش هم با آقا مرتضی… مجانی!' },
+      { who: 'morteza', text: 'مجانی؟! … باشه، برای محله. ولی فقط همین یه بار!' },
+    ],
+  },
+  icecream: {
+    id: 'icecream', title: 'بستنی سنتی', chain: 'icecream', gen: 'genIcecream',
+    blurb: 'بستنی زعفرونی با پسته و فالوده‌ی شیرازی، برای همه‌ی بچه‌های کوچه.',
+    intro: [
+      { who: 'shirin', text: 'کی پایه‌ست بستنی سنتی درست کنیم؟ زعفرونی، با پسته!' },
+      { who: 'kaveh', text: 'بستنی‌ساز دستی پدربزرگم رو دارم. فقط باید بچرخونیمش… خیلی!' },
+      { who: 'narges', text: 'بستنی‌ساز رو گذاشتم کنار مولدها. شیر و زعفرون رو ادغام کن تا گاری بستنی راه بیفته!' },
+    ],
+  },
 };
+
+/** Weekly themes in turn (week counted from the Unix epoch, Saturday-based). */
+const WEEKLY: ThemeId[] = ['lavashak', 'kite', 'ash', 'icecream'];
 
 export const EVENT_LEVEL = 5;
 export const EVENT_ORDER = 3;
@@ -111,7 +133,7 @@ export function eventForDay(d: Date): { id: string; theme: ThemeId } {
   // Persian week: Saturday (getDay 6) to Friday.
   const sat = new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 1) % 7));
   const week = Math.floor(Date.UTC(sat.getFullYear(), sat.getMonth(), sat.getDate()) / DAY_MS / 7);
-  return { id: `week-${dayKey(sat)}`, theme: week % 2 ? 'kite' : 'lavashak' };
+  return { id: `week-${dayKey(sat)}`, theme: WEEKLY[week % WEEKLY.length] };
 }
 
 /** Local midnight when the event running at `now` gives way to the next one. */

@@ -218,3 +218,85 @@ export const GEN_LAVASHAK: string[] = [
     [58, 66, 74, 82].map((y) => `<path d="M${22 + (y - 50) * 0.16} ${y} L${78 - (y - 50) * 0.16} ${y}" stroke="#8a5a22" stroke-width="1.5" opacity=".7"/>`).join('') +
     `<rect x="42" y="64" width="16" height="10" rx="3" fill="url(#gRed)" ${THIN}/>`,
 ];
+
+// ---------------------------------------------------------------- ash reshteh
+
+const potBowl = (fill = 'url(#gCream)', y = 58) =>
+  `<path d="M18 ${y} L82 ${y} C80 ${y + 22} 66 ${y + 28} 50 ${y + 28} C34 ${y + 28} 20 ${y + 22} 18 ${y} Z" fill="${fill}" ${O}/>` +
+  `<path d="M24 ${y + 9} Q50 ${y + 15} 76 ${y + 9}" fill="none" stroke="#3a76c4" stroke-width="2"/>`;
+
+const ashSurface = (y = 58) =>
+  `<ellipse cx="50" cy="${y}" rx="32" ry="7" fill="#8a9a4a" ${THIN}/>` +
+  `<path d="M28 ${y - 1} q6 -4 12 0 M48 ${y + 2} q6 -4 12 0" fill="none" stroke="#f2e6cc" stroke-width="3" stroke-linecap="round"/>` +
+  `<path d="M60 ${y - 3} q5 -2 8 1" fill="none" stroke="#a5621f" stroke-width="3" stroke-linecap="round"/>` +
+  `<circle cx="38" cy="${y + 1}" r="1.6" fill="#3fae5a"/><circle cx="56" cy="${y - 2}" r="1.6" fill="#3fae5a"/>`;
+
+export const ASH: string[] = [
+  // 1 سبزی آش
+  shadow(50, 86, 26) + [[-30, 1], [-10, 1.1], [12, 1], [30, 0.9]].map(([r, sc]) => leaf(50, 74, -90 + r, sc * 1.6)).join('') +
+    `<path d="M40 76 Q50 70 60 76" fill="none" stroke="#e0303f" stroke-width="3"/>`,
+  // 2 رشته
+  shadow(50, 84, 30) + `<rect x="24" y="44" width="52" height="36" rx="4" fill="url(#gPaper)" ${O}/>` +
+    Array.from({ length: 9 }, (_, i) => `<path d="M${30 + i * 5} 40 Q${32 + i * 5} 60 ${28 + i * 5} 82" fill="none" stroke="#e9d6a8" stroke-width="2.4" stroke-linecap="round"/>`).join('') +
+    `<rect x="24" y="56" width="52" height="10" fill="url(#gRed)" ${THIN}/>`,
+  // 3 کاسه‌ی کشک
+  shadow(50, 88, 28) + bowl('url(#gTurq)', 56) + `<ellipse cx="50" cy="56" rx="30" ry="6" fill="#fffdf6" ${THIN}/>` + `<path d="M40 54 q10 -6 20 0" fill="none" stroke="#e8dcc6" stroke-width="2"/>`,
+  // 4 پیازداغ و نعناداغ
+  shadow(50, 86, 30) + `<ellipse cx="50" cy="70" rx="32" ry="10" fill="url(#gSteel)" ${O}/>` +
+    Array.from({ length: 10 }, (_, i) => `<path d="M${30 + i * 4} ${66 + (i % 3) * 2} q4 -4 7 0" fill="none" stroke="#a5621f" stroke-width="3" stroke-linecap="round"/>`).join('') +
+    `<path d="M40 64 q10 -6 20 0" fill="none" stroke="#2a7d3e" stroke-width="3" stroke-linecap="round"/><path d="M72 62 L90 40" ${O} stroke-width="4"/>`,
+  // 5 کاسه‌ی آش رشته
+  shadow(50, 90, 34) + potBowl('url(#gCream)', 56) + ashSurface(56) +
+    `<path d="M40 44 q-4 -8 2 -14 M58 44 q-4 -8 2 -14" fill="none" stroke="#e8e8e8" stroke-width="3" stroke-linecap="round" opacity=".9"/>`,
+  // 6 دیگ آش
+  `<circle cx="50" cy="52" r="44" fill="url(#rGlow)" opacity=".55"/>` + shadow(50, 92, 38) +
+    `<path d="M16 46 L84 46 L80 84 C76 92 24 92 20 84 Z" fill="url(#gCopper)" ${O}/><path d="M12 46 H88" ${O} stroke-width="6"/><path d="M12 46 H88" stroke="#e8a06a" stroke-width="3"/>` +
+    `<path d="M10 54 q-6 4 0 10 M90 54 q6 4 0 10" fill="none" ${O} stroke-width="4"/>` + ashSurface(46) +
+    `<path d="M70 44 L84 14" ${O} stroke="url(#gWood)" stroke-width="5"/>` +
+    `<path d="M30 34 q-4 -8 2 -14 M50 30 q-4 -8 2 -14" fill="none" stroke="#e8e8e8" stroke-width="3" stroke-linecap="round" opacity=".9"/>` + sparkle(86, 30, 5),
+];
+
+export const GEN_ASH: string[] = [
+  // سبد سبزی
+  shadow(50, 90, 36) + [[-40, 1.2], [-20, 1.3], [0, 1.3], [20, 1.2], [40, 1.1]].map(([r, sc]) => leaf(50, 52, -90 + r, sc)).join('') + basket(52) +
+    `<rect x="40" y="62" width="20" height="10" rx="3" fill="url(#gYellow)" ${THIN}/>`,
+];
+
+// ---------------------------------------------------------------- traditional ice cream
+
+const scoop = (x: number, y: number, r: number) =>
+  `<circle cx="${x}" cy="${y}" r="${r}" fill="url(#gYellow)" ${O}/><circle cx="${x - r * 0.3}" cy="${y - r * 0.3}" r="${r * 0.25}" fill="#fff6c8" opacity=".9"/>` +
+  `<circle cx="${x + r * 0.3}" cy="${y + r * 0.1}" r="1.6" fill="#8fbf4a"/><circle cx="${x - r * 0.1}" cy="${y + r * 0.4}" r="1.4" fill="#8fbf4a"/>`;
+
+export const ICECREAM: string[] = [
+  // 1 شیشه‌ی شیر
+  shadow(50, 88, 18) + `<path d="M40 24 H60 V34 C68 40 70 48 70 56 V84 H30 V56 C30 48 32 40 40 34 Z" fill="#fffdf6" ${O}/>` +
+    `<rect x="38" y="18" width="24" height="8" rx="2" fill="url(#gBlue)" ${THIN}/><rect x="34" y="58" width="32" height="14" fill="url(#gSky)" ${THIN}/>` + shine(38, 48, 2, 8, 10, 0.7),
+  // 2 زعفران
+  shadow(50, 84, 22) + `<path d="M30 52 L70 52 L66 80 L34 80 Z" fill="url(#gGlass)" fill-opacity=".9" ${O}/><rect x="28" y="44" width="44" height="10" rx="3" fill="url(#gRed)" ${O}/>` +
+    Array.from({ length: 7 }, (_, i) => `<path d="M${36 + i * 4} 76 L${38 + i * 4} 60" stroke="#e05a1d" stroke-width="2.4" stroke-linecap="round"/>`).join(''),
+  // 3 بستنی نونی
+  shadow(50, 84, 30) + `<rect x="22" y="46" width="56" height="10" rx="3" fill="url(#gBread)" ${O}/><rect x="24" y="56" width="52" height="14" fill="url(#gYellow)" ${O}/><rect x="22" y="70" width="56" height="10" rx="3" fill="url(#gBread)" ${O}/>` +
+    `<path d="M30 49 h40 M30 73 h40" stroke="#a5621f" stroke-width="1.2" stroke-dasharray="3 3"/><circle cx="40" cy="63" r="1.6" fill="#8fbf4a"/><circle cx="60" cy="61" r="1.6" fill="#8fbf4a"/>`,
+  // 4 فالوده
+  shadow(50, 88, 26) + `<path d="M28 44 L72 44 L64 84 L36 84 Z" fill="url(#gGlass)" fill-opacity=".8" ${O}/>` +
+    Array.from({ length: 8 }, (_, i) => `<path d="M${34 + i * 4} 48 Q${36 + i * 4} 64 ${33 + i * 4} 80" fill="none" stroke="#fffdf6" stroke-width="2" stroke-linecap="round"/>`).join('') +
+    `<ellipse cx="50" cy="44" rx="22" ry="4" fill="#ffd0dc" ${THIN}/>` + `<path d="M66 40 L76 34" stroke="#e0303f" stroke-width="3"/>` + plum(70, 36, 5, 'url(#gPom)'),
+  // 5 بستنی سنتی
+  shadow(50, 88, 26) + `<path d="M30 60 L70 60 L62 84 L38 84 Z" fill="url(#gTurq)" ${O}/>` + scoop(42, 54, 12) + scoop(58, 54, 12) + scoop(50, 40, 12) +
+    `<path d="M40 30 l3 4 l3 -4" fill="none" stroke="#e05a1d" stroke-width="2"/>`,
+  // 6 گاری بستنی
+  `<circle cx="50" cy="50" r="44" fill="url(#rGlow)" opacity=".55"/>` + shadow(50, 92, 38) +
+    `<rect x="16" y="46" width="60" height="32" rx="4" fill="url(#gTurq)" ${O}/><rect x="22" y="52" width="48" height="8" fill="#fffdf6" ${THIN}/>` +
+    `<path d="M14 40 L80 40 L74 28 L20 28 Z" fill="url(#gRed)" ${O}/>` + [26, 38, 50, 62].map((x) => `<path d="M${x} 28 L${x - 2} 40" stroke="#fff" stroke-width="4"/>`).join('') +
+    `<circle cx="30" cy="84" r="8" fill="url(#gSteel)" ${O}/><circle cx="64" cy="84" r="8" fill="url(#gSteel)" ${O}/><path d="M76 52 L90 46" ${O} stroke-width="4"/>` +
+    scoop(46, 22, 7) + sparkle(88, 22, 5),
+];
+
+export const GEN_ICECREAM: string[] = [
+  // بستنی‌ساز دستی
+  shadow(50, 92, 30) + `<path d="M26 40 L74 40 L70 88 L30 88 Z" fill="url(#gWood)" ${O}/>` +
+    [52, 64, 76].map((y) => `<path d="M${27 + (y - 40) * 0.08} ${y} H${73 - (y - 40) * 0.08}" stroke="#aab4c0" stroke-width="3"/>`).join('') +
+    `<rect x="34" y="28" width="32" height="14" rx="3" fill="url(#gSteel)" ${O}/><path d="M50 28 V16 H72 V24" fill="none" ${O} stroke-width="3"/><circle cx="72" cy="26" r="4" fill="url(#gRed)" ${THIN}/>` +
+    `<circle cx="40" cy="24" r="4" fill="#e8f6ff" opacity=".9"/><circle cx="30" cy="34" r="3" fill="#e8f6ff" opacity=".8"/>`,
+];

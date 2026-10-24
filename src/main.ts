@@ -6,6 +6,8 @@ import { Capacitor } from '@capacitor/core';
 import { DEFS } from './art/defs';
 import { itemArt } from './art/index';
 import { ENERGY_CAP, ENERGY_REGEN_MS, claimDaily, loadState, newGame, refreshQuests, tickEnergy } from './game/model';
+import { MILESTONES, THEMES, eventActive, eventEnd } from './game/events';
+import { RACE_MS } from './game/race';
 import { clearReminders, scheduleReminders } from './platform/notify';
 import { initAds } from './platform/ads';
 import { connectBilling, pendingPurchases, watchBillingConnection } from './platform/billing';
@@ -87,7 +89,13 @@ async function boot(): Promise<void> {
       app.saveNow();
       stopMusic();
       const s = app.s;
-      scheduleReminders(s.energy >= ENERGY_CAP ? null : s.energyAt + (ENERGY_CAP - s.energy) * ENERGY_REGEN_MS);
+      const r = s.race.active;
+      scheduleReminders({
+        energyFullAt: s.energy >= ENERGY_CAP ? null : s.energyAt + (ENERGY_CAP - s.energy) * ENERGY_REGEN_MS,
+        event: eventActive(s) && s.event.claimed < MILESTONES.length && s.event.theme
+          ? { title: THEMES[s.event.theme].title, endsAt: eventEnd(new Date()).getTime() } : null,
+        raceEndsAt: r && r.finishedAt === null ? r.start + RACE_MS : null,
+      });
     } else {
       clearReminders();
       startMusic();
