@@ -2,7 +2,8 @@
 
 import { ICONS } from '../art/icons';
 import { portrait } from '../art/portraits';
-import { sceneSvg } from '../art/places';
+import { STYLES } from '../art/decor';
+import { layerHasStyles, sceneSvg } from '../art/places';
 import { offerOnEpisode } from '../game/offers';
 import { completeNextTask, introKey, markSeen, outroKey, progress } from '../game/progress';
 import { buzz } from '../platform/haptics';
@@ -36,7 +37,7 @@ export class PlaceScreen {
     const p = progress(s);
     clear(screen);
     const place: Place = p.place ?? PLACES[PLACES.length - 1];
-    const scene = h('div', { class: 'scene', html: sceneSvg(place.id, (layer) => this.layerDone(place, layer)) });
+    const scene = h('div', { class: 'scene', html: this.scene(place) });
     if (flashLayer) scene.append(h('div', { class: 'flash' }));
     const episodes = h('div', { class: 'episodes' }, ...PLACES.map((_, k) =>
       h('span', { class: `ep${k < p.placeIndex ? ' done' : k === p.placeIndex ? ' cur' : ''}` }, `قسمت ${fa(k + 1)}`)));
@@ -66,7 +67,14 @@ export class PlaceScreen {
       return h('div', { class: `task${done ? ' done' : cur ? ' cur' : ''}` },
         h('span', { class: 'mark' }, done ? '✓' : cur ? '◀' : '•'),
         h('span', { class: 'tt' }, t.title),
-        done ? null : h('span', { class: 'cost' }, fa(t.cost), h('span', { html: svgIcon(ICONS.star) })));
+        done
+          ? layerHasStyles(place.id, t.layer)
+            ? h('button', { class: 'chip', 'aria-label': 'تغییر سبک', onclick: async () => {
+                await this.chooseStyle(place, t.layer, false);
+                this.render(screen, back);
+              } }, '🎨 سبک')
+            : null
+          : h('span', { class: 'cost' }, fa(t.cost), h('span', { html: svgIcon(ICONS.star) })));
     }));
     screen.append(
       h('div', { class: 'top' },
@@ -78,6 +86,43 @@ export class PlaceScreen {
       card,
       list,
     );
+  }
+
+  private scene(place: Place, override?: { layer: string; style: number }): string {
+    const s = this.app.s;
+    return sceneSvg(place.id, (layer) => this.layerDone(place, layer),
+      (layer) => (override?.layer === layer ? override.style : s.decor[`${place.id}.${layer}`] ?? 0));
+  }
+
+  /**
+   * Lets the player pick the look of a restored piece: three previews of the whole place.
+   * The choice is saved at once and can be changed later from the task list.
+   */
+  chooseStyle(place: Place, layer: string, fresh: boolean): Promise<void> {
+    const s = this.app.s;
+    const key = `${place.id}.${layer}`;
+    return this.app.modals.open(fresh ? 'سبکش رو انتخاب کن!' : 'تغییر سبک', (body, close) => {
+      const grid = h('div', { class: 'decor-pick' });
+      const preview = h('div', { class: 'decor-preview' });
+      const draw = () => {
+        clear(grid);
+        preview.innerHTML = this.scene(place, { layer, style: s.decor[key] ?? 0 });
+        STYLES.forEach((st, k) => {
+          grid.append(h('button', { class: `decor-opt${(s.decor[key] ?? 0) === k ? ' on' : ''}`, onclick: () => {
+            s.decor[key] = k;
+            sfx.tap();
+            this.app.dirty();
+            draw();
+          } }, h('div', { class: 'thumb', html: this.scene(place, { layer, style: k }) }), h('b', {}, st.name)));
+        });
+      };
+      draw();
+      add(body,
+        preview,
+        grid,
+        h('p', { style: 'font-size:12px;margin:6px 0 0' }, 'هر وقت خواستی می‌تونی از فهرست کارها عوضش کنی.'),
+        h('button', { class: 'btn', onclick: close }, 'همینو می‌خوام'));
+    }, !fresh);
   }
 
   private layerDone(place: Place, layer: string): boolean {
@@ -111,6 +156,10 @@ export class PlaceScreen {
     await this.app.saveNow();
     this.render(screen, back, true);
     await wait(900);
+    if (layerHasStyles(r.place.id, r.task.layer)) {
+      await this.chooseStyle(r.place, r.task.layer, true);
+      this.render(screen, back);
+    }
     await this.dialogue(r.task.after);
     if (r.placeFinished) {
       if (markSeen(s, outroKey(r.place.id))) await this.dialogue(r.place.outro);

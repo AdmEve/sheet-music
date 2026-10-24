@@ -99,6 +99,8 @@ export interface GameState {
   trophies: string[];
   /** The alley race against bot neighbours. */
   race: RaceState;
+  /** Chosen decoration style per restored piece ("placeId.layer" → style index). */
+  decor: Record<string, number>;
 }
 
 export type GameEvent =
@@ -218,6 +220,7 @@ export function newGame(seed: number, now: number): GameState {
     event: emptyEvent(),
     trophies: [],
     race: emptyRace(),
+    decor: {},
   };
   const put = (r: number, c: number, item: Item, lock?: Lock) => {
     s.board[idx(r, c)] = lock ? { item, lock } : { item };
@@ -648,7 +651,7 @@ export function loadState(json: string | null): GameState | null {
       grantedTokens: raw.grantedTokens ?? [], refills: raw.refills ?? base.refills,
       found: raw.found ?? [], codexClaimed: raw.codexClaimed ?? [],
       piggy: raw.piggy ?? 0, offers: raw.offers ?? [], giftAt: raw.giftAt ?? 0, pass: raw.pass ?? emptyPass(),
-      event: raw.event ?? emptyEvent(), trophies: raw.trophies ?? [], race: raw.race ?? emptyRace(),
+      event: raw.event ?? emptyEvent(), trophies: raw.trophies ?? [], race: raw.race ?? emptyRace(), decor: raw.decor ?? {},
     } as GameState;
     // Saves from before the album: everything the player holds now counts as found.
     if (!raw.found) discover(s);

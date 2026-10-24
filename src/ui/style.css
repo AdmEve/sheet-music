@@ -466,3 +466,13 @@ svg { display: block; }
 .lane-name span { font-weight: 900; }
 .lane .bar { margin: 4px 0 0; }
 .lane .fin { width: 26px; height: 26px; flex: none; }
+
+/* ------------------------------------------------------------------ decoration styles */
+.decor-preview { width: 100%; height: 0; padding-bottom: 66.67%; position: relative; border-radius: 14px; overflow: hidden; box-shadow: inset 0 0 0 3px #c9a46a; }
+.decor-preview svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.decor-pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.decor-opt { border-radius: 12px; padding: 4px; background: #fff; box-shadow: inset 0 0 0 2px #e6cfa3; font-size: 12px; }
+.decor-opt .thumb { height: 58px; border-radius: 8px; overflow: hidden; }
+.decor-opt .thumb svg { width: 100%; height: 100%; }
+.decor-opt.on { box-shadow: inset 0 0 0 3px var(--accent), 0 3px 0 var(--accent-dark); background: #fff0f4; }
+.place .task .chip { margin-inline-start: auto; padding: 4px 8px; font-size: 12px; }
