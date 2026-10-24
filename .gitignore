@@ -1,10 +1,7 @@
 node_modules/
 dist/
-public/model/
 *.log
 .DS_Store
-test-audio/*.wav
-test-audio/out/
 android/app/build/
 android/build/
 android/.gradle/
@@ -12,10 +9,3 @@ android/local.properties
 android/app/src/main/assets/public/
 android/capacitor-cordova-android-plugins/
 android/.idea/
-test-audio/*.bin
-test-audio/*.analysis.json
-test-audio/*.a7.json
-test-audio/*.browser.analysis.json
-public/piano-model/
-test-audio/bench/*.wav
-test-audio/bench/*.bin
