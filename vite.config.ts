@@ -1,16 +1,8 @@
 import { defineConfig } from 'vite';
+import pkg from './package.json';
 
 export default defineConfig({
-  // Relative paths so the same build works inside the Android app and on any web host.
   base: './',
-  build: {
-    target: 'es2022',
-    chunkSizeWarningLimit: 12000,
-  },
-  worker: {
-    format: 'es',
-  },
-  optimizeDeps: {
-    exclude: ['verovio'],
-  },
+  define: { __APP_VERSION__: JSON.stringify(pkg.version) },
+  build: { target: 'es2019', assetsInlineLimit: 0 },
 });

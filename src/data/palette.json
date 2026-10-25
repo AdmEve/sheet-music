@@ -1,0 +1,16 @@
+[
+  {"key": "r", "hex": "#e8384f", "name": "قرمز"},
+  {"key": "o", "hex": "#ff8a1f", "name": "نارنجی"},
+  {"key": "y", "hex": "#ffd23f", "name": "زرد"},
+  {"key": "g", "hex": "#5cc93a", "name": "سبز"},
+  {"key": "d", "hex": "#1f8a46", "name": "سبز تیره"},
+  {"key": "c", "hex": "#42c8ec", "name": "فیروزه‌ای"},
+  {"key": "b", "hex": "#2f63db", "name": "آبی"},
+  {"key": "p", "hex": "#8d4fd8", "name": "بنفش"},
+  {"key": "k", "hex": "#ff86bd", "name": "صورتی"},
+  {"key": "n", "hex": "#8a5530", "name": "قهوه‌ای"},
+  {"key": "t", "hex": "#f4c48c", "name": "کرم"},
+  {"key": "w", "hex": "#f5f3ee", "name": "سفید"},
+  {"key": "s", "hex": "#9aa1ab", "name": "طوسی"},
+  {"key": "x", "hex": "#33333d", "name": "مشکی"}
+]

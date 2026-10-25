@@ -1,8 +1,15 @@
 {
-  "appId": "com.admeve.sheetmusic",
-  "appName": "Sheet Music",
+  "appId": "com.admeve.pishipixel",
+  "appName": "پیشی پیکسل",
   "webDir": "dist",
   "android": {
     "allowMixedContent": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 600,
+      "backgroundColor": "#ffd9e4",
+      "showSpinner": false
+    }
   }
 }

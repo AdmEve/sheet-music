@@ -1,4 +1,4 @@
-name: Build app
+name: Build game
 
 on:
   push:
@@ -6,8 +6,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
   group: build-${{ github.ref }}
@@ -15,7 +13,7 @@ concurrency:
 
 jobs:
   build:
-    name: Test, build web + Android APK
+    name: Test + build Android APK
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,19 +27,31 @@ jobs:
       - run: npm test
       - run: npm run build
 
-      - name: Package web version
-        run: cd dist && zip -qr ../SheetMusic-web.zip .
-
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
 
       - uses: gradle/actions/setup-gradle@v4
+
+      - name: Signing key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ] && [ -n "$KEYSTORE_PASSWORD" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > android/app/pishipixel.keystore
+            echo "KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD" >> "$GITHUB_ENV"
+            echo "SIGNED_WITH=release key" >> "$GITHUB_ENV"
+          else
+            # No release key configured: sign with a throwaway key so the APK still installs for testing.
+            PW=$(openssl rand -hex 16)
+            keytool -genkeypair -keystore android/app/pishipixel.keystore -alias pishipixel -keyalg RSA -keysize 2048 \
+              -validity 3650 -storepass "$PW" -keypass "$PW" -dname "CN=Test build" >/dev/null
+            echo "::add-mask::$PW"
+            echo "KEYSTORE_PASSWORD=$PW" >> "$GITHUB_ENV"
+            echo "SIGNED_WITH=temporary test key (NOT for Cafe Bazaar upload)" >> "$GITHUB_ENV"
+          fi
 
       - name: Build Android APK
         env:
@@ -51,48 +61,23 @@ jobs:
           cd android
           chmod +x gradlew
           ./gradlew --no-daemon assembleRelease
-          cp app/build/outputs/apk/release/app-release.apk ../SheetMusic.apk
+          cp app/build/outputs/apk/release/app-release.apk ../PishiPixel.apk
 
       - uses: actions/upload-artifact@v4
         with:
-          name: SheetMusic-android-apk
-          path: SheetMusic.apk
+          name: PishiPixel-android-apk
+          path: PishiPixel.apk
 
       - name: Publish "latest" release (download link for your phone)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release delete android-latest --yes --cleanup-tag || true
-          gh release create android-latest SheetMusic.apk SheetMusic-web.zip \
+          gh release create android-latest PishiPixel.apk \
             --target "$GITHUB_SHA" \
-            --title "Sheet Music – latest build (${GITHUB_REF_NAME}, #${{ github.run_number }})" \
-            --notes "Install on Android: open this page on your phone, tap **SheetMusic.apk**, then open the downloaded file and allow installing from this source. New builds install over the old one and keep your library.
+            --title "Pishi Pixel – latest build (${GITHUB_REF_NAME}, #${{ github.run_number }})" \
+            --notes "Install on Android: open this page on your phone, tap **PishiPixel.apk**, then allow installing from this source.
 
-          Web version (works offline): **SheetMusic-web.zip**, or the GitHub Pages site if it is enabled.
+          Signed with: ${SIGNED_WITH}.
 
           Built from commit ${GITHUB_SHA::7}."
-
-  pages:
-    name: Publish web version (GitHub Pages)
-    needs: build
-    # Only on the default branch. Skips itself until Pages is switched on:
-    # Settings → Pages → Source: GitHub Actions.
-    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
-    steps:
-      - id: check
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          if gh api "repos/${{ github.repository }}/pages" --silent 2>/dev/null; then
-            echo "enabled=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "GitHub Pages is not enabled for this repository; skipping the website."
-            echo "enabled=false" >> "$GITHUB_OUTPUT"
-          fi
-      - id: deploy
-        if: steps.check.outputs.enabled == 'true'
-        uses: actions/deploy-pages@v4

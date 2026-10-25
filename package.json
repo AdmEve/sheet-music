@@ -1,33 +1,31 @@
 {
-  "name": "sheet-music",
+  "name": "pishi-pixel",
   "private": true,
-  "version": "0.1.0",
-  "description": "Offline piano + cello audio-to-sheet-music transcriber (web + Android)",
+  "version": "1.0.0",
+  "description": "Pishi Pixel – a Persian colour-shooter puzzle game for Android (Cafe Bazaar)",
   "type": "module",
   "scripts": {
-    "copy-model": "node scripts/copy-model.mjs",
-    "dev": "npm run copy-model && vite",
-    "build": "npm run copy-model && tsc --noEmit && vite build",
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
+    "bake-pictures": "node scripts/bake-pictures.mjs",
     "android:sync": "npm run build && cap sync android"
   },
   "dependencies": {
-    "@capacitor/android": "^8.5.2",
-    "@capacitor/core": "^8.5.2",
-    "@capacitor/filesystem": "^8.1.3",
-    "@capacitor/share": "^8.0.2",
-    "@spotify/basic-pitch": "^1.0.1",
-    "@tensorflow/tfjs": "^3.21.0",
-    "jspdf": "^4.2.1",
-    "svg2pdf.js": "^2.8.1",
-    "verovio": "^6.3.0"
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.4",
+    "vazirmatn": "^33.0.3"
   },
   "devDependencies": {
-    "@capacitor/cli": "^8.5.2",
-    "typescript": "^5.9.0",
-    "vite": "^7.0.0",
-    "vitest": "^3.2.0"
+    "@capacitor/cli": "^8.5.3",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.7",
+    "vitest": "^3.2.7"
   }
 }

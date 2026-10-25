@@ -1,13 +1,14 @@
 apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
-    namespace = "com.admeve.sheetmusic"
+    namespace = "com.admeve.pishipixel"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.admeve.sheetmusic"
+        applicationId "com.admeve.pishipixel"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        // CI passes the run number so every new APK installs over the previous one.
+        // CI passes the run number so every new build installs over the previous one.
         versionCode ((System.getenv("VERSION_CODE") ?: "1") as Integer)
         versionName "1.0." + (System.getenv("VERSION_CODE") ?: "0")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -17,22 +18,27 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
-    // A fixed key so updates install over earlier versions. This is a personal-use key kept
-    // in the repo on purpose; use your own (Play Store) key if you ever publish the app.
+    // Release key. Cafe Bazaar ties every update to the key of the first upload, so keep the
+    // keystore (and a backup of it) forever. It is never committed: CI writes it from the
+    // KEYSTORE_BASE64 secret, locally put it at android/app/pishipixel.keystore.
     signingConfigs {
-        shared {
-            storeFile file('sheetmusic.keystore')
-            storePassword 'sheetmusic'
-            keyAlias 'sheetmusic'
-            keyPassword 'sheetmusic'
+        release {
+            storeFile file(System.getenv("KEYSTORE_FILE") ?: 'pishipixel.keystore')
+            storePassword System.getenv("KEYSTORE_PASSWORD")
+            keyAlias 'pishipixel'
+            keyPassword System.getenv("KEYSTORE_PASSWORD")
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+    }
+    kotlinOptions {
+        jvmTarget = '21'
+    }
     buildTypes {
-        debug {
-            signingConfig signingConfigs.shared
-        }
         release {
-            signingConfig signingConfigs.shared
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -51,6 +57,8 @@ dependencies {
     implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
     implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
     implementation project(':capacitor-android')
+    implementation "com.github.cafebazaar.Poolakey:poolakey:2.2.0"
+    implementation "ir.tapsell.plus:tapsell-plus-sdk-android:2.3.3"
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
