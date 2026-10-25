@@ -338,7 +338,7 @@ button { font-family: inherit; color: inherit; border: 0; background: none; curs
   border-radius: 18px;
   box-shadow: 0 6px 0 var(--violet-3), 0 16px 40px rgba(0,0,0,0.4);
   pointer-events: none;
-  animation: banner 1.8s var(--spring) forwards;
+  animation: banner 2s var(--spring) forwards;
   z-index: 3;
   white-space: nowrap;
 }

@@ -92,9 +92,9 @@ function levelBanner(level: LevelDef, host: HTMLElement) {
   const el = h('div', { class: 'level-banner' + (level.hard ? ' hard' : '') },
     level.hard ? icon('flame') : null,
     h('b', {}, level.veryHard ? 'خیلی سخت!' : level.hard ? 'مرحله سخت!' : `مرحله ${fa(level.index + 1)}`),
-    level.hard ? h('small', {}, 'جایزه بیشتر') : null);
+    h('small', {}, level.slots <= 2 ? `فقط ${fa(level.slots)} جای خالی!` : `${fa(level.slots)} جای خالی`));
   host.append(el);
-  setTimeout(() => el.remove(), 1900);
+  setTimeout(() => el.remove(), 2100);
   if (level.hard) haptic('heavy');
 }
 

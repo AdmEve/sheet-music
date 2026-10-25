@@ -1,25 +1,23 @@
 import tuned from '../data/levels.json';
 import { botSolve, winRate } from './bot';
-import { tuneLevel } from './search';
+import { Planner } from './plan';
 import { COLOR_INDEX, PALETTE } from './palette';
 import { pictureTitle } from './pictures';
 import type { LevelDef, ShooterDef } from './engine';
-import { BAKED_IDS, HAND_IDS, colorsOf, loadPicture, simplify, type Picture } from './pictures';
+import { PICTURE_IDS, colorsOf, loadPicture, simplify, type Picture } from './pictures';
 import { rng, shuffle } from './rng';
 
-/** Hand-picked order for the first levels: Persian favourites and simple, bold pictures. */
+/** Hand-picked opening: bold, instantly recognisable pictures; the rest follow in a fixed shuffle. */
 const OPENING = [
-  'heart', 'pomegranate', 'watermelon_yalda', 'tea_glass', 'pishi', 'apple', 'goldfish', 'tulip_laleh',
-  'strawberry', 'cat', 'sabzeh', 'cherries', 'football', 'frog', 'azadi', 'sun', 'panda', 'tangerine',
-  'ladybug', 'trophy', 'mushroom', 'rose', 'pig', 'icecream', 'rainbow', 'gift', 'tropical_fish', 'cupcake',
-  'crown', 'bee', 'moon', 'chick', 'lemon', 'balloon', 'penguin', 'grapes', 'fox', 'donut', 'butterfly',
-  'house', 'cactus', 'dog', 'rocket', 'snowman', 'gem', 'tiger', 'pizza', 'owl', 'car', 'lion',
+  'apple', 'strawberry', 'cherries', 'watermelon', 'mushroom', 'tangerine', 'frog', 'pig_face', 'carrot', 'panda',
+  'cat_face', 'burger', 'fox', 'tomato', 'penguin', 'ladybug', 'donut', 'grapes', 'car', 'smile',
+  'pizza', 'lion', 'sunflower', 'heart_eyes_cat', 'rocket', 'octopus', 'trophy', 'avocado', 'tiger_face', 'house',
 ];
 
 export const PICTURE_ORDER: string[] = (() => {
-  const rest = [...HAND_IDS, ...BAKED_IDS].filter((id) => !OPENING.includes(id));
+  const rest = PICTURE_IDS.filter((id) => !OPENING.includes(id));
   shuffle(rest, rng(1404));
-  return [...OPENING, ...rest];
+  return [...OPENING.filter((id) => PICTURE_IDS.includes(id)), ...rest];
 })();
 
 export interface LevelParams {
@@ -50,7 +48,7 @@ export function levelParams(index: number): LevelParams {
   const veryHard = n >= 20 && n % 10 === 0;
   const hard = veryHard || (n >= 10 && n % 5 === 0);
   const breather = n > 10 && (n - 1) % 5 === 0;
-  const size = n <= 5 ? 12 : n <= 12 ? 14 : n <= 25 ? 16 : n <= 45 ? 18 : n <= 80 ? 20 : n <= 130 ? 22 : 24;
+  const size = n <= 15 ? 16 : n <= 40 ? 18 : n <= 90 ? 20 : n <= 150 ? 22 : 24;
   const maxColors = n <= 2 ? 2 : n <= 6 ? 3 : n <= 15 ? 4 : n <= 35 ? 5 : n <= 70 ? 6 : 7;
   const columns = n <= 3 ? 2 : hard && n >= 20 ? 2 : 3;
   const ramp = Math.min(1, n / 120);
@@ -187,46 +185,87 @@ export function assemble(index: number, pic: Picture, p: LevelParams, noise: num
 
 const cache = new Map<number, LevelDef>();
 
-/** Quick build: a gentle-ish order the careful solver can beat (no difficulty search). */
+/** Quick build for levels past the shipped set: a moderately bent order, slots from the planner. */
 export function baseLevel(index: number): LevelDef {
   const p = levelParams(index);
   const pic = pictureFor(index, p);
-  const tries: [number, number][] = [[0.4, 1], [0.3, 1], [0.2, 1], [0.1, 1], [0, 1], [0, 0.5], [0, 0]];
-  for (let t = 0; t < tries.length; t++) {
-    const [adv, ns] = tries[t];
-    const candidate = assemble(index, pic, p, p.noise * ns, adv, index * 7919 + t * 104729 + 17);
-    if (botSolve(candidate).won) return candidate;
+  for (const adv of [0.5, 0.3, 0.1, 0]) {
+    const l = assemble(index, pic, p, p.noise, adv, index * 7919 + Math.round(adv * 1000) + 17);
+    const R = new Planner(l).requiredSlots(5, 24);
+    if (R >= 0) return { ...l, slots: Math.max(1, R + slackFor(index)) };
   }
-  // Last resort: ideal order and plain shooters, one extra slot.
-  return assemble(index, pic, { ...p, hidden: 0, links: 0, ice: 0, slots: p.slots + 1 }, 0, 0, index + 1);
+  // Last resort: ideal order, plain cats, generous slots.
+  return assemble(index, pic, { ...p, hidden: 0, links: 0, ice: 0, slots: 5 }, 0, 0, index + 1);
 }
 
-/** Build-time only: search the queue layout until simulated players win about `target` of the time. */
-export function tunedLevel(index: number, iterations = levelParams(index).hard ? 220 : 120): { level: LevelDef; rate: number; minFree: number } {
+export interface TunedLevel { level: LevelDef; required: number; greedyWins: boolean; expertWins: boolean; rate: number; solution: number[] }
+
+/** Spare waiting slots on top of what the best play needs: none on hard levels. */
+export function slackFor(index: number): number {
+  const n = index + 1;
   const p = levelParams(index);
-  const base = baseLevel(index);
-  if (p.target >= 1) return { level: base, rate: winRate(base, 0.55, 12), minFree: botSolve(base).minFree };
-  let best = tuneLevel(base, p.target, { iterations });
-  // Not hard enough? Tighten the structure step by step and search again.
-  const pic = pictureFor(index, p);
-  const steps: Partial<LevelParams>[] = [
-    { ammo: smaller(p.ammo) },
-    { ammo: smaller(p.ammo), slots: Math.max(3, p.slots - 1) },
-    { ammo: smaller(p.ammo), slots: Math.max(3, p.slots - 1), columns: Math.max(2, p.columns - 1) },
-    { ammo: smaller(p.ammo), slots: 3, columns: 2 },
-  ];
-  for (let k = 0; k < steps.length && best.rate > p.target + 0.15; k++) {
-    const q = { ...p, ...steps[k] };
-    const start = assemble(index, pic, q, q.noise, 0.3, index * 131 + k);
-    if (!botSolve(start).won) continue;
-    const r = tuneLevel(start, p.target, { iterations, seed: index * 7 + k });
-    if (Math.abs(r.rate - p.target) < Math.abs(best.rate - p.target)) best = r;
-  }
-  return { level: best.level, rate: best.rate, minFree: best.minFree };
+  if (n <= 3) return 3;
+  if (n === 10) return 1; // the first hard level: tough, with one spare slot
+  if (n <= 10) return 2;
+  if (p.hard) return 0;
+  if ((n - 1) % 5 === 0) return 2; // breather after a hard level
+  return 1;
 }
 
-function smaller(ammo: number[] | undefined): number[] {
-  return (ammo ?? [10, 20]).map((a) => Math.max(5, Math.round(a / 2 / 5) * 5));
+/**
+ * Build-time tuning. For several queue layouts (from cruel to gentle orderings) the planner finds
+ * the fewest waiting slots the level can be won with; the level then gets exactly that many plus
+ * its slack. Hard levels also have to defeat the obvious "send whatever shoots most" strategy.
+ */
+export function tunedLevel(index: number): TunedLevel {
+  const p = levelParams(index);
+  const pic = pictureFor(index, p);
+  const n = index + 1;
+  const slack = slackFor(index);
+  interface Cand { l: LevelDef; R: number; greedyWins: boolean; expert: { won: boolean; minFree: number }; solution: number[] }
+  const cands: Cand[] = [];
+  const advs = n <= 3 ? [0] : [0.95, 0.8, 0.6, 0.45, 0.3, 0.15, 0];
+  // hard levels get more tries, and with two lanes as well as three
+  const variants = p.hard ? [[p.columns, 0], [p.columns, 1], [2, 2], [3, 3]] : [[p.columns, 0], [p.columns, 1]];
+  for (const adv of advs) for (const [columns, k] of variants) {
+    const l = assemble(index, pic, { ...p, columns }, p.noise, adv, index * 7919 + Math.round(adv * 1000) + k * 104729 + 17);
+    const pl = new Planner(l);
+    const R = pl.requiredSlots(5);
+    if (R < 0) continue;
+    const slots = Math.max(n <= 3 ? 4 : 1, R + slack);
+    const level = { ...l, slots };
+    cands.push({ l: level, R, greedyWins: pl.greedy(slots).won, expert: botSolve(level), solution: pl.solve(slots).moves });
+  }
+  if (!cands.length) {
+    const l = baseLevel(index);
+    return { level: l, required: -1, greedyWins: true, expertWins: true, rate: winRate(l, 0.55, 12), solution: [] };
+  }
+  // Two "obvious" strategies are checked against every layout: send-whatever-shoots-most (greedy)
+  // and a real-time expert that waits for useful cats and keeps the belt busy. Hard levels must
+  // beat both (only planning ahead wins); normal levels should leave the expert almost no slack.
+  const score = (c: Cand) => {
+    let sc = -Math.abs(Math.min(c.R, 4) - (p.hard ? 3 : n <= 10 ? 2 : 2.5)) * 0.5;
+    if (n < 10) {
+      if (!c.greedyWins || !c.expert.won) sc -= 20; // early levels must be friendly
+    } else if (n === 10) {
+      if (!c.greedyWins) sc += 10;
+      if (!c.expert.won) sc -= 5;
+    } else if (p.hard) {
+      if (!c.greedyWins) sc += 10;
+      if (!c.expert.won) sc += 10;
+    } else {
+      if (!c.greedyWins) sc += 2;
+      if (c.expert.won && c.expert.minFree <= 1) sc += 3;
+      if (!c.expert.won) sc += p.veryHard ? 3 : -1;
+    }
+    return sc;
+  };
+  cands.sort((a, b) => score(b) - score(a));
+  const best = cands[0];
+  return {
+    level: best.l, required: best.R, greedyWins: best.greedyWins, expertWins: best.expert.won,
+    rate: winRate(best.l, 0.55, 12), solution: best.solution,
+  };
 }
 
 /** Level `index` (0-based): the pre-tuned one shipped with the game, or a quick build past those. */
@@ -240,12 +279,12 @@ export function buildLevel(index: number): LevelDef {
 
 // ── compact storage of the pre-tuned levels (src/data/levels.json) ──
 
-interface PackedLevel { p: string; w: number; h: number; c: string; i?: string; q: string; s: number; k: number; f: number }
+interface PackedLevel { p: string; w: number; h: number; c: string; i?: string; q: string; s: number; k: number; f: number; m?: string }
 const TUNED = tuned as PackedLevel[];
 export const TUNED_COUNT = TUNED.length;
 
 /** cells as palette keys ('.' empty), ice as a 0/1 string, queue as "color,ammo,flags[,link] …|…". */
-export function encodeLevel(l: LevelDef): PackedLevel {
+export function encodeLevel(l: LevelDef, solution?: number[]): PackedLevel {
   const c = l.cells.map((v) => (v < 0 ? '.' : PALETTE[v].key)).join('');
   const ice = l.hp.some((v) => v === 2) ? l.hp.map((v) => (v === 2 ? '1' : '0')).join('') : undefined;
   const q = l.columns.map((col) => col.map((id) => {
@@ -262,7 +301,10 @@ export function encodeLevel(l: LevelDef): PackedLevel {
     if (t.length > 3) t[3] = String(remap.get(Number(t[3])));
     return t.join(',');
   }).join(' ')).join('|');
-  return { p: l.pictureId, w: l.w, h: l.h, c, i: ice, q: q2, s: l.slots, k: l.capacity, f: (l.hard ? 1 : 0) | (l.veryHard ? 2 : 0) };
+  const packed: PackedLevel = { p: l.pictureId, w: l.w, h: l.h, c, i: ice, q: q2, s: l.slots, k: l.capacity, f: (l.hard ? 1 : 0) | (l.veryHard ? 2 : 0) };
+  // a winning line (cat ids in decode order), used by tests and a future hint booster
+  if (solution?.length) packed.m = solution.map((id) => remap.get(id)).join(',');
+  return packed;
 }
 
 function decodeLevel(index: number): LevelDef {
@@ -282,4 +324,10 @@ function decodeLevel(index: number): LevelDef {
     index, pictureId: t.p, title: pictureTitle(t.p), w: t.w, h: t.h, cells, hp, columns, shooters,
     slots: t.s, capacity: t.k, hard: (t.f & 1) === 1, veryHard: (t.f & 2) === 2,
   };
+}
+
+/** The stored winning line for a shipped level (cat ids as decoded), if any. */
+export function solutionFor(index: number): number[] {
+  const m = TUNED[index]?.m;
+  return m ? m.split(',').map(Number) : [];
 }

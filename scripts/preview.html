@@ -1,0 +1,27 @@
+<!doctype html>
+<html><body style="margin:0;background:#e6d5b8;font:12px sans-serif">
+<div id="out" style="display:flex;flex-wrap:wrap;gap:10px;padding:10px"></div>
+<script type="module">
+  // Contact sheet of pictures as the game draws them (dev tool: /scripts/preview.html?ids=a,b&size=16&colors=4)
+  import { loadPicture, simplify, PICTURE_IDS } from '../src/game/pictures.ts';
+  import { blockSprite, setSpriteScale } from '../src/gfx/sprites.ts';
+  setSpriteScale(1);
+  const q = new URLSearchParams(location.search);
+  const ids = (q.get('ids') || PICTURE_IDS.join(',')).split(',');
+  const size = Number(q.get('size') || 16);
+  const colors = Number(q.get('colors') || 99);
+  const cell = Number(q.get('cell') || 14);
+  for (const id of ids) {
+    const p = simplify(loadPicture(id, size), colors);
+    const c = document.createElement('canvas');
+    c.width = p.w * cell; c.height = p.h * cell;
+    const ctx = c.getContext('2d');
+    for (let y = 0; y < p.h; y++) for (let x = 0; x < p.w; x++) { const v = p.cells[y * p.w + x]; if (v >= 0) ctx.drawImage(blockSprite(v, cell), x * cell, y * cell, cell, cell); }
+    const box = document.createElement('div');
+    box.style.cssText = 'background:#f3e7d2;padding:6px;text-align:center';
+    box.append(c, document.createElement('br'), `${id} ${p.w}x${p.h} c=${new Set(p.cells.filter(v=>v>=0)).size}`);
+    document.getElementById('out').append(box);
+  }
+  window.ready = true;
+</script>
+</body></html>

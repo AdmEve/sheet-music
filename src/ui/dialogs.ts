@@ -39,6 +39,7 @@ export function openSettings() {
     btn('ghost', [icon('rate'), h('span', {}, 'امتیاز به بازی')], () => rateApp()),
     h('p', { class: 'muted' }, `پیشی پیکسل · نسخه ${fa(__APP_VERSION__)}`),
     h('p', { class: 'muted' }, `مرحله ${fa(save.level + 1)} · ${fa(save.stars)} ستاره · ${fa(save.gallery.length)} تصویر`),
+    h('p', { class: 'muted credits' }, 'Pictures based on Twemoji © Twitter, Inc. and contributors (CC-BY 4.0)'),
   ));
 }
 

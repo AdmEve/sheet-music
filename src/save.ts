@@ -145,20 +145,18 @@ export function claimDaily(): number {
 
 export const LEVELS_PER_CHAPTER = 10;
 
-/** Each chapter is a stop on a trip around Iran, with its own sky colours. */
+/** Chapters group 10 levels; each has a name and its own sky colours. */
 export const CHAPTERS: { name: string; sky: [string, string] }[] = [
-  { name: 'تهران', sky: ['#2b7fd6', '#6a3fd1'] },
-  { name: 'اصفهان', sky: ['#1aa3b5', '#2b5fd6'] },
-  { name: 'شیراز', sky: ['#d6557a', '#7a3fd1'] },
-  { name: 'تبریز', sky: ['#3a8fd6', '#1f4fa8'] },
-  { name: 'یزد', sky: ['#e08a3a', '#b8455c'] },
-  { name: 'کاشان', sky: ['#2fae9a', '#2b6fd6'] },
-  { name: 'گیلان', sky: ['#3fae5a', '#1f7f8b'] },
-  { name: 'کیش', sky: ['#22b8d6', '#2b7fd6'] },
-  { name: 'مشهد', sky: ['#5a6fd6', '#3f2fa8'] },
-  { name: 'کرمان', sky: ['#d66a3a', '#8a3fa8'] },
-  { name: 'همدان', sky: ['#4f8fd6', '#5a3fb8'] },
-  { name: 'قشم', sky: ['#1fb8b0', '#3a6fd6'] },
+  { name: 'شروع ماجرا', sky: ['#2b7fd6', '#6a3fd1'] },
+  { name: 'باغ میوه', sky: ['#1aa3b5', '#2b5fd6'] },
+  { name: 'جنگل', sky: ['#3fae5a', '#1f7f8b'] },
+  { name: 'شهر بازی', sky: ['#d6557a', '#7a3fd1'] },
+  { name: 'زیر دریا', sky: ['#22b8d6', '#2b5fd6'] },
+  { name: 'آسمان', sky: ['#4f8fd6', '#5a3fb8'] },
+  { name: 'شیرینی‌پزی', sky: ['#e08a3a', '#b8455c'] },
+  { name: 'باغ‌وحش', sky: ['#2fae9a', '#2b6fd6'] },
+  { name: 'کهکشان', sky: ['#5a6fd6', '#3f2fa8'] },
+  { name: 'جزیره گنج', sky: ['#d66a3a', '#8a3fa8'] },
 ];
 
 export function chapterOf(levelIndex: number) {

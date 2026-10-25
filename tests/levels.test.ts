@@ -1,15 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import { botSolve, winRate } from '../src/game/bot';
 import { Game } from '../src/game/engine';
-import { TUNED_COUNT, baseLevel, buildLevel, encodeLevel, levelParams } from '../src/game/levelgen';
-import { HAND_IDS, loadPicture } from '../src/game/pictures';
+import { TUNED_COUNT, baseLevel, buildLevel, encodeLevel, solutionFor } from '../src/game/levelgen';
+import type { LevelDef } from '../src/game/engine';
+import { PICTURE_IDS, loadPicture } from '../src/game/pictures';
 import tuned from '../src/data/levels.json';
 
 describe('pictures', () => {
-  it('hand-drawn pictures are 16×16', () => {
-    for (const id of HAND_IDS) {
-      const p = loadPicture(id, 16);
-      expect([id, p.w, p.h]).toEqual([id, 16, 16]);
+  it('every picture is baked at 16–24 and has a title', () => {
+    expect(PICTURE_IDS.length).toBeGreaterThan(150);
+    for (const id of PICTURE_IDS) for (const size of [16, 20, 24]) {
+      const p = loadPicture(id, size);
+      expect([id, p.w, p.h, p.title !== id]).toEqual([id, size, size, true]);
     }
   });
 });
@@ -20,7 +22,7 @@ describe('shipped levels (src/data/levels.json)', () => {
   });
 
   it('decode → encode round-trips', () => {
-    for (let i = 0; i < TUNED_COUNT; i++) expect(encodeLevel(buildLevel(i))).toEqual(tuned[i]);
+    for (let i = 0; i < TUNED_COUNT; i++) expect(encodeLevel(buildLevel(i), solutionFor(i))).toEqual(tuned[i]);
   });
 
   it('ammo per colour equals the hits that colour needs', () => {
@@ -41,25 +43,29 @@ describe('shipped levels (src/data/levels.json)', () => {
     }
   });
 
-  it('the careful solver beats every level', () => {
-    const lost: number[] = [];
-    for (let i = 0; i < TUNED_COUNT; i++) if (!botSolve(buildLevel(i)).won) lost.push(i + 1);
-    expect(lost).toEqual([]);
+  it('every level is beatable: its stored winning line wins in the real engine', () => {
+    const failed: number[] = [];
+    for (let i = 0; i < TUNED_COUNT; i++) if (!replay(buildLevel(i), solutionFor(i))) failed.push(i + 1);
+    expect(failed).toEqual([]);
   }, 300_000);
 
-  it('the game is genuinely challenging: casual players lose a fair share', () => {
-    let hard = 0, hardN = 0, normal = 0, normalN = 0;
-    for (let i = 20; i < 120; i++) {
+  it('hard levels beat the obvious strategies; normal levels leave little slack', () => {
+    let hard = 0, hardBeaten = 0, normal = 0, normalTight = 0;
+    for (let i = 10; i < TUNED_COUNT; i++) {
       const l = buildLevel(i);
-      const r = winRate(l, 0.55, 8);
-      if (l.hard) { hard += r; hardN++; } else if (levelParams(i).target < 0.8) { normal += r; normalN++; }
+      const expert = botSolve(l);
+      if (l.hard) { hard++; if (!expert.won) hardBeaten++; }
+      else { normal++; if (!expert.won || expert.minFree <= 1) normalTight++; }
     }
-    expect(hard / hardN).toBeLessThan(0.6);
-    expect(normal / normalN).toBeLessThan(0.8);
+    expect(hardBeaten / hard).toBeGreaterThan(0.6);
+    expect(normalTight / normal).toBeGreaterThan(0.6);
   }, 300_000);
 
   it('the first levels are gentle', () => {
-    for (let i = 0; i < 3; i++) expect(winRate(buildLevel(i), 0.55, 8)).toBe(1);
+    for (let i = 0; i < 3; i++) {
+      expect(botSolve(buildLevel(i)).won).toBe(true);
+      expect(winRate(buildLevel(i), 0.55, 8)).toBe(1);
+    }
   });
 
   it('levels past the tuned set are still generated and beatable', () => {
@@ -68,12 +74,27 @@ describe('shipped levels (src/data/levels.json)', () => {
   });
 });
 
+/** Play a winning line one cat at a time (each cat finishes its lap before the next is sent). */
+function replay(level: LevelDef, moves: number[]): boolean {
+  const g = new Game(level);
+  for (const id of moves) {
+    if (g.status !== 'playing') break;
+    if (!g.tap(id)) return false;
+    for (let t = 0; t < 3000 && (g.belt.length || g.pending.length) && g.status === 'playing'; t++) g.step(1 / 60);
+    g.events.length = 0;
+  }
+  return g.status === 'won';
+}
+
 describe('engine', () => {
   it('a revive slot parks the stranded cat and play continues', () => {
     const l = buildLevel(5);
     const g = new Game({ ...l, slots: 0 });
-    for (const c of g.columns) if (c.length) g.tap(c[0]);
-    for (let t = 0; t < 3000 && g.status === 'playing'; t++) g.step(1 / 60);
+    // keep sending whatever is at the front until a cat has nowhere to park
+    for (let t = 0; t < 20000 && g.status === 'playing'; t++) {
+      if (t % 30 === 0) for (const c of g.columns) if (c.length && g.canLaunch(c[0])) g.tap(c[0]);
+      g.step(1 / 60);
+    }
     expect(g.status).not.toBe('playing');
     if (g.status === 'lost') {
       g.addSlot();

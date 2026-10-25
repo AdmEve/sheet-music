@@ -1,9 +1,9 @@
-// Renders emoji with Chromium's Noto Color Emoji and turns each into pixel art on
+// Turns Twemoji artwork (flat colours, crisp shapes: it pixelates cleanly) into pixel art on
 // the game palette, at every grid size the levels use. Output: src/data/pictures.json.
-// Baking at build time keeps every level identical on every phone (no device fonts).
+// Twemoji graphics: Copyright Twitter Inc. and other contributors, CC-BY 4.0 (credited in-game).
 import { createRequire } from 'node:module';
 import { execSync } from 'node:child_process';
-import { writeFileSync, readFileSync } from 'node:fs';
+import { existsSync, writeFileSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -12,33 +12,57 @@ const emoji = JSON.parse(readFileSync(root + 'src/data/emoji-list.json', 'utf8')
 // Playwright is a dev-machine tool here (not an app dependency): use the global install.
 const require = createRequire(import.meta.url);
 const { chromium } = require(execSync('npm root -g').toString().trim() + '/playwright');
-const SIZES = [10, 12, 14, 16, 18, 20, 22, 24];
+const SIZES = [16, 18, 20, 22, 24];
+
+/** Twemoji file for an emoji: code points in hex, without the FE0F variation selector. */
+function svgFor(ch) {
+  const cps = [...ch].map((c) => c.codePointAt(0).toString(16));
+  const dir = root + 'node_modules/@twemoji/svg/';
+  for (const name of [cps.filter((c) => c !== 'fe0f').join('-'), cps.join('-')]) {
+    if (existsSync(dir + name + '.svg')) return readFileSync(dir + name + '.svg', 'utf8');
+  }
+  return null;
+}
+const sources = emoji.map(({ id, ch }) => ({ id, svg: svgFor(ch) })).filter((e) => e.svg);
+console.log('twemoji found for', sources.length, 'of', emoji.length);
 
 const browser = await chromium.launch();
 const page = await browser.newPage();
 await page.setContent('<canvas id="c" width="480" height="480"></canvas>');
-const out = await page.evaluate(({ emoji, palette, SIZES }) => {
+const out = await page.evaluate(async ({ sources, palette, SIZES }) => {
   const S = 480;
   const c = document.getElementById('c');
   const ctx = c.getContext('2d', { willReadFrequently: true });
-  const pal = palette.map((p) => [parseInt(p.hex.slice(1, 3), 16), parseInt(p.hex.slice(3, 5), 16), parseInt(p.hex.slice(5, 7), 16)]);
+  // Match colours in CIELAB so shades (e.g. red vs maroon) land where the eye expects.
+  const lab = (r, g, b) => {
+    const f = (v) => { v /= 255; return v > 0.04045 ? Math.pow((v + 0.055) / 1.055, 2.4) : v / 12.92; };
+    const R = f(r), G = f(g), B = f(b);
+    const X = (R * 0.4124 + G * 0.3576 + B * 0.1805) / 0.95047, Y = R * 0.2126 + G * 0.7152 + B * 0.0722, Z = (R * 0.0193 + G * 0.1192 + B * 0.9505) / 1.08883;
+    const t = (v) => (v > 0.008856 ? Math.cbrt(v) : 7.787 * v + 16 / 116);
+    return [116 * t(Y) - 16, 500 * (t(X) - t(Y)), 200 * (t(Y) - t(Z))];
+  };
+  const pal = palette.map((p) => lab(parseInt(p.hex.slice(1, 3), 16), parseInt(p.hex.slice(3, 5), 16), parseInt(p.hex.slice(5, 7), 16)));
+  const memo = new Map();
   const nearest = (r, g, b) => {
+    const key = (r >> 2) * 4096 + (g >> 2) * 64 + (b >> 2);
+    const hit = memo.get(key);
+    if (hit !== undefined) return hit;
+    const [L, A, Bv] = lab(r, g, b);
     let best = 0, bd = Infinity;
     for (let i = 0; i < pal.length; i++) {
-      const [pr, pg, pb] = pal[i];
-      const rm = (r + pr) / 2;
-      const d = (2 + rm / 256) * (r - pr) ** 2 + 4 * (g - pg) ** 2 + (2 + (255 - rm) / 256) * (b - pb) ** 2;
+      const d = (L - pal[i][0]) ** 2 + (A - pal[i][1]) ** 2 + (Bv - pal[i][2]) ** 2;
       if (d < bd) { bd = d; best = i; }
     }
+    memo.set(key, best);
     return best;
   };
   const result = {};
-  for (const { id, ch } of emoji) {
+  for (const { id, svg } of sources) {
     ctx.clearRect(0, 0, S, S);
-    ctx.font = '400px "Noto Color Emoji"';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(ch, S / 2, S / 2 + 20);
+    const art = new Image();
+    art.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg.replace('<svg ', '<svg width="440" height="440" '))));
+    await art.decode();
+    ctx.drawImage(art, 20, 20, 440, 440);
     const img = ctx.getImageData(0, 0, S, S).data;
     // Tight bounding box of the drawn glyph, made square.
     let x0 = S, y0 = S, x1 = 0, y1 = 0;
@@ -80,7 +104,7 @@ const out = await page.evaluate(({ emoji, palette, SIZES }) => {
     result[id] = sizes;
   }
   return result;
-}, { emoji, palette, SIZES });
+}, { sources, palette, SIZES });
 await browser.close();
 writeFileSync(root + 'src/data/pictures.json', JSON.stringify(out));
 console.log('baked', Object.keys(out).length, 'pictures');
