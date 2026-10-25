@@ -14,7 +14,7 @@ import { CHAINS, Item, canMerge, isGenerator, itemName, maxLevel, sameItem } fro
 import {
   CELLS, ENERGY_CAP, GameEvent, GameState, Order, adsLeft, bubbleGemCost, ensureGenerators, buySheet, deliver, drop, findHint, msToNextEnergy, needsMet, RUSH_LEVEL, rushOrder,
   placeItem, popBubble, questsClaimable, refreshQuests, sellValue, sell, sheetGemCost, tap, tickBubbles, tickEnergy, toBag,
-  xpForLevel,
+  xpForLevel, boostChoices, cycleBoost, tapBoost,
 } from '../game/model';
 import { adsAvailable } from '../platform/ads';
 import { MAX_ADS_PER_DAY } from '../platform/config';
@@ -432,9 +432,11 @@ export class App {
     const it = cell.item;
     const cls = ['item'];
     if (isGenerator(it)) cls.push('gen');
+    if (isGenerator(it) && !CHAINS[it.chain].event && this.s.boost > 1 && !cell.lock) cls.push('boosted');
     if (it.level === maxLevel(it.chain) && !CHAINS[it.chain].collectible && !isGenerator(it)) cls.push('max');
     if (cell.lock === 'sheet') cls.push('sheet');
     const node = h('div', { class: cls.join(' '), html: svgIcon(itemArt(it)) });
+    if (cls.includes('boosted')) node.dataset.boost = `×${fa(this.s.boost)}`;
     el.append(node);
     if (cell.lock === 'sheet') el.insertAdjacentHTML('beforeend', SHEET_COVER);
     if (cell.lock === 'bubble') {
@@ -536,6 +538,7 @@ export class App {
         case 'spawn': {
           this.renderCell(e.to);
           this.animateFrom(e.to, e.from);
+          if (e.boost) this.floatText(`×${fa(e.boost)}`, this.cells[e.from].getBoundingClientRect(), 'boost');
           sfx.spawn();
           buzz('light');
           ordersChanged = true;
@@ -713,6 +716,8 @@ export class App {
       this.info.append(h('div', { class: 'text' },
         h('div', { class: 'name' }, 'محله‌ی ما'),
         h('div', { class: 'hint' }, 'مولدها رو بزن تا وسیله بسازن. دو وسیله‌ی یکسان رو روی هم بکش تا بهتر بشن.')));
+      const chip = this.boostChip();
+      if (chip) this.info.append(chip);
       return;
     }
     const it = cell.item;
@@ -744,7 +749,13 @@ export class App {
       const cost = sheetGemCost(it);
       actions.push(h('button', { class: 'chip pink', onclick: () => this.handle(buySheet(this.s, i), i) }, fa(cost), h('span', { html: svgIcon(ICONS.gem) })));
     } else if (def.produces) {
-      hint = `${levelText} · بزن تا «${CHAINS[def.produces].name}» بسازه (۱ ⚡)`;
+      const x = def.event ? 1 : tapBoost(this.s);
+      hint = `${levelText} · بزن تا «${CHAINS[def.produces].name}» بسازه (${fa(x)} ⚡${x > 1 ? `، ${fa(Math.log2(x))} سطح بالاتر` : ''})`;
+      const chip = def.event ? null : this.boostChip();
+      if (chip) {
+        actions.push(chip);
+        if (markSeen(this.s, 'tut:boost')) this.toast('تقویت مولد باز شد! ⚡×۲ رو بزن: هر ضربه ۲ انرژی، ولی وسیله یه سطح بالاتر میاد و جا کمتر می‌گیره.');
+      }
     } else if (isTopEventItem(it)) {
       hint = `دوباره بزن تا جمعش کنی (+${fa(EVENT_COLLECT)} امتیاز رویداد)`;
     } else if (def.event) {
@@ -890,6 +901,20 @@ export class App {
     return this.s.event.theme ? itemArt({ chain: THEMES[this.s.event.theme].gen, level: 1 }) : ICONS.star;
   }
 
+  /** The boost toggle chip (null until the first boost is unlocked). */
+  private boostChip(): HTMLElement | null {
+    if (boostChoices(this.s).length < 2) return null;
+    const on = this.s.boost > 1;
+    return h('button', { class: `chip boost${on ? ' on' : ''}`, id: 'boost-chip', 'aria-label': 'تقویت مولد', onclick: () => {
+      const x = cycleBoost(this.s);
+      this.toast(x > 1 ? `تقویت ×${fa(x)}: هر ضربه ${fa(x)} انرژی، وسیله ${fa(Math.log2(x))} سطح بالاتر.` : 'تقویت خاموش شد: هر ضربه ۱ انرژی.');
+      sfx.tap();
+      this.s.board.forEach((c, i) => { if (c.item && isGenerator(c.item)) this.renderCell(i); });
+      this.renderInfo();
+      this.dirty();
+    } }, h('span', { html: svgIcon(ICONS.energy) }), on ? `×${fa(this.s.boost)}` : '×۱');
+  }
+
   floatText(text: string, at: DOMRect, cls = ''): void {
     const el = h('div', { class: `float-text ${cls}`, style: `left:${at.left + at.width / 2 - 20}px;top:${at.top}px` }, text);
     document.body.append(el);
@@ -898,9 +923,11 @@ export class App {
 
   toast(msg: string): void {
     document.querySelectorAll('.toast').forEach((t) => t.remove());
-    const el = h('div', { class: 'toast' }, msg);
+    // Long messages (tips) wrap to two lines and stay up long enough to read.
+    const ms = msg.length > 45 ? 4200 : 2200;
+    const el = h('div', { class: 'toast', style: `animation-duration:${ms}ms` }, msg);
     document.body.append(el);
-    setTimeout(() => el.remove(), 2300);
+    setTimeout(() => el.remove(), ms + 100);
   }
 
   // ------------------------------------------------------------------ saving

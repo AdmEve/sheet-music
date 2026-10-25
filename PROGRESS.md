@@ -223,6 +223,14 @@ saves are written into localStorage `mahalle.save.v1`.
       finish all 70 episodes, no-pay regen hours per episode rising smoothly to ~167);
       Season 15 teased (a photo of Haj-Baba with «سفر یزد، به یاد رفیقم…»)
 
+- [x] Phase 25: generator boost «تقویت مولد» (×2 from level 15, ×4 from level 40): each tap
+      costs ×N energy and makes an item one or two levels higher, energy-neutral but it
+      saves board space and time; never reaches a chain's two collection levels; event
+      generators stay at 1 energy; falls back to what the energy affords. Toggle chip in the
+      info bar, a «×N» badge on boosted generators, «×N» float on each boosted tap, a
+      one-time tip. Long toasts now wrap and stay up longer (they ran off narrow screens).
+      Unit tests + smoke section 4
+
 Next (in order):
 1. Season 15 «رفیق یزدی»
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)

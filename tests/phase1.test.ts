@@ -156,6 +156,69 @@ describe('customers', () => {
   });
 });
 
+describe('generator boost', () => {
+  it('unlocks ×2 at level 15 and ×4 at level 40, cycling back to off', async () => {
+    const { boostChoices, cycleBoost } = await import('../src/game/model');
+    const s = emptyGame();
+    s.level = 14;
+    expect(boostChoices(s)).toEqual([1]);
+    expect(cycleBoost(s)).toBe(1);
+    s.level = 15;
+    expect(cycleBoost(s)).toBe(2);
+    expect(cycleBoost(s)).toBe(1);
+    s.level = 40;
+    expect([cycleBoost(s), cycleBoost(s), cycleBoost(s)]).toEqual([2, 4, 1]);
+  });
+
+  it('spends the boost in energy and lifts the item, never into the collection levels', async () => {
+    const { tap } = await import('../src/game/model');
+    const s = emptyGame();
+    s.level = 40;
+    s.energy = 50;
+    s.board[0] = { item: { chain: 'genTea', level: 1 } };
+    s.boost = 2;
+    const [e] = tap(s, 0, T0);
+    expect(e).toMatchObject({ type: 'spawn', boost: 2 });
+    expect(e.type === 'spawn' && e.item.level).toBe(2);
+    expect(s.energy).toBe(48);
+    expect(s.stats.taps).toBe(2);
+    s.boost = 4;
+    s.energy = 100;
+    for (let k = 0; k < 20; k++) {
+      const [f] = tap(s, 0, T0);
+      if (f.type !== 'spawn') throw new Error(f.type);
+      expect(f.item.level).toBeGreaterThanOrEqual(3);
+      expect(f.item.level).toBeLessThanOrEqual(maxLevel('tea') - 2);
+      s.board[f.to] = { item: null };
+    }
+    expect(s.energy).toBe(20);
+  });
+
+  it('falls back to what the energy affords, and leaves event generators alone', async () => {
+    const { tap, tapBoost } = await import('../src/game/model');
+    const s = emptyGame();
+    s.level = 40;
+    s.boost = 4;
+    s.energy = 3;
+    expect(tapBoost(s)).toBe(2);
+    s.energy = 1;
+    expect(tapBoost(s)).toBe(1);
+    s.energy = 10;
+    s.board[0] = { item: { chain: 'genSchool', level: 1 } };
+    const [e] = tap(s, 0, T0);
+    expect(e).toMatchObject({ type: 'spawn' });
+    expect(e.type === 'spawn' && e.boost).toBeFalsy();
+    expect(s.energy).toBe(9);
+  });
+
+  it('old saves load with the boost off', () => {
+    const s = emptyGame();
+    const raw = JSON.parse(JSON.stringify(s));
+    delete raw.boost;
+    expect(loadState(JSON.stringify(raw))?.boost).toBe(1);
+  });
+});
+
 describe('clock set back', () => {
   it('keeps the energy, gift and bubble timers to their normal length', async () => {
     const { ENERGY_REGEN_MS, msToNextEnergy, tickBubbles, tickEnergy } = await import('../src/game/model');

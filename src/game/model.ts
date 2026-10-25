@@ -102,10 +102,12 @@ export interface GameState {
   race: RaceState;
   /** Chosen decoration style per restored piece ("placeId.layer" → style index). */
   decor: Record<string, number>;
+  /** Generator boost: each tap costs this much energy and makes a higher item (1 = off). */
+  boost: number;
 }
 
 export type GameEvent =
-  | { type: 'spawn'; from: number; to: number; item: Item }
+  | { type: 'spawn'; from: number; to: number; item: Item; boost?: number }
   | { type: 'merge'; at: number; item: Item; from: number }
   | { type: 'move'; from: number; to: number }
   | { type: 'swap'; a: number; b: number }
@@ -223,6 +225,7 @@ export function newGame(seed: number, now: number): GameState {
     trophies: [],
     race: emptyRace(),
     decor: {},
+    boost: 1,
   };
   const put = (r: number, c: number, item: Item, lock?: Lock) => {
     s.board[idx(r, c)] = lock ? { item, lock } : { item };
@@ -309,6 +312,32 @@ export function claimDaily(s: GameState, today: string, yesterday: string): numb
 // ---------------------------------------------------------------------------- board actions
 
 /** Tap on a board cell: generators produce, collectibles pay out, chests open. */
+/** Generator boosts and the player level that unlocks each: ×2 lifts an item one level, ×4 two. */
+export const BOOSTS: { x: number; level: number }[] = [{ x: 2, level: 15 }, { x: 4, level: 40 }];
+
+/** The boost settings the player can pick from (always starts with 1, off). */
+export function boostChoices(s: GameState): number[] {
+  return [1, ...BOOSTS.filter((b) => s.level >= b.level).map((b) => b.x)];
+}
+
+/** Steps to the next boost setting, wrapping back to off. */
+export function cycleBoost(s: GameState): number {
+  const choices = boostChoices(s);
+  s.boost = choices[(choices.indexOf(s.boost) + 1) % choices.length] ?? 1;
+  return s.boost;
+}
+
+/**
+ * The boost a tap actually uses: the chosen one if unlocked and affordable, else the biggest that
+ * is. Boosting is energy-neutral (one level up = two items merged), it saves board space and time.
+ */
+export function tapBoost(s: GameState): number {
+  const choices = boostChoices(s);
+  let x = choices.includes(s.boost) ? s.boost : 1;
+  while (x > 1 && s.energy < x) x /= 2;
+  return x;
+}
+
 export function tap(s: GameState, at: number, now: number): GameEvent[] {
   const cell = s.board[at];
   if (!cell.item) return [];
@@ -348,13 +377,17 @@ export function tap(s: GameState, at: number, now: number): GameEvent[] {
     if (s.energy <= 0) return [{ type: 'fail', reason: 'noEnergy' }];
     const to = nearestEmpty(s, at);
     if (to === null) return [{ type: 'fail', reason: 'boardFull' }];
-    if (s.energy === ENERGY_CAP) s.energyAt = now;
-    s.energy--;
-    s.stats.taps++;
-    const level = 1 + weighted(s, spawnWeights(it.level));
+    if (s.energy >= ENERGY_CAP) s.energyAt = now;
+    // Event generators stay at one energy a tap: their item tracks are tuned per tap.
+    const x = def.event ? 1 : tapBoost(s);
+    s.energy -= x;
+    s.stats.taps += x;
+    const base = 1 + weighted(s, spawnWeights(it.level));
+    // A boost never reaches a chain's two collection levels at the top.
+    const level = x > 1 ? Math.max(base, Math.min(base + Math.log2(x), maxLevel(def.produces) - 2)) : base;
     const item: Item = { chain: def.produces, level: Math.min(level, maxLevel(def.produces)) };
     s.board[to] = { item };
-    return [{ type: 'spawn', from: at, to, item }];
+    return [{ type: 'spawn', from: at, to, item, ...(x > 1 ? { boost: x } : {}) }];
   }
   return [];
 }
@@ -728,6 +761,7 @@ export function loadState(json: string | null): GameState | null {
       found: raw.found ?? [], codexClaimed: raw.codexClaimed ?? [],
       piggy: raw.piggy ?? 0, offers: raw.offers ?? [], giftAt: raw.giftAt ?? 0, pass: raw.pass ?? emptyPass(),
       event: raw.event ?? emptyEvent(), trophies: raw.trophies ?? [], race: raw.race ?? emptyRace(), decor: raw.decor ?? {},
+      boost: raw.boost ?? 1,
     } as GameState;
     // Saves from before the album: everything the player holds now counts as found.
     if (!raw.found) discover(s);

@@ -243,6 +243,39 @@ async function drag(page: Page, a: number, b: number): Promise<void> {
   await page.close();
 }
 
+// ------------------------------------------------------------------ 4. generator boost
+{
+  step = 'generator boost';
+  const s = newGame(92, Date.now());
+  s.board = Array.from({ length: CELLS }, () => ({ item: null }));
+  s.board[7 * COLS + 3] = { item: { chain: 'genTea', level: 2 } };
+  s.level = 16; s.xp = 2600; s.energy = 60;
+  s.tasksDone = PLACES[0].tasks.map((t) => t.id);
+  s.storySeen = ['teahouse:intro', 'teahouse:outro', 'bakery:intro', 'tut:merge', 'tut:deliver', 'tut:generator', 'tut:alley', 'ask:rate', 'tut:bubble'];
+  s.scriptStep = 99;
+  s.lastDaily = new Date().toLocaleDateString('en-CA');
+  fillOrders(s);
+  discover(s);
+  const page = await openPage(JSON.stringify(s));
+  await page.waitForTimeout(800);
+  await skipDialogue(page);
+  await closeOverlays(page);
+  const gen = `.cell[data-i="${7 * COLS + 3}"]`;
+  await click(page, gen);
+  await page.waitForTimeout(300);
+  check(await page.$('#boost-chip'), 'boost chip shows on a generator at level 16');
+  await click(page, '#boost-chip');
+  await page.waitForTimeout(200);
+  check(await page.$(`${gen} .item.boosted`), 'generator shows its boost badge');
+  const before = (await saved(page)).energy;
+  await click(page, gen);
+  await page.waitForTimeout(600);
+  const st = await saved(page);
+  check(st.boost === 2 && st.energy === before - 2, `×2 tap spends 2 energy (${before} → ${st.energy})`);
+  check(st.board.some((c: { item: { chain: string; level: number } | null }) => c.item?.chain === 'tea' && c.item.level >= 2), 'boosted tap makes a higher item');
+  await page.close();
+}
+
 await browser.close();
 server.close();
 if (problems.length) {
