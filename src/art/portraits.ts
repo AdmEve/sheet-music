@@ -93,7 +93,7 @@ const scarfFront = (fill: string) =>
 const dots = (color: string) =>
   [[34, 26], [46, 22], [58, 24], [68, 32], [28, 38], [72, 46]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2" fill="${color}"/>`).join('');
 
-export const CAST_IDS = ['narges', 'mahin', 'reza', 'shirin', 'kaveh', 'morteza', 'golab', 'fakhri', 'farokhi', 'bahman', 'aydin', 'sona', 'yadollah', 'jalal', 'sepideh'];
+export const CAST_IDS = ['narges', 'mahin', 'reza', 'shirin', 'kaveh', 'morteza', 'golab', 'fakhri', 'farokhi', 'bahman', 'aydin', 'sona', 'yadollah', 'jalal', 'sepideh', 'karim'];
 export const MOOD_LIST: Mood[] = ['neutral', 'happy', 'sad', 'angry', 'surprised'];
 
 const PORTRAITS: Record<string, (m: FaceOpts) => string> = {
@@ -197,6 +197,15 @@ const PORTRAITS: Record<string, (m: FaceOpts) => string> = {
     face({ eyes: 'open', brows: 'soft', mouth: 'smile', blush: true, lashes: true, skin: '#f2c4a0', ...m }) +
     (m.mouth ? '' : `<path d="M44 65 q6 4 12 0" fill="none" stroke="#c0505b" stroke-width="2.4" stroke-linecap="round"/>`) +
     scarfFront('#1f3a6a'),
+  karim: (m) =>
+    bg('#fde3ec', '#e891ae') +
+    // Work shirt with a damask rose in the pocket.
+    shoulders('#5a7a4a', `<path d="M40 80 L50 92 L60 80" fill="#f4f0e6" ${THIN}/><rect x="58" y="86" width="12" height="8" fill="#4a6a3a" ${THIN} stroke-width="1"/><circle cx="64" cy="85" r="4" fill="url(#gRoseDeep)" ${THIN} stroke-width=".8"/>`) +
+    face({ eyes: 'smile', brows: 'thick', mouth: 'smile', skin: '#e2ad82', ...m }) +
+    // Short dark beard and a flat cap.
+    `<path d="M30 58 C32 78 42 84 50 84 C58 84 68 78 70 58 C66 70 60 72 50 72 C40 72 34 70 30 58 Z" fill="#3a2418" ${THIN}/>` +
+    `<path d="M40 62 C44 59 48 60 50 61 C52 60 56 59 60 62 C57 64 53 63 50 63.5 C47 63 43 64 40 62 Z" fill="#3a2418"/>` +
+    `<path d="M27 42 C27 24 73 24 73 42 Z" fill="#6a5a4a" ${O}/><path d="M26 42 Q50 34 80 44 L76 48 Q50 40 26 46 Z" fill="#5a4a3a" ${THIN}/>`,
 };
 
 const cache = new Map<string, string>();

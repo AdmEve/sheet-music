@@ -7,7 +7,7 @@ import { WEDDING } from './chainsO';
 import { camel } from './chainsP';
 import { INK, O, THIN, sparkle } from './kit';
 
-export const MAP_H = 9700;
+export const MAP_H = 10230;
 const STEP = 106;
 const faDigits = (n: number) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 
@@ -353,6 +353,26 @@ const FACADES: Record<string, Facade> = {
   snownight: {
     wall: '#4a4a6a', w: 124, h: 56, door: 'gate',
     deco: `<path d="M-66 -56 Q-30 -64 0 -60 T66 -56 V-52 H-66 Z" fill="#fafdff" ${THIN} stroke-width="1"/>` + `<circle cx="48" cy="-84" r="8" fill="#fff6d0"/><circle cx="51" cy="-86" r="7" fill="#e9d9b8"/>`,
+  },
+  rosegarden: {
+    wall: '#a8904a', w: 116, h: 44, door: 'gate',
+    deco: [-40, -20, 20, 40].map((x) => `<ellipse cx="${x}" cy="-52" rx="11" ry="8" fill="url(#gLeafDark)" ${THIN}/><circle cx="${x - 3}" cy="-54" r="3" fill="url(#gRoseDeep)"/><circle cx="${x + 4}" cy="-50" r="3" fill="url(#gRoseDeep)"/>`).join(''),
+  },
+  distillery: {
+    wall: '#b8804a', roof: 'dome', roofFill: 'url(#gTerracotta)', door: 'arch', w: 120,
+    deco: `<path d="M44 -12 V-26 H58" fill="none" stroke="#b05a2a" stroke-width="3"/><path d="M50 -14 C50 -24 64 -24 64 -14 Z" fill="url(#gCopper)" ${THIN} stroke-width="1"/>`,
+  },
+  guesthouse: {
+    wall: '#d8b48a', door: 'arch', sign: 'مسافرخونه',
+    deco: `<rect x="30" y="-48" width="26" height="22" fill="url(#gWoodDark)" ${THIN}/>` + [0, 1, 2, 3].map((i) => `<rect x="${32 + (i % 2) * 12}" y="${-46 + Math.floor(i / 2) * 10}" width="10" height="8" fill="${['#e0303f', '#3a76c4', '#f6c945', '#3f8a2a'][i]}" opacity=".8"/>`).join(''),
+  },
+  rosefest: {
+    wall: '#d8b48a', w: 124, h: 56, door: 'gate',
+    deco: Array.from({ length: 9 }, (_, i) => { const a = Math.PI + (i / 8) * Math.PI; return `<circle cx="${Math.cos(a) * 26}" cy="${-34 + Math.sin(a) * 26}" r="3.6" fill="url(#gRoseDeep)" ${THIN} stroke-width=".8"/>`; }).join(''),
+  },
+  rosealley: {
+    wall: '#d9a873', door: 'arch', sign: 'باغ گلاب',
+    deco: [-54, -44, 44, 54].map((x) => `<circle cx="${x}" cy="-6" r="4" fill="url(#gRoseDeep)" ${THIN} stroke-width=".8"/>`).join(''),
   },
   wedding: {
     wall: 'url(#gWood)', w: 120, h: 70, door: 'gate',

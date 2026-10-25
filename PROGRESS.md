@@ -261,8 +261,14 @@ saves are written into localStorage `mahalle.save.v1`.
       furnace relit in a power cut, and a snowy night by a bonfire; «زمستون» chain + wood-stove
       generator); map of 90 places; Season 19 teased (rosewater-making in Qamsar)
 
+- [x] Phase 31: Season 19 «گلاب‌گیری» (`src/art/scenes19.ts`: a Qamsar rose garden at dawn, the
+      copper-still distillery, the old guesthouse whose ledger holds Golab's father's name, the
+      rosewater festival and a rose garden back in the alley; «گلاب قمصر» chain + rose-bush
+      generator; new character Karim, a Qamsari rose farmer); map of 95 places; Season 20
+      teased (a metro station planned under the neighbourhood)
+
 Next (in order):
-1. Season 19 «گلاب‌گیری»
+1. Season 20 «مترو» (episode 100)
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)

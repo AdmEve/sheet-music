@@ -26,6 +26,7 @@ export const CAST: Record<string, Character> = {
   yadollah: { id: 'yadollah', name: 'عمو یدالله', role: 'سرایدار کاروانسرا' },
   jalal: { id: 'jalal', name: 'استاد جلال', role: 'مقنی پیر یزدی' },
   sepideh: { id: 'sepideh', name: 'سپیده', role: 'مجری برنامه‌ی آشپزی' },
+  karim: { id: 'karim', name: 'کریم', role: 'گلکار قمصری' },
 };
 
 /** Short thank-you lines shown when an order is delivered (one picked at random). */
@@ -45,6 +46,7 @@ export const THANKS: Record<string, string[]> = {
   yadollah: ['خدا قوت جوون!', 'قندی هم ازت ممنونه.', 'دستت درد نکنه. مثل بارون تو کویر بودی.'],
   jalal: ['خیر ببینی بابا.', 'مثل آب قنات، زلال و به‌موقع!', 'حاجی بود حتماً بهت می‌نازید.'],
   sepideh: ['عالی بود! دوربین، کات!', 'این صحنه رو باید دوباره پخش کنیم!', 'بیننده‌هامون عاشقت می‌شن!'],
+  karim: ['دستت گل!', 'خدا قوت! مثل گلاب دوآتشه بود.', 'گل‌ها هم ازت ممنونن!'],
 };
 
 export interface Line {
@@ -2054,6 +2056,104 @@ export const PLACES: Place[] = [
       { who: 'narges', text: 'قمصر؟', mood: 'surprised' },
       { who: 'golab', text: 'پدرم مادرم رو اولین بار تو باغ گل محمدی قمصر دید. اسمم رو هم از همون‌جا گذاشتن.', mood: 'happy' },
       { who: 'mahin', text: 'سفر بهاری به قمصر! … من چمدونم رو از همین الان می‌بندم!', mood: 'happy' },
+    ],
+  },
+  // ------------------------------------------------------------------ season 19: گلاب‌گیری
+  {
+    id: 'rosegarden',
+    name: 'باغ گل محمدی',
+    intro: [
+      { who: 'golab', text: 'قمصر… شصت سال گذشته، ولی بوی گل همونه. انگار دیروز بود.', mood: 'sad' },
+      { who: 'karim', text: 'خوش اومدید! من کریمم، گلکار. باید قبل از طلوع آفتاب گل بچینیم، وگرنه عطرش می‌پره.' },
+      { who: 'mahin', text: 'قبل از طلوع آفتاب؟! … من ساعت نه صبح تازه چشمام باز می‌شه!', mood: 'surprised' },
+    ],
+    tasks: [
+      { id: 'rg.bushes', title: 'بوته‌های گل', cost: 570, layer: 'bushes', after: [{ who: 'karim', text: 'این بوته‌ها رو پدربزرگم کاشته. هر سال بیشتر گل می‌دن.' }] },
+      { id: 'rg.baskets', title: 'سبدهای گل‌چینی', cost: 572, layer: 'baskets', after: [{ who: 'shirin', text: 'دست‌هام بوی گلاب گرفته! دیگه هیچ عطری لازم ندارم.', mood: 'happy' }] },
+      { id: 'rg.stream', title: 'جوی آب باغ', cost: 574, layer: 'stream', after: [{ who: 'kaveh', text: 'جوی آب از قنات میاد. استاد جلال بود، می‌گفت: «هر جا قنات هست، زندگی هست».' }] },
+      { id: 'rg.shade', title: 'سایه‌بون باغ', cost: 576, layer: 'shade', after: [{ who: 'bahman', text: 'زیر سایه‌بون، صدای زنبورها… هامبورگ این‌همه آرامش نداشت.' }] },
+      { id: 'rg.tea', title: 'چای صبحگاهی', cost: 578, layer: 'tea', after: [{ who: 'golab', text: 'چای با گلبرگ تازه. مادرم هر صبح بهار همین رو دم می‌کرد.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'karim', text: 'گل‌ها چیده شد. حالا تا ظهر باید برسونیمشون به کارگاه گلاب‌گیری. گل منتظر نمی‌مونه!' },
+    ],
+  },
+  {
+    id: 'distillery',
+    name: 'کارگاه گلاب‌گیری',
+    intro: [
+      { who: 'karim', text: 'گلاب‌گیری سنتی: گل تو دیگ مسی، آب روش، آتیش زیرش. بخار از لوله رد می‌شه، خنک می‌شه و… گلاب!' },
+      { who: 'reza', text: 'مثل نون پختن می‌مونه: آتیش، صبر و یه کم جادو.', mood: 'happy' },
+    ],
+    tasks: [
+      { id: 'ds.pots', title: 'دیگ‌های مسی', cost: 576, layer: 'pots', after: [{ who: 'fakhri', text: 'دیگ‌ها رو با خاکستر برق انداختیم. مسگرهای قدیم همین کار رو می‌کردن.' }] },
+      { id: 'ds.fire', title: 'اجاق هیزمی', cost: 578, layer: 'fire', after: [{ who: 'yadollah', text: 'آتیش ملایم! آتیش تند گلاب رو می‌سوزونه. این رو کویر بهم یاد داده.' }] },
+      { id: 'ds.pipes', title: 'لوله‌های بخار', cost: 580, layer: 'pipes', after: [{ who: 'farokhi', text: 'لوله‌کشی سنتی، بدون یه پیچ فلزی. مهندس‌های قدیم نابغه بودن.', mood: 'surprised' }] },
+      { id: 'ds.carboys', title: 'قرابه‌های شیشه‌ای', cost: 582, layer: 'carboys', after: [{ who: 'shirin', text: 'اولین قطره‌ها اومد! بوش کل کارگاه رو گرفت!', mood: 'surprised' }] },
+      { id: 'ds.pool', title: 'حوضچه‌ی آب سرد', cost: 584, layer: 'pool', after: [{ who: 'karim', text: 'آب سرد حوضچه بخار رو گلاب می‌کنه. گلاب اول «دوآتشه»ست، بهترینش.' }] },
+    ],
+    outro: [
+      { who: 'karim', text: 'ننه‌گلاب، پدربزرگم یه دفتر داشت. اسم مهمون‌های مسافرخونه‌ی قدیم ده رو توش می‌نوشت. شاید…' },
+      { who: 'golab', text: 'مسافرخونه‌ی ده؟ … پدرم همون‌جا مونده بود! بریم ببینیم.', mood: 'surprised' },
+    ],
+  },
+  {
+    id: 'guesthouse',
+    name: 'مسافرخونه‌ی قدیمی',
+    intro: [
+      { who: 'karim', text: 'مسافرخونه سال‌هاست بسته‌ست. ولی دفتر مهمون‌هاش هنوز تو صندوقه.' },
+      { who: 'narges', text: 'ننه‌گلاب، دستتون می‌لرزه.' },
+      { who: 'golab', text: 'یه عمر منتظر همچین روزی بودم، دخترم.', mood: 'sad' },
+    ],
+    tasks: [
+      { id: 'gh.iwan', title: 'ایوون مسافرخونه', cost: 582, layer: 'iwan', after: [{ who: 'kaveh', text: 'ایوون رو تعمیر کردیم. مسافرها عصرها همین‌جا چای می‌خوردن.' }] },
+      { id: 'gh.pool', title: 'حوض کاشی', cost: 584, layer: 'pool', after: [{ who: 'aydin', text: 'حوض کاشی فیروزه‌ای. رنگش مثل کاشی‌های قدیمی تبریزه.' }] },
+      { id: 'gh.orosi', title: 'پنجره‌های ارسی', cost: 586, layer: 'orosi', after: [{ who: 'shirin', text: 'نور از شیشه‌های رنگی ارسی می‌افته رو زمین. مثل یه فرش نورانی!', mood: 'happy' }] },
+      { id: 'gh.takht', title: 'تخت چوبی', cost: 588, layer: 'takht', after: [{ who: 'bahman', text: 'شاید یه روز پدر ننه‌گلاب رو همین تخت نشسته بوده و به باغ نگاه می‌کرده.' }] },
+      { id: 'gh.ledger', title: 'دفتر مهمون‌ها', cost: 590, layer: 'ledger', after: [{ who: 'golab', text: 'این‌جاست! «اردیبهشت، مسافر از تهران، برای خرید گلاب.» … خط پدرمه!', mood: 'surprised' }, { who: 'golab', text: 'و زیرش با یه خط دیگه نوشته: «و دلش رو جا گذاشت». … خط مادرمه.', mood: 'sad' }] },
+    ],
+    outro: [
+      { who: 'karim', text: 'فردا جشن گلاب‌گیری ده‌ست. ننه‌گلاب، شما مهمون ویژه‌ی جشنید.' },
+      { who: 'mahin', text: 'مهمون ویژه! باید ببریمش آرایشگاه شیرین… اوه، این‌جا که آرایشگاه نداره!', mood: 'surprised' },
+    ],
+  },
+  {
+    id: 'rosefest',
+    name: 'جشن گلاب‌گیری',
+    intro: [
+      { who: 'karim', text: 'هر سال اردیبهشت کل ده جشن می‌گیره. امسال مهمون‌هامون از تهران اومدن!', mood: 'happy' },
+      { who: 'sepideh', text: 'تلویزیون هم اومده! این دفعه برای برنامه‌ی «سفر محله».', mood: 'happy' },
+    ],
+    tasks: [
+      { id: 'rs.arch', title: 'طاق گل', cost: 588, layer: 'arch', after: [{ who: 'narges', text: 'طاق گل محمدی، با هزار تا گل. ننه‌گلاب، شما اول از زیرش رد شید.' }] },
+      { id: 'rs.stalls', title: 'بازارچه‌ی گلاب', cost: 590, layer: 'stalls', after: [{ who: 'morteza', text: 'گلاب دوآتشه، شیشه‌ای این‌قدر… گرونه! … ولی برای ننه‌گلاب ده تا می‌خرم.', mood: 'happy' }] },
+      { id: 'rs.bottles', title: 'ویترین شیشه‌ها', cost: 592, layer: 'bottles', after: [{ who: 'shirin', text: 'گلاب، بیدمشک، نعنا… هر شیشه یه رنگ و یه بو!', mood: 'happy' }] },
+      { id: 'rs.music', title: 'ساز و آواز', cost: 594, layer: 'music', after: [{ who: 'bahman', text: 'تار داداش، این دفعه زیر درخت‌های گل. یه ترانه‌ی قدیمی درباره‌ی گل محمدی بلدم.' }] },
+      { id: 'rs.sweets', title: 'شیرینی گل‌محمدی', cost: 596, layer: 'sweets', after: [{ who: 'reza', text: 'نون‌برنجی با گلاب قمصر. قول می‌دم تو نونوایی هم بپزمش!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'golab', text: 'کریم جان، یه خواهش دارم. چند تا نهال گل محمدی به من می‌دی؟ می‌خوام تو کوچه‌مون بکارم.' },
+      { who: 'karim', text: 'چند تا؟ یه وانت نهال براتون می‌فرستم، ننه‌گلاب!', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'rosealley',
+    name: 'باغ گلاب کوچه',
+    intro: [
+      { who: 'narges', text: 'نهال‌ها از قمصر رسیدن! یه وانت پر.', mood: 'happy' },
+      { who: 'golab', text: 'یه گوشه‌ی کوچه رو باغچه کنیم. که هر بهار، بوی قمصر بیاد این‌جا.' },
+    ],
+    tasks: [
+      { id: 'ra.saplings', title: 'نهال‌های گل محمدی', cost: 594, layer: 'saplings', after: [{ who: 'kaveh', text: 'سی تا نهال جلوی خونه‌ی ننه‌گلاب. دو سال دیگه کوچه بوی قمصر می‌ده.' }] },
+      { id: 'ra.sprinklers', title: 'گلاب‌پاش‌ها', cost: 596, layer: 'sprinklers', after: [{ who: 'fakhri', text: 'گلاب‌پاش‌های نقره رو از صندوق درآوردیم، برای مهمون‌های قهوه‌خونه.' }] },
+      { id: 'ra.bottle', title: 'شیشه‌ی گلاب قهوه‌خونه', cost: 598, layer: 'bottle', after: [{ who: 'reza', text: 'یه قطره گلاب تو چای… قهوه‌خونه‌ی حاج‌بابا حالا بوی قمصر می‌ده.', mood: 'happy' }] },
+      { id: 'ra.bench', title: 'نیمکت باغچه', cost: 600, layer: 'bench', after: [{ who: 'bahman', text: 'یه نیمکت کنار باغچه، برای وقتی که آدم می‌خواد فقط بشینه و بو بکشه.' }] },
+      { id: 'ra.sign', title: 'تابلوی «باغ گلاب»', cost: 602, layer: 'sign', after: [{ who: 'golab', text: 'باغ گلاب. … اسم من، اسم یه باغ شد. مادرم اگه بود، چقدر می‌خندید.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'farokhi', text: 'یه خبر دارم. شهرداری می‌خواد زیر محله‌ی ما ایستگاه مترو بسازه.' },
+      { who: 'kaveh', text: 'زیر کوچه؟! پی خونه‌های قدیمی طاقت لرزش حفاری رو نداره!', mood: 'surprised' },
+      { who: 'narges', text: 'این دفعه نمی‌جنگیم. کمک می‌کنیم درست ساخته بشه. با کوچه، نه به جای کوچه.' },
     ],
   },
 ];
