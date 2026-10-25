@@ -25,6 +25,7 @@ export const CAST: Record<string, Character> = {
   sona: { id: 'sona', name: 'سونا‌خانم', role: 'مادر آیدین، از تبریز' },
   yadollah: { id: 'yadollah', name: 'عمو یدالله', role: 'سرایدار کاروانسرا' },
   jalal: { id: 'jalal', name: 'استاد جلال', role: 'مقنی پیر یزدی' },
+  sepideh: { id: 'sepideh', name: 'سپیده', role: 'مجری برنامه‌ی آشپزی' },
 };
 
 /** Short thank-you lines shown when an order is delivered (one picked at random). */
@@ -43,6 +44,7 @@ export const THANKS: Record<string, string[]> = {
   sona: ['ساغ اول قیزیم! الهی خیر ببینی.', 'آیدین راست می‌گفت، این کوچه یه چیز دیگه‌ست.', 'به این می‌گن سلیقه! مثل گل‌های ائل‌گلی.'],
   yadollah: ['خدا قوت جوون!', 'قندی هم ازت ممنونه.', 'دستت درد نکنه. مثل بارون تو کویر بودی.'],
   jalal: ['خیر ببینی بابا.', 'مثل آب قنات، زلال و به‌موقع!', 'حاجی بود حتماً بهت می‌نازید.'],
+  sepideh: ['عالی بود! دوربین، کات!', 'این صحنه رو باید دوباره پخش کنیم!', 'بیننده‌هامون عاشقت می‌شن!'],
 };
 
 export interface Line {
@@ -1850,6 +1852,108 @@ export const PLACES: Place[] = [
       { who: 'mahin', text: 'داغ‌ترین خبر سال! تلویزیون زنگ زد. می‌خوان یه مسابقه‌ی آشپزی تو کوچه‌ی ما ضبط کنن!', mood: 'surprised' },
       { who: 'reza', text: 'مسابقه‌ی آشپزی؟ … من فقط نون بلدم!', mood: 'surprised' },
       { who: 'golab', text: 'نترس رضا. این کوچه یه آشپزخونه‌ی بزرگه. فقط باید درش رو باز کرد.', mood: 'happy' },
+    ],
+  },
+  // ------------------------------------------------------------------ season 17: مسابقه‌ی آشپزی
+  {
+    id: 'tvset',
+    name: 'استودیوی کوچه',
+    intro: [
+      { who: 'sepideh', text: 'سلام به همه! من سپیده‌ام، مجری «آشپزی محله». قراره کوچه‌ی شما بشه استودیوی ما!', mood: 'happy' },
+      { who: 'mahin', text: 'تلویزیون! تو کوچه‌ی ما! … من باید برم آرایشگاه شیرین. همین الان!', mood: 'surprised' },
+      { who: 'reza', text: 'من فقط نون بلدم. ولی اگه قراره کوچه رو نشون بدن، باید بهترین نون عمرم رو بپزم.' },
+    ],
+    tasks: [
+      { id: 'tv.lights', title: 'نورهای صحنه', cost: 510, layer: 'lights', after: [{ who: 'sepideh', text: 'نورها رو ببینید! کوچه‌ی شما از هر استودیویی قشنگ‌تره.', mood: 'happy' }] },
+      { id: 'tv.cameras', title: 'دوربین‌ها', cost: 512, layer: 'cameras', after: [{ who: 'farokhi', text: 'سه تا دوربین، برای یه کوچه؟ حالا می‌فهمم چقدر مهم شدیم.', mood: 'surprised' }] },
+      { id: 'tv.stations', title: 'میزهای آشپزی', cost: 514, layer: 'stations', after: [{ who: 'aydin', text: 'من و رضا یه تیم، نرگس و شیرین یه تیم، فخری‌خانم و ننه‌گلاب یه تیم. فخری‌خانم، ما رو نترسونید!', mood: 'happy' }] },
+      { id: 'tv.judges', title: 'میز داورها', cost: 516, layer: 'judges', after: [{ who: 'sepideh', text: 'داورهامون: یه سرآشپز، یه منتقد غذا و یه داور ویژه از خود کوچه: آقا مرتضی! چون تا حالا از هیچ غذایی تعریف نکرده.' }] },
+      { id: 'tv.banner', title: 'تابلوی «آشپزی محله»', cost: 518, layer: 'banner', after: [{ who: 'shirin', text: 'تابلو رو زدیم! … مامانم از شهرستان زنگ زد: «شیرین، تلویزیونی شدی؟»', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'sepideh', text: 'مرحله‌ی اول: غذای سنتی. هر تیم یه غذای اصیل ایرانی می‌پزه. فردا صبح، ساعت ده!' },
+      { who: 'golab', text: 'غذای سنتی؟ پس آشپزخونه‌ی من. سی ساله کسی توش آشپزی نکرده، ولی هنوز بوی قورمه‌سبزی می‌ده.' },
+    ],
+  },
+  {
+    id: 'golabkitchen',
+    name: 'آشپزخونه‌ی ننه‌گلاب',
+    intro: [
+      { who: 'golab', text: 'این آشپزخونه‌ی مادرمه. هر جمعه این‌جا قورمه‌سبزی بار می‌ذاشت و کل کوچه بوش رو می‌فهمید.' },
+      { who: 'narges', text: 'ننه‌گلاب، دستور پخت مادرتون رو یادتونه؟' },
+      { who: 'golab', text: 'دستور؟ دخترم، قورمه‌سبزی با دل پخته می‌شه، نه با دستور.', mood: 'happy' },
+    ],
+    tasks: [
+      { id: 'gk.stove', title: 'اجاق قدیمی', cost: 516, layer: 'stove', after: [{ who: 'kaveh', text: 'اجاق رو تعمیر کردم. شعله‌ش آبیه، یعنی سالمه.' }] },
+      { id: 'gk.pots', title: 'قابلمه‌های مسی', cost: 518, layer: 'pots', after: [{ who: 'fakhri', text: 'قابلمه‌ها رو سفید کردیم. مسگر محله گفت این‌ها صد سال عمر دارن.' }] },
+      { id: 'gk.herbs', title: 'سبزی قورمه', cost: 520, layer: 'herbs', after: [{ who: 'golab', text: 'تره، جعفری، گشنیز، شنبلیله. شنبلیله زیاد نشه ها! … فخری، دستت رو کم کن!', mood: 'angry' }, { who: 'fakhri', text: 'من سی سال قورمه‌سبزی پختم، گلاب‌خانم.', mood: 'angry' }] },
+      { id: 'gk.shelf', title: 'قفسه‌ی ادویه', cost: 522, layer: 'shelf', after: [{ who: 'aydin', text: 'زردچوبه، لیمو عمانی، زعفرون… ادویه‌های ایران مثل رنگ‌های فرش تبریزن.' }] },
+      { id: 'gk.window', title: 'پنجره‌ی رو به کوچه', cost: 524, layer: 'window', after: [{ who: 'sepideh', text: 'دوربین رو بذارید پشت پنجره. بوی قورمه‌سبزی رو نمی‌شه نشون داد، ولی بخارش رو چرا!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'sepideh', text: 'نتیجه‌ی مرحله‌ی اول: مساوی! همه‌ی تیم‌ها بیست گرفتن. داور ویژه‌مون، آقا مرتضی، سه بشقاب خورد.', mood: 'surprised' },
+      { who: 'morteza', text: 'برای داوری بود! … باید مطمئن می‌شدم.' },
+      { who: 'sepideh', text: 'مرحله‌ی دوم: خرید مواد از بازار. هر تیم بودجه‌ی محدود داره!' },
+      { who: 'morteza', text: 'بودجه‌ی محدود؟ بالاخره یه مسابقه که من توش استادم!', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'market',
+    name: 'بازار تره‌بار',
+    intro: [
+      { who: 'morteza', text: 'قانون اول بازار: هیچ‌وقت قیمت اول رو قبول نکن. قانون دوم: قانون اول رو فراموش نکن!', mood: 'happy' },
+      { who: 'reza', text: 'آقا مرتضی، شما که تو تیم ما نیستی!' },
+      { who: 'morteza', text: 'من داورم، ولی مشاور هم هستم. مجانی!', mood: 'happy' },
+    ],
+    tasks: [
+      { id: 'mk.stalls', title: 'بساط سبزی‌فروش', cost: 522, layer: 'stalls', after: [{ who: 'shirin', text: 'سبزی تازه، صبح زود از باغ‌های ورامین اومده. بوش رو ببین!' }] },
+      { id: 'mk.fruit', title: 'جعبه‌های میوه', cost: 524, layer: 'fruit', after: [{ who: 'bahman', text: 'انار ساوه، سیب دماوند، پرتقال شمال. هامبورگ هیچ‌وقت همچین بازاری نداشت.', mood: 'happy' }] },
+      { id: 'mk.spices', title: 'ادویه‌فروشی', cost: 526, layer: 'spices', after: [{ who: 'yadollah', text: 'زیره‌ی کرمان، زعفرون قائن… من بوی کویر رو تو ادویه‌ها حس می‌کنم.' }] },
+      { id: 'mk.scale', title: 'ترازوی قدیمی', cost: 528, layer: 'scale', after: [{ who: 'morteza', text: 'یه کیلو؟ این ترازو نهصد گرم نشون می‌ده! … آهان، پاکت رو حساب نکرده. ببخشید.', mood: 'surprised' }] },
+      { id: 'mk.cart', title: 'گاری خرید', cost: 530, layer: 'cart', after: [{ who: 'aydin', text: 'گاری پر شد و هنوز پول داریم! آقا مرتضی، شما نابغه‌ای!', mood: 'happy' }, { who: 'morteza', text: 'می‌دونم.' }] },
+    ],
+    outro: [
+      { who: 'sepideh', text: 'و حالا… فینال! غذای فینال: پلو و ته‌دیگ. ته‌دیگ برنده رو تعیین می‌کنه!', mood: 'happy' },
+      { who: 'reza', text: 'ته‌دیگ… یعنی نون برنج! بالاخره یه چیزی که بلدم!', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'finalcook',
+    name: 'فینال آشپزی',
+    intro: [
+      { who: 'sepideh', text: 'به فینال «آشپزی محله» خوش اومدید! سه تیم، سه دیگ پلو، یه ته‌دیگ برنده.', mood: 'happy' },
+      { who: 'golab', text: 'یادتون باشه: ته‌دیگ صبر می‌خواد. هر کی عجله کنه، ته‌دیگش می‌سوزه.' },
+    ],
+    tasks: [
+      { id: 'fn.stations', title: 'ایستگاه‌های فینال', cost: 528, layer: 'stations', after: [{ who: 'kaveh', text: 'سه ایستگاه، سه اجاق. … چرا اجاق تیم رضا از همه داغ‌تره؟', mood: 'surprised' }, { who: 'reza', text: 'تنوری‌ام دیگه!', mood: 'happy' }] },
+      { id: 'fn.pots', title: 'دیگ‌های پلو', cost: 530, layer: 'pots', after: [{ who: 'narges', text: 'برنج دم کشید. بوش کل کوچه رو گرفته. همسایه‌های محله‌ی بغلی هم اومدن!' }] },
+      { id: 'fn.tahdig', title: 'ته‌دیگ', cost: 532, layer: 'tahdig', after: [{ who: 'shirin', text: 'لحظه‌ی حقیقت! دیگ رو برگردون… ته‌دیگ رضا… طلایی و یکپارچه!', mood: 'surprised' }, { who: 'aydin', text: 'رضا، تو یه هنرمندی!', mood: 'happy' }] },
+      { id: 'fn.table', title: 'سفره‌ی داورها', cost: 534, layer: 'table', after: [{ who: 'morteza', text: 'من به عنوان داور ویژه… بیست! بیست! بیست! اولین باره که چیزی رو مجانی تعریف می‌کنم.', mood: 'happy' }] },
+      { id: 'fn.clock', title: 'ساعت مسابقه', cost: 536, layer: 'clock', after: [{ who: 'sepideh', text: 'زمان تموم شد! و برنده‌ی «آشپزی محله»… کل کوچه‌ست! داورها نتونستن انتخاب کنن.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'sepideh', text: 'برنامه‌ی ما جمعه شب پخش می‌شه. ولی قبلش یه پیشنهاد دارم: یه سفره‌ی بزرگ، برای همه‌ی محله.' },
+      { who: 'golab', text: 'سفره‌ی بزرگ؟ مثل قدیما! هر خونه یه غذا میاورد و همه کنار هم می‌خوردن.', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'bigsofreh',
+    name: 'سفره‌ی محله',
+    intro: [
+      { who: 'mahin', text: 'خبر داغ! برنامه پخش شد و تلفن من از صبح زنگ می‌خوره! همه می‌خوان بدونن کوچه‌ی ما کجاست.', mood: 'surprised' },
+      { who: 'narges', text: 'امشب سفره‌ی محله‌ست، از اول کوچه تا آخرش. هر کی یه غذا آورده.' },
+    ],
+    tasks: [
+      { id: 'bs.sofreh', title: 'سفره‌ی بلند', cost: 534, layer: 'sofreh', after: [{ who: 'fakhri', text: 'سفره رو از اول کوچه تا جلوی قهوه‌خونه پهن کردیم. صد و پنجاه متر!', mood: 'surprised' }] },
+      { id: 'bs.dishes', title: 'غذاهای همسایه‌ها', cost: 536, layer: 'dishes', after: [{ who: 'aydin', text: 'کوفته‌ی تبریز، قورمه‌سبزی ننه‌گلاب، قطاب یزد، آش کاشی… کل ایران سر این سفره‌ست.', mood: 'happy' }] },
+      { id: 'bs.bread', title: 'سبدهای سنگک', cost: 538, layer: 'bread', after: [{ who: 'reza', text: 'هزار تا سنگک! فکر کنم بعد از این، نونوایی رو یه هفته تعطیل کنم!', mood: 'happy' }] },
+      { id: 'bs.sweets', title: 'شیرینی و چای', cost: 540, layer: 'sweets', after: [{ who: 'jalal', text: 'قطاب آوردم، از قنادی رفاقت. حاجی اگه بود، بالای سفره می‌نشست.' }] },
+      { id: 'bs.lights', title: 'چراغونی سفره', cost: 542, layer: 'lights', after: [{ who: 'sepideh', text: 'من تو هزار تا برنامه بودم، ولی هیچ‌وقت همچین سفره‌ای ندیدم. … این کوچه، خونه‌ست.', mood: 'sad' }] },
+    ],
+    outro: [
+      { who: 'golab', text: '(به آسمون نگاه می‌کنه) … بوی برف میاد. امسال زمستون زود اومده.' },
+      { who: 'kaveh', text: 'برف سنگین؟ پشت‌بوم‌های کاهگلی کوچه طاقت برف سنگین ندارن.', mood: 'surprised' },
+      { who: 'narges', text: 'پس قبل از برف، باید همه‌ی پشت‌بوم‌ها رو آماده کنیم.' },
     ],
   },
 ];

@@ -718,7 +718,7 @@ const SCRIPTED: { who: string; needs: Need[]; stars?: number }[] = [
 
 const CUSTOMERS = ['mahin', 'reza', 'shirin', 'morteza', 'golab', 'kaveh', 'narges'];
 /** Neighbours who start placing orders once the story has reached the given place. */
-const LATE_CUSTOMERS: [who: string, from: string][] = [['fakhri', 'khastegari'], ['farokhi', 'khastegari'], ['bahman', 'cinema'], ['aydin', 'carpetshop'], ['sona', 'henna'], ['yadollah', 'caravan'], ['jalal', 'qanat']];
+const LATE_CUSTOMERS: [who: string, from: string][] = [['fakhri', 'khastegari'], ['farokhi', 'khastegari'], ['bahman', 'cinema'], ['aydin', 'carpetshop'], ['sona', 'henna'], ['yadollah', 'caravan'], ['jalal', 'qanat'], ['sepideh', 'golabkitchen']];
 
 export function customers(s: GameState): string[] {
   return CUSTOMERS.concat(LATE_CUSTOMERS.filter(([, from]) => placeReached(s, from)).map(([who]) => who));

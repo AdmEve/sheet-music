@@ -93,7 +93,7 @@ const scarfFront = (fill: string) =>
 const dots = (color: string) =>
   [[34, 26], [46, 22], [58, 24], [68, 32], [28, 38], [72, 46]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2" fill="${color}"/>`).join('');
 
-export const CAST_IDS = ['narges', 'mahin', 'reza', 'shirin', 'kaveh', 'morteza', 'golab', 'fakhri', 'farokhi', 'bahman', 'aydin', 'sona', 'yadollah', 'jalal'];
+export const CAST_IDS = ['narges', 'mahin', 'reza', 'shirin', 'kaveh', 'morteza', 'golab', 'fakhri', 'farokhi', 'bahman', 'aydin', 'sona', 'yadollah', 'jalal', 'sepideh'];
 export const MOOD_LIST: Mood[] = ['neutral', 'happy', 'sad', 'angry', 'surprised'];
 
 const PORTRAITS: Record<string, (m: FaceOpts) => string> = {
@@ -189,6 +189,14 @@ const PORTRAITS: Record<string, (m: FaceOpts) => string> = {
     `<path d="M33 37 q17 -14 34 0" fill="none" stroke="#c48a5e" stroke-width="1.4" opacity=".7"/>` +
     // Bushy white moustache.
     `<path d="M36 61 C40 55 46 57 50 59 C54 57 60 55 64 61 C61 66 56 64 50 63 C44 64 39 66 36 61 Z" fill="#f0f0ea" ${THIN}/>`,
+  sepideh: (m) =>
+    bg('#dcefff', '#6aa8e0') +
+    // Mustard blazer with a clip-on microphone.
+    shoulders('#e0a030', `<path d="M40 80 L50 96 L60 80" fill="#fffdf6" ${THIN}/><rect x="60" y="86" width="5" height="8" rx="2" fill="#2a2a2a"/>`) +
+    scarf('#1f3a6a', `<path d="M27 52 C24 32 36 20 50 20 C64 20 76 32 73 52" fill="none" stroke="#fffdf6" stroke-width="2" opacity=".8"/>`, '#4a2a1a') +
+    face({ eyes: 'open', brows: 'soft', mouth: 'smile', blush: true, lashes: true, skin: '#f2c4a0', ...m }) +
+    (m.mouth ? '' : `<path d="M44 65 q6 4 12 0" fill="none" stroke="#c0505b" stroke-width="2.4" stroke-linecap="round"/>`) +
+    scarfFront('#1f3a6a'),
 };
 
 const cache = new Map<string, string>();

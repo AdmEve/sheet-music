@@ -7,7 +7,7 @@ import { WEDDING } from './chainsO';
 import { camel } from './chainsP';
 import { INK, O, THIN, sparkle } from './kit';
 
-export const MAP_H = 8640;
+export const MAP_H = 9170;
 const STEP = 106;
 const faDigits = (n: number) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 
@@ -316,6 +316,26 @@ const FACADES: Record<string, Facade> = {
   graduation: {
     wall: '#ece4cc', roof: 'gable', roofFill: 'url(#gRed)', door: 'gate',
     deco: `<rect x="34" y="-34" width="22" height="16" fill="#f6e3b0" ${THIN}/><circle cx="50" cy="-20" r="5" fill="url(#gGold)" ${THIN} stroke-width="1"/>`,
+  },
+  tvset: {
+    wall: '#d9a873', w: 124, h: 60, door: 'gate', sign: 'آشپزی محله',
+    deco: [-56, 56].map((x) => `<path d="M${x} 0 V-40" stroke="#3a3a44" stroke-width="2"/><path d="M${x - 7} -48 H${x + 7} L${x + 9} -38 H${x - 9} Z" fill="#3a3a44" ${THIN} stroke-width="1"/><circle cx="${x}" cy="-36" r="4" fill="#fff6a8"/>`).join(''),
+  },
+  golabkitchen: {
+    wall: '#f4f0e6', roof: 'gable', roofFill: 'url(#gTerracotta)', door: 'arch',
+    deco: `<path d="M40 -84 V-100" stroke="#8a8a90" stroke-width="5"/><path d="M40 -104 q-6 -8 0 -14 q6 -6 0 -12" fill="none" stroke="#fff" stroke-width="2.4" opacity=".9"/>`,
+  },
+  market: {
+    wall: '#cfd8dc', roof: 'awning', roofFill: 'url(#gGreenTile)', door: 'shop', w: 136,
+    deco: [[-50, 'url(#gRed)'], [-38, 'url(#gOrange)'], [38, 'url(#gYellow)'], [50, 'url(#gPom)']].map(([x, c]) => `<circle cx="${x}" cy="-6" r="5" fill="${c}" ${THIN} stroke-width=".8"/>`).join(''),
+  },
+  finalcook: {
+    wall: '#4a3a3a', w: 120, h: 58, door: 'gate', sign: 'فینال',
+    deco: `<circle cx="50" cy="-72" r="10" fill="#fffdf6" ${THIN}/><path d="M50 -72 V-79 M50 -72 L55 -69" stroke="${INK}" stroke-width="1.4"/>`,
+  },
+  bigsofreh: {
+    wall: '#c98a52', w: 128, h: 56, door: 'gate',
+    deco: `<path d="M-30 0 H30 L44 14 H-44 Z" fill="#fffdf6" ${THIN}/>` + [-60, -40, -20, 0, 20, 40, 60].map((x, i) => `<circle cx="${x}" cy="${-64 + Math.abs(x) / 10}" r="3" fill="${['#ffd36b', '#ff7a9c', '#5fe0e0'][i % 3]}" ${THIN} stroke-width=".8"/>`).join(''),
   },
   wedding: {
     wall: 'url(#gWood)', w: 120, h: 70, door: 'gate',

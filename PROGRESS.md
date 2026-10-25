@@ -235,7 +235,8 @@ saves are written into localStorage `mahalle.save.v1`.
       Jalal's windcatcher house, the «رفاقت» sweet shop, and the reunion in the Season 1
       teahouse; «یزد کهن» chain + brick-mould generator; new character Ostad Jalal, the
       qanat-digger who never answered Haj-Baba's letters because he could not read); map of
-      75 places; Season 16 teased (a night school for adults)
+      75 places; Season 16 teased (a night school for adults). Balance sim: 20 of 20 games
+      finish all 75 episodes, no-pay regen hours per episode rising smoothly to ~178
 
 - [x] Phase 27: Season 16 «مدرسه‌ی شبونه» (`src/art/scenes16.ts`: the alley's old school, the first
       night of class, Morteza's Paykan as a mobile library, a poetry night on the alley radio
@@ -250,8 +251,13 @@ saves are written into localStorage `mahalle.save.v1`.
       (never handed out again), and comes back from a section in the bag screen. A full
       board with 10+ generators suggests the storeroom. Unit tests + smoke
 
+- [x] Phase 29: Season 17 «مسابقه‌ی آشپزی» (`src/art/scenes17.ts`: the alley as a TV set, Golab's
+      kitchen, the produce market, the tahdig final and a 150 m shared sofreh; «آشپزخونه»
+      chain + stove generator; new character Sepideh, the show's host); map of 85 places;
+      Season 18 teased (heavy snow and the alley's old roofs)
+
 Next (in order):
-1. Season 17 «مسابقه‌ی آشپزی»
+1. Season 18 «زمستون برفی»
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)
