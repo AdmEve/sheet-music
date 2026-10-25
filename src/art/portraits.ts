@@ -93,7 +93,7 @@ const scarfFront = (fill: string) =>
 const dots = (color: string) =>
   [[34, 26], [46, 22], [58, 24], [68, 32], [28, 38], [72, 46]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2" fill="${color}"/>`).join('');
 
-export const CAST_IDS = ['narges', 'mahin', 'reza', 'shirin', 'kaveh', 'morteza', 'golab', 'fakhri', 'farokhi', 'bahman', 'aydin', 'sona', 'yadollah'];
+export const CAST_IDS = ['narges', 'mahin', 'reza', 'shirin', 'kaveh', 'morteza', 'golab', 'fakhri', 'farokhi', 'bahman', 'aydin', 'sona', 'yadollah', 'jalal'];
 export const MOOD_LIST: Mood[] = ['neutral', 'happy', 'sad', 'angry', 'surprised'];
 
 const PORTRAITS: Record<string, (m: FaceOpts) => string> = {
@@ -179,6 +179,16 @@ const PORTRAITS: Record<string, (m: FaceOpts) => string> = {
     // Felt cap (kolah namadi).
     `<path d="M29 42 C27 20 73 20 71 42 Z" fill="#8a6a48" ${O}/><path d="M29 42 Q50 36 71 42" fill="none" stroke="#5e4630" stroke-width="2"/>` +
     `<path d="M40 26 q10 -4 20 0" fill="none" stroke="#a8885e" stroke-width="1.6"/>`,
+  jalal: (m) =>
+    bg('#e6f0f6', '#8fb3c8') +
+    // A dark felt vest over a white collarless shirt.
+    shoulders('#f4f0e6', `<path d="M24 92 C26 84 32 80 40 80 L46 100 H24 Z M76 92 C74 84 68 80 60 80 L54 100 H76 Z" fill="#3a4a5a" ${THIN}/>`) +
+    // White fringe of hair around a bald crown.
+    `<path d="M28 52 C24 40 28 30 34 28 M72 52 C76 40 72 30 66 28" fill="none" stroke="#e8e8e2" stroke-width="7" stroke-linecap="round"/>` +
+    face({ eyes: 'open', brows: 'soft', mouth: 'small', skin: '#dcaa7e', wrinkles: true, ...m }) +
+    `<path d="M33 37 q17 -14 34 0" fill="none" stroke="#c48a5e" stroke-width="1.4" opacity=".7"/>` +
+    // Bushy white moustache.
+    `<path d="M36 61 C40 55 46 57 50 59 C54 57 60 55 64 61 C61 66 56 64 50 63 C44 64 39 66 36 61 Z" fill="#f0f0ea" ${THIN}/>`,
 };
 
 const cache = new Map<string, string>();

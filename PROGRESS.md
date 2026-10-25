@@ -231,8 +231,14 @@ saves are written into localStorage `mahalle.save.v1`.
       one-time tip. Long toasts now wrap and stay up longer (they ran off narrow screens).
       Unit tests + smoke section 4
 
+- [x] Phase 26: Season 15 «رفیق یزدی» (`src/art/scenes15.ts`: Yazd's mud-brick lanes, the qanat,
+      Jalal's windcatcher house, the «رفاقت» sweet shop, and the reunion in the Season 1
+      teahouse; «یزد کهن» chain + brick-mould generator; new character Ostad Jalal, the
+      qanat-digger who never answered Haj-Baba's letters because he could not read); map of
+      75 places; Season 16 teased (a night school for adults)
+
 Next (in order):
-1. Season 15 «رفیق یزدی»
+1. Season 16 «مدرسه‌ی شبونه»
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)

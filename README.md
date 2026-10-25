@@ -14,7 +14,8 @@ to the Caspian for Golab's wish; season 10 «اصفهان» follows Kaveh's job 
 ends with a restoration school in the alley; season 11 «ثبت جهانی» takes the alley to UNESCO
 season 12 «تولد ننه‌گلاب» throws Golab a surprise party and season 13 «عروسی شیرین و آیدین» marries
 Shirin and Aydin with a Tabrizi henna night and Morteza's old Paykan as the wedding car; season 14
-«کاروانسرا» restores a desert caravanserai near Kashan into an eco-lodge (5 episodes each).
+«کاروانسرا» restores a desert caravanserai near Kashan into an eco-lodge; season 15 «رفیق یزدی»
+finds Haj-Baba's old friend, a Yazdi qanat-digger (5 episodes each).
 
 - Fully **offline**; progress is saved on the phone.
 - Monetization through store in-app billing (two Android flavors: **Cafe Bazaar** via

@@ -7,7 +7,7 @@ import { WEDDING } from './chainsO';
 import { camel } from './chainsP';
 import { INK, O, THIN, sparkle } from './kit';
 
-export const MAP_H = 7580;
+export const MAP_H = 8110;
 const STEP = 106;
 const faDigits = (n: number) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 
@@ -277,6 +277,24 @@ const FACADES: Record<string, Facade> = {
   ecolodge: {
     wall: '#e0b07a', w: 132, h: 70, door: 'gate', sign: 'بوم‌گردی',
     deco: camel(-58, 0, 0.42, `<path d="M-8 -38 C-4 -48 10 -48 12 -38 L14 -28 H-10 Z" fill="url(#gTurq)" ${THIN}/>`),
+  },
+  yazdlanes: {
+    wall: '#c99a62', h: 62, door: 'arch',
+    deco: `<path d="M-64 -62 H64 V-50 Q0 -74 -64 -50 Z" fill="#a8783e" ${THIN}/>` + `<rect x="32.0" y="-96" width="16" height="34" fill="#c99a62" ${THIN}/><rect x="35.0" y="-92" width="10" height="13.600000000000001" fill="#5e3418"/>`,
+  },
+  qanat: {
+    wall: '#d8b48a', w: 110, h: 44, door: 'arch',
+    deco: [-30, 30].map((x) => `<ellipse cx="${x}" cy="-52" rx="16" ry="5" fill="#c9a27a" ${THIN}/><ellipse cx="${x}" cy="-52" rx="6" ry="2" fill="#3b2216"/>`).join('') +
+      `<path d="M22 -52 V-70 M38 -52 V-70" stroke="#8b5328" stroke-width="2.4"/><path d="M18 -70 H42" stroke="#8b5328" stroke-width="3.4"/>`,
+  },
+  windhouse: {
+    wall: '#c99a62', door: 'gate',
+    deco: `<rect x="-43.0" y="-118" width="26" height="44" fill="#c99a62" ${THIN}/><rect x="-40.0" y="-114" width="20" height="17.6" fill="#5e3418"/>` + `<rect x="-46" y="-122" width="32" height="6" fill="#a8783e" ${THIN}/>`,
+  },
+  yazdsweets: { wall: '#f6ead2', roof: 'awning', roofFill: 'url(#gTurq)', door: 'shop', sign: 'قنادی رفاقت' },
+  reunion: {
+    wall: '#d9a873', door: 'arch', sign: 'مهمون یزدی',
+    deco: `<rect x="39.0" y="-104" width="14" height="30" fill="#c99a62" ${THIN}/><rect x="42.0" y="-100" width="8" height="12.0" fill="#5e3418"/>`,
   },
   wedding: {
     wall: 'url(#gWood)', w: 120, h: 70, door: 'gate',
