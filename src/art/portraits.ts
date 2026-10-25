@@ -93,7 +93,7 @@ const scarfFront = (fill: string) =>
 const dots = (color: string) =>
   [[34, 26], [46, 22], [58, 24], [68, 32], [28, 38], [72, 46]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2" fill="${color}"/>`).join('');
 
-export const CAST_IDS = ['narges', 'mahin', 'reza', 'shirin', 'kaveh', 'morteza', 'golab', 'fakhri', 'farokhi', 'bahman', 'aydin', 'sona', 'yadollah', 'jalal', 'sepideh', 'karim', 'parisa'];
+export const CAST_IDS = ['narges', 'mahin', 'reza', 'shirin', 'kaveh', 'morteza', 'golab', 'fakhri', 'farokhi', 'bahman', 'aydin', 'sona', 'yadollah', 'jalal', 'sepideh', 'karim', 'parisa', 'saburi'];
 export const MOOD_LIST: Mood[] = ['neutral', 'happy', 'sad', 'angry', 'surprised'];
 
 const PORTRAITS: Record<string, (m: FaceOpts) => string> = {
@@ -215,6 +215,15 @@ const PORTRAITS: Record<string, (m: FaceOpts) => string> = {
     scarfFront('#6a7480') +
     // White hard hat worn over the scarf.
     `<path d="M24 40 C24 14 76 14 76 40 Z" fill="#fafafa" ${O}/><path d="M18 40 H82 Q82 46 76 46 H24 Q18 46 18 40 Z" fill="#e8e8e8" ${O}/><path d="M50 16 V40" stroke="#d0d0d0" stroke-width="4"/>`,
+  saburi: (m) =>
+    bg('#e3f3e6', '#7fbf8e') +
+    // A herbalist's green apron over a white shirt.
+    shoulders('#f4f0e6', `<path d="M36 82 H64 L66 100 H34 Z" fill="#3f8a5a" ${THIN}/><path d="M40 82 L36 78 M60 82 L64 78" stroke="#2a6a42" stroke-width="2"/>`) +
+    `<path d="M28 50 C25 38 29 32 33 32 M72 50 C75 38 71 32 67 32" fill="none" stroke="#b8b8b0" stroke-width="6" stroke-linecap="round"/>` +
+    face({ eyes: 'smile', brows: 'soft', mouth: 'small', skin: '#e9bc94', wrinkles: true, ...m }) +
+    `<path d="M44 70 C44 80 56 80 56 70 C53 73 47 73 44 70 Z" fill="#b8b8b0" ${THIN}/>` +
+    `<path d="M41 63 C44 60 48 61 50 62 C52 61 56 60 59 63 C56 65 53 64 50 64.5 C47 64 44 65 41 63 Z" fill="#b8b8b0"/>` +
+    `<circle cx="41" cy="52" r="6.5" fill="none" stroke="#3a3a3a" stroke-width="1.8"/><circle cx="59" cy="52" r="6.5" fill="none" stroke="#3a3a3a" stroke-width="1.8"/><path d="M47.5 52 h5" stroke="#3a3a3a" stroke-width="1.8"/>`,
 };
 
 const cache = new Map<string, string>();

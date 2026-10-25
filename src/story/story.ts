@@ -28,6 +28,7 @@ export const CAST: Record<string, Character> = {
   sepideh: { id: 'sepideh', name: 'سپیده', role: 'مجری برنامه‌ی آشپزی' },
   karim: { id: 'karim', name: 'کریم', role: 'گلکار قمصری' },
   parisa: { id: 'parisa', name: 'مهندس پریسا', role: 'مهندس پروژه‌ی مترو' },
+  saburi: { id: 'saburi', name: 'صبوری‌خان', role: 'عطار کوچه‌ی اقاقیا' },
 };
 
 /** Short thank-you lines shown when an order is delivered (one picked at random). */
@@ -49,6 +50,7 @@ export const THANKS: Record<string, string[]> = {
   sepideh: ['عالی بود! دوربین، کات!', 'این صحنه رو باید دوباره پخش کنیم!', 'بیننده‌هامون عاشقت می‌شن!'],
   karim: ['دستت گل!', 'خدا قوت! مثل گلاب دوآتشه بود.', 'گل‌ها هم ازت ممنونن!'],
   parisa: ['دقیق و به‌موقع، مثل یه مهندس واقعی!', 'با این سرعت، ایستگاه زودتر باز می‌شه.', 'ممنون! بدون اهالی این پروژه نمی‌شد.'],
+  saburi: ['دستت درد نکنه بابا. مثل دمنوش گاوزبون آرامش‌بخش بود.', 'خیر ببینی!', 'عطاری بدون تو یه چیزی کم داشت.'],
 };
 
 export interface Line {
@@ -2255,6 +2257,105 @@ export const PLACES: Place[] = [
       { who: 'mahin', text: 'خبر داغ! گلاب کوچولو اولین کلمه‌ش رو گفت: «کوچه»!', mood: 'surprised' },
       { who: 'narges', text: 'و یه خبر دیگه: کوچه‌ی بغلی داره خالی می‌شه. خونه‌هاش رو دارن می‌فروشن.', mood: 'sad' },
       { who: 'kaveh', text: 'پس صد سال دوم کوچه از همین‌جا شروع می‌شه.' },
+    ],
+  },
+  // ------------------------------------------------------------------ season 21: کوچه‌ی بغلی
+  {
+    id: 'acacia',
+    name: 'کوچه‌ی اقاقیا',
+    intro: [
+      { who: 'narges', text: 'کوچه‌ی بغلی، «کوچه‌ی اقاقیا». بچه که بودم، بوی اقاقیاهاش تا خونه‌ی ما می‌اومد.' },
+      { who: 'saburi', text: 'سلام دخترم. من صبوری‌ام، عطار این کوچه. نصف همسایه‌ها رفتن. یه شرکت داره خونه‌ها رو یکی‌یکی می‌خره.', mood: 'sad' },
+      { who: 'farokhi', text: 'یه شرکت؟ … می‌شناسمشون. یه روز خودم هم همین کار رو می‌کردم.', mood: 'sad' },
+    ],
+    tasks: [
+      { id: 'ac.trees', title: 'درخت‌های اقاقیا', cost: 630, layer: 'trees', after: [{ who: 'golab', text: 'اقاقیاها رو هرس کردیم. بهار که بیاد، کوچه از شکوفه سفید می‌شه.' }] },
+      { id: 'ac.stream', title: 'جوی آب کوچه', cost: 632, layer: 'stream', after: [{ who: 'kaveh', text: 'جوی آب رو باز کردیم. آب که راه بیفته، کوچه نفس می‌کشه.' }] },
+      { id: 'ac.doors', title: 'درهای چوبی', cost: 634, layer: 'doors', after: [{ who: 'aydin', text: 'درها رو روغن زدیم. پشت هر در یه خانواده بوده. کاش برگردن.' }] },
+      { id: 'ac.sign', title: 'تابلوی کوچه', cost: 636, layer: 'sign', after: [{ who: 'mahin', text: 'تابلو رو تمیز کردم: «کوچه‌ی اقاقیا». حالا باید به همه بگم این کوچه هنوز زنده‌ست!', mood: 'happy' }] },
+      { id: 'ac.bench', title: 'نیمکت سر کوچه', cost: 638, layer: 'bench', after: [{ who: 'saburi', text: 'رو این نیمکت سی سال با همسایه‌ها چای خوردم. دوباره نشستن روش حس خوبی داره.' }] },
+    ],
+    outro: [
+      { who: 'saburi', text: 'عطاری من هم داره تعطیل می‌شه. کسی دیگه گل گاوزبون نمی‌خره.', mood: 'sad' },
+      { who: 'reza', text: 'صبوری‌خان، قهوه‌خونه‌ی ما بدون دمنوش شما چی کار کنه؟ عطاری رو با هم سر پا می‌کنیم.', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'attari',
+    name: 'عطاری صبوری',
+    intro: [
+      { who: 'saburi', text: 'این عطاری رو پدرم باز کرد، هفتاد سال پیش. هر شیشه‌ش یه داستان داره.' },
+      { who: 'shirin', text: 'من از بچگی این‌جا میام! حنا و گلاب رو همیشه از صبوری‌خان می‌خریدم.', mood: 'happy' },
+    ],
+    tasks: [
+      { id: 'at.jars', title: 'قفسه‌ی شیشه‌ها', cost: 636, layer: 'jars', after: [{ who: 'fakhri', text: 'شیشه‌ها رو تمیز کردیم و برچسب نو زدیم. با خط من، البته.' }] },
+      { id: 'at.sacks', title: 'کیسه‌های گیاه', cost: 638, layer: 'sacks', after: [{ who: 'yadollah', text: 'زیره و زعفرون و گل‌محمدی… بوی عطاری مثل بوی کاروانسراهای قدیمه.' }] },
+      { id: 'at.scale', title: 'ترازوی برنجی', cost: 640, layer: 'scale', after: [{ who: 'morteza', text: 'یه ترازوی دقیق! دقیق‌تر از ترازوی من. … این رو به کسی نگید.', mood: 'surprised' }] },
+      { id: 'at.mortar', title: 'هاون سنگی', cost: 642, layer: 'mortar', after: [{ who: 'karim', text: 'از قمصر گل‌محمدی خشک فرستادم. صبوری‌خان، تو هاون بکوبیدش، عطرش دو برابر می‌شه.' }] },
+      { id: 'at.sign', title: 'تابلوی «عطاری صبوری»', cost: 644, layer: 'sign', after: [{ who: 'saburi', text: 'هفتاد سال… و تابلوی عطاری دوباره روشن شد. پدرم اگه بود…', mood: 'sad' }] },
+    ],
+    outro: [
+      { who: 'mahin', text: 'خبر داغ! شرکته امروز یه خونه‌ی دیگه رو خرید. خونه‌ی شماره‌ی هفت، ته کوچه.', mood: 'surprised' },
+      { who: 'narges', text: 'نه… اون خونه رو قرار بود یه زوج جوون اجاره کنن.', mood: 'sad' },
+      { who: 'farokhi', text: 'بذارید من برم باهاشون حرف بزنم. زبون این آدم‌ها رو بلدم.' },
+    ],
+  },
+  {
+    id: 'house7',
+    name: 'خونه‌ی شماره‌ی هفت',
+    intro: [
+      { who: 'farokhi', text: 'باهاشون حرف زدم. قبول کردن خونه رو اجاره بدن، به شرطی که خودمون مرمتش کنیم.' },
+      { who: 'kaveh', text: 'پس دست به کار شیم. یه زوج جوون منتظرن.' },
+    ],
+    tasks: [
+      { id: 'h7.roof', title: 'سقف خونه', cost: 642, layer: 'roof', after: [{ who: 'jalal', text: 'سقف رو کاهگل کردیم. مثل یزد، مثل پشت‌بوم‌های کوچه‌ی خودتون.' }] },
+      { id: 'h7.windows', title: 'پنجره‌ها', cost: 644, layer: 'windows', after: [{ who: 'shirin', text: 'پنجره‌ها رو آبی کردیم. مثل خونه‌های ماسوله!', mood: 'happy' }] },
+      { id: 'h7.yard', title: 'درخت انار حیاط', cost: 646, layer: 'yard', after: [{ who: 'golab', text: 'یه درخت انار تو حیاط کاشتیم. خونه بدون درخت انار، خونه نیست.' }] },
+      { id: 'h7.pool', title: 'حوض و ماهی', cost: 648, layer: 'pool', after: [{ who: 'bahman', text: 'حوض پر آب شد. دو تا ماهی قرمز هم انداختیم، یادگار نوروز.' }] },
+      { id: 'h7.key', title: 'کلید نو', cost: 650, layer: 'key', after: [{ who: 'narges', text: 'کلید خونه رو دادیم دست زوج جوون. اولین همسایه‌های تازه‌ی کوچه‌ی اقاقیا!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'saburi', text: 'یه چیزی هست که باید بدونید. بین دو تا کوچه یه دالون قدیمی بوده. چهل سال پیش دیوارش کردن.' },
+      { who: 'kaveh', text: 'یه دالون؟ اگه بازش کنیم، دو تا کوچه یکی می‌شن!', mood: 'surprised' },
+    ],
+  },
+  {
+    id: 'passage',
+    name: 'دالون دو کوچه',
+    intro: [
+      { who: 'kaveh', text: 'پشت این دیوار آجری، دالون قدیمیه. با احتیاط بازش می‌کنیم.' },
+      { who: 'morteza', text: 'چهل سال پیش خودم دیدم که دیوارش کردن. سر یه دعوای همسایگی بود. سر یه درخت توت!', mood: 'surprised' },
+    ],
+    tasks: [
+      { id: 'ps.wall', title: 'دیوار آجری', cost: 648, layer: 'wall', after: [{ who: 'reza', text: 'دیوار برداشته شد! از این‌جا بوی نون من تا کوچه‌ی اقاقیا می‌ره!', mood: 'happy' }] },
+      { id: 'ps.vault', title: 'طاق دالون', cost: 650, layer: 'vault', after: [{ who: 'kaveh', text: 'طاق آجری سالمه. چهل سال پشت دیوار، و یه ترک هم برنداشته.', mood: 'surprised' }] },
+      { id: 'ps.lamps', title: 'چراغ‌های دالون', cost: 652, layer: 'lamps', after: [{ who: 'aydin', text: 'چراغ‌ها روشن شد. دالون حالا مثل یه تونل نوره.' }] },
+      { id: 'ps.tiles', title: 'کاشی‌های دالون', cost: 654, layer: 'tiles', after: [{ who: 'fakhri', text: 'کاشی‌های قدیمی رو زیر گچ پیدا کردیم. نقش اقاقیا و نقش سنگک. دو تا کوچه، یه نقش.' }] },
+      { id: 'ps.benches', title: 'نیمکت‌های دالون', cost: 656, layer: 'benches', after: [{ who: 'saburi', text: 'اون درخت توت که سرش دعوا شد… هنوز اون‌جاست. بیاید زیرش بشینیم، با هم.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'mahin', text: 'خبر داغ! شرکته گفت دیگه خونه نمی‌خره. گفتن «این کوچه صاحب داره».', mood: 'happy' },
+      { who: 'narges', text: 'پس جشن! دیگه کوچه‌ی ما و کوچه‌ی اقاقیا نداریم. یه محله‌ایم.', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'twofest',
+    name: 'جشن دو کوچه',
+    intro: [
+      { who: 'golab', text: 'قدیما دو تا کوچه با هم جشن می‌گرفتن. چهل سال بود این کار رو نکرده بودیم.', mood: 'happy' },
+      { who: 'saburi', text: 'شربت‌ها آماده‌ست! شربت گلاب، بیدمشک، سکنجبین. برای همه.', mood: 'happy' },
+    ],
+    tasks: [
+      { id: 'tf.lights', title: 'ریسه‌های دو کوچه', cost: 654, layer: 'lights', after: [{ who: 'shirin', text: 'ریسه‌ها از این کوچه، از دالون رد می‌شه و می‌ره اون کوچه. یه رشته نور!', mood: 'happy' }] },
+      { id: 'tf.sherbet', title: 'میز شربت', cost: 656, layer: 'sherbet', after: [{ who: 'reza', text: 'سکنجبین با خیار رنده‌شده! صبوری‌خان، شما جادوگرید.', mood: 'happy' }] },
+      { id: 'tf.mulberry', title: 'سفره زیر درخت توت', cost: 658, layer: 'mulberry', after: [{ who: 'morteza', text: 'زیر همون درخت توتی که سرش دعوا شد. حالا کل محله زیرش نشستن. خنده‌داره، نه؟', mood: 'happy' }] },
+      { id: 'tf.music', title: 'ساز و آواز', cost: 660, layer: 'music', after: [{ who: 'bahman', text: 'تار داداش، این بار برای دو تا کوچه.' }] },
+      { id: 'tf.photo', title: 'عکس دسته‌جمعی', cost: 662, layer: 'photo', after: [{ who: 'narges', text: 'عکس دسته‌جمعی وسط دالون. نصف ما این‌ور، نصف اون‌ور. همه با یه لبخند.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'narges', text: 'تابستون داره میاد. بچه‌های دو کوچه یه جای بازی می‌خوان.' },
+      { who: 'kaveh', text: 'زمین خاکی پشت دالون… می‌شه یه پارک کوچیک بشه.' },
+      { who: 'mahin', text: 'پارک؟! این خبر داغ تابستونه!', mood: 'surprised' },
     ],
   },
 ];

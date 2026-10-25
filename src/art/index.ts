@@ -22,6 +22,7 @@ import { GEN_KITCHEN, KITCHEN } from './chainsS';
 import { GEN_WINTER, WINTER } from './chainsT';
 import { GEN_QAMSAR, QAMSAR } from './chainsU';
 import { DIG, GEN_DIG } from './chainsV';
+import { GEN_HERBS, HERBS } from './chainsW';
 import {
   ASH, GEN_ASH, GEN_ICECREAM, GEN_KITE, GEN_LAVASHAK, GEN_NOWRUZ, GEN_SCHOOL, GEN_SURI, GEN_YALDA, ICECREAM, KITE, LAVASHAK, NOWRUZ, SCHOOL, SURI, YALDA,
 } from './events';
@@ -52,6 +53,7 @@ const ART: Record<ChainId, string[]> = {
   winter: WINTER,
   qamsar: QAMSAR,
   dig: DIG,
+  herbs: HERBS,
   genTea: GEN_TEA,
   genBread: GEN_BREAD,
   genGarden: GEN_GARDEN,
@@ -77,6 +79,7 @@ const ART: Record<ChainId, string[]> = {
   genWinter: GEN_WINTER,
   genQamsar: GEN_QAMSAR,
   genDig: GEN_DIG,
+  genHerbs: GEN_HERBS,
   chest: CHEST,
   coins: COINS,
   energy: ENERGY,

@@ -146,6 +146,8 @@ describe('generator catch-up', () => {
     expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genQamsar']);
     finish(95);
     expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genDig']);
+    finish(100);
+    expect(ensureGenerators(s).map((i) => i.chain)).toEqual(['genHerbs']);
   });
 });
 

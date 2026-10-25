@@ -43,7 +43,7 @@ describe('progression', () => {
     s.stars = 1_000_000;
     let finished = 0;
     let guard = 0;
-    while (progress(s).next && guard++ < 3700) {
+    while (progress(s).next && guard++ < 3900) {
       const r = completeNextTask(s);
       expect(r.ok).toBe(true);
       if (r.ok && r.placeFinished) finished++;

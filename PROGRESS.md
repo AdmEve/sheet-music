@@ -281,8 +281,17 @@ saves are written into localStorage `mahalle.save.v1`.
       checks unique place ids, a scene per place and that every task changes its scene (it
       caught the S20 station reusing Season 9's `station` id)
 
+- [x] Phase 33: quality pass at 100 episodes: bundle 795 KB (222 KB gzip); at 6× CPU throttle the
+      splash shows in 0.75 s, the board in ~1.0 s, a place opens in 154 ms and the 100-place map
+      in 356 ms with no long tasks while scrolling
+- [x] Phase 34: Season 21 «کوچه‌ی بغلی» (`src/art/scenes21.ts`: the neighbouring Acacia alley,
+      Saburi's 70-year-old herb shop, house no. 7 rented to a young couple instead of sold, the
+      walled-up passage between the alleys reopened, and a festival of both alleys; «عطاری»
+      chain + herb-planter generator; new character Saburi, the herbalist); map of 105
+      places; Season 22 teased (a summer park for the children of both alleys)
+
 Next (in order):
-1. Season 21 «کوچه‌ی بغلی»
+1. Season 22 «تابستون بچه‌ها»
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)
