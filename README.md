@@ -17,7 +17,7 @@ Shirin and Aydin with a Tabrizi henna night and Morteza's old Paykan as the wedd
 «کاروانسرا» restores a desert caravanserai near Kashan into an eco-lodge; season 15 «رفیق یزدی»
 finds Haj-Baba's old friend, a Yazdi qanat-digger; season 16 «مدرسه‌ی شبونه» reopens the alley's
 old school as a night school for adults; season 17 «مسابقه‌ی آشپزی» films a TV cooking contest
-in the alley (5 episodes each).
+in the alley; season 18 «زمستون برفی» gets the alley through a snowstorm (5 episodes each).
 
 - Fully **offline**; progress is saved on the phone.
 - Monetization through store in-app billing (two Android flavors: **Cafe Bazaar** via

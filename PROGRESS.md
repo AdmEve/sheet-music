@@ -256,8 +256,13 @@ saves are written into localStorage `mahalle.save.v1`.
       chain + stove generator; new character Sepideh, the show's host); map of 85 places;
       Season 18 teased (heavy snow and the alley's old roofs)
 
+- [x] Phase 30: Season 18 «زمستون برفی» (`src/art/scenes18.ts`: the mud roofs before the snow, the
+      first snow with a beet cart, Golab's korsi when she catches a cold, the old hammam
+      furnace relit in a power cut, and a snowy night by a bonfire; «زمستون» chain + wood-stove
+      generator); map of 90 places; Season 19 teased (rosewater-making in Qamsar)
+
 Next (in order):
-1. Season 18 «زمستون برفی»
+1. Season 19 «گلاب‌گیری»
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)

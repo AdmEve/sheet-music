@@ -18,8 +18,9 @@ import { SCENES14 } from './scenes14';
 import { SCENES15 } from './scenes15';
 import { SCENES16 } from './scenes16';
 import { SCENES17 } from './scenes17';
+import { SCENES18 } from './scenes18';
 
-const SCENES: Record<string, SceneDef> = { ...SCENES1, ...SCENES2, ...SCENES3, ...SCENES4, ...SCENES5, ...SCENES6, ...SCENES7, ...SCENES8, ...SCENES9, ...SCENES10, ...SCENES11, ...SCENES12, ...SCENES13, ...SCENES14, ...SCENES15, ...SCENES16, ...SCENES17 };
+const SCENES: Record<string, SceneDef> = { ...SCENES1, ...SCENES2, ...SCENES3, ...SCENES4, ...SCENES5, ...SCENES6, ...SCENES7, ...SCENES8, ...SCENES9, ...SCENES10, ...SCENES11, ...SCENES12, ...SCENES13, ...SCENES14, ...SCENES15, ...SCENES16, ...SCENES17, ...SCENES18 };
 
 /** `style` picks the decoration style of each restored layer (0 = traditional). */
 export function sceneSvg(placeId: string, done: (layer: string) => boolean, style: (layer: string) => number = () => 0): string {

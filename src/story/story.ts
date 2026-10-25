@@ -1956,6 +1956,106 @@ export const PLACES: Place[] = [
       { who: 'narges', text: 'پس قبل از برف، باید همه‌ی پشت‌بوم‌ها رو آماده کنیم.' },
     ],
   },
+  // ------------------------------------------------------------------ season 18: زمستون برفی
+  {
+    id: 'roofs',
+    name: 'پشت‌بوم‌های کاهگلی',
+    intro: [
+      { who: 'kaveh', text: 'هواشناسی گفته سه روز دیگه برف سنگین میاد. پشت‌بوم‌های کاهگلی باید قبلش آماده بشن.' },
+      { who: 'golab', text: 'قدیما هر پاییز کل کوچه با هم پشت‌بوم‌ها رو کاهگل می‌کردن. اسمش رو گذاشته بودیم «کاهگل‌مالون».', mood: 'happy' },
+      { who: 'mahin', text: 'کاهگل‌مالون! … فکر کنم من فقط چای آوردم، ولی خب، اونم مهمه!', mood: 'happy' },
+    ],
+    tasks: [
+      { id: 'rf.mud', title: 'کاهگل تازه', cost: 540, layer: 'mud', after: [{ who: 'jalal', text: 'کاهگل یزدی و تهرونی یکیه: خاک، کاه، آب و حوصله. … بیشتر حوصله.' }] },
+      { id: 'rf.gutter', title: 'ناودون‌ها', cost: 542, layer: 'gutter', after: [{ who: 'farokhi', text: 'ناودون‌ها رو عوض کردیم. یه عمر برج ساختم، هیچ‌کدوم ناودون به این قشنگی نداشت.' }] },
+      { id: 'rf.chimney', title: 'دودکش‌ها', cost: 544, layer: 'chimney', after: [{ who: 'reza', text: 'دودکش تنور رو تمیز کردم. دیگه نونوایی بوی دود نمی‌ده، فقط بوی نون!', mood: 'happy' }] },
+      { id: 'rf.tarp', title: 'برزنت انبار', cost: 546, layer: 'tarp', after: [{ who: 'morteza', text: 'برزنت روی انبار گردو. گردوهای من نباید خیس بشن. حتی یه دونه!' }] },
+      { id: 'rf.shovels', title: 'پاروهای برف', cost: 548, layer: 'shovels', after: [{ who: 'bahman', text: 'پاروهای چوبی! تو هامبورگ با پاروی پلاستیکی برف پارو می‌کردم. این‌ها یه چیز دیگه‌ن.' }] },
+    ],
+    outro: [
+      { who: 'narges', text: '(به آسمون نگاه می‌کنه) … اولین دونه‌ی برف!', mood: 'surprised' },
+      { who: 'golab', text: 'گفتم بوی برف میاد.', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'firstsnow',
+    name: 'برف اول',
+    intro: [
+      { who: 'shirin', text: 'همه‌جا سفید شد! … آیدین، تو تبریز هم برف این‌طوری میاد؟', mood: 'surprised' },
+      { who: 'aydin', text: 'تو تبریز؟ شیرین، این که برف نیست، پودر قنده!', mood: 'happy' },
+    ],
+    tasks: [
+      { id: 'fs.path', title: 'پارو کردن کوچه', cost: 546, layer: 'path', after: [{ who: 'kaveh', text: 'یه راه وسط کوچه باز کردیم. ننه‌گلاب حالا می‌تونه بیاد نون بگیره.' }] },
+      { id: 'fs.snowman', title: 'آدم‌برفی', cost: 548, layer: 'snowman', after: [{ who: 'mahin', text: 'آدم‌برفی‌مون شال‌گردن منو گرفته! … خب، بهش میاد.', mood: 'happy' }] },
+      { id: 'fs.lights', title: 'چراغ‌های زمستونی', cost: 550, layer: 'lights', after: [{ who: 'narges', text: 'نور چراغ‌ها روی برف… کوچه شبیه کارت‌پستال شده.', mood: 'happy' }] },
+      { id: 'fs.beet', title: 'گاری لبوفروشی', cost: 552, layer: 'beet', after: [{ who: 'reza', text: 'لبوی داغ! نونوایی زمستون‌ها لبو هم می‌فروشه. مثل قدیما!', mood: 'happy' }] },
+      { id: 'fs.sled', title: 'سورتمه‌ی بچه‌ها', cost: 554, layer: 'sled', after: [{ who: 'yadollah', text: 'تو کویر برف نمیاد. این اولین باره که سورتمه سوار می‌شم!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'fakhri', text: 'ننه‌گلاب امروز بیرون نیومد. … نگرانشم.', mood: 'sad' },
+      { who: 'narges', text: 'بریم پیشش. شاید سرما خورده.' },
+    ],
+  },
+  {
+    id: 'korsi',
+    name: 'کرسی ننه‌گلاب',
+    intro: [
+      { who: 'golab', text: '(سرفه) … چیزی نیست، یه سرماخوردگی ساده‌ست. شماها چرا این‌همه اومدید؟' },
+      { who: 'fakhri', text: 'چون کرسی شما سرده، گلاب‌خانم. و ما نمی‌ذاریم.' },
+    ],
+    tasks: [
+      { id: 'ks.korsi', title: 'کرسی و لحاف', cost: 552, layer: 'korsi', after: [{ who: 'shirin', text: 'لحاف کرسی رو از صندوق آوردیم. بوی قدیم می‌ده.' }] },
+      { id: 'ks.brazier', title: 'منقل زیر کرسی', cost: 554, layer: 'brazier', after: [{ who: 'kaveh', text: 'منقل رو با زغال روشن کردیم. … و یه پنجره رو یه کم باز گذاشتیم. ایمنی اول!' }] },
+      { id: 'ks.cushions', title: 'پشتی‌ها', cost: 556, layer: 'cushions', after: [{ who: 'aydin', text: 'پشتی ترکمن کنار پشتی کاشون. هر کی یه پشتی از خونه‌ش آورده.' }] },
+      { id: 'ks.snacks', title: 'آجیل و انار', cost: 558, layer: 'snacks', after: [{ who: 'mahin', text: 'آجیل شب‌نشینی! … چی؟ یلدا نیست؟ آجیل که مناسبت نمی‌خواد!', mood: 'happy' }] },
+      { id: 'ks.soup', title: 'سوپ جو', cost: 560, layer: 'soup', after: [{ who: 'reza', text: 'سوپ جو با آب‌لیمو. مادرم می‌گفت سرماخوردگی از سوپ جو فرار می‌کنه.' }, { who: 'golab', text: 'رضا… دستت درد نکنه پسرم.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'golab', text: 'بیاید زیر کرسی، یه قصه براتون بگم. قصه‌ی زمستونی که حاجی بیست سالش بود…' },
+      { who: 'golab', text: '… اون شب برق کل محله رفت، و حاجی تا صبح با هیزم آب حموم رو گرم نگه داشت.' },
+      { who: 'narges', text: '(صدای باد) … ننه‌گلاب، برق رفت!', mood: 'surprised' },
+    ],
+  },
+  {
+    id: 'furnace',
+    name: 'گلخن حموم',
+    intro: [
+      { who: 'kaveh', text: 'طوفان برق کل محله رو برده. بخاری‌های برقی خاموشن. … ولی حموم قدیمی یه گلخن داره.' },
+      { who: 'bahman', text: 'گلخن! همون جایی که داداش اون شب تا صبح هیزم ریخت. این بار نوبت ماست.', mood: 'sad' },
+    ],
+    tasks: [
+      { id: 'fu.wood', title: 'هیزم خشک', cost: 558, layer: 'wood', after: [{ who: 'yadollah', text: 'هیزم رو من خرد می‌کنم. تو کویر، هیزم یعنی زندگی.' }] },
+      { id: 'fu.furnace', title: 'کوره‌ی گلخن', cost: 560, layer: 'furnace', after: [{ who: 'farokhi', text: 'آتیش گرفت! کوره‌ی صدساله هنوز از هر شوفاژی بهتر کار می‌کنه.', mood: 'surprised' }] },
+      { id: 'fu.cauldron', title: 'دیگ آب داغ', cost: 562, layer: 'cauldron', after: [{ who: 'golab', text: '(پیچیده تو پتو) آب داغ شد. حالا همسایه‌ها می‌تونن بیان گرم بشن.' }] },
+      { id: 'fu.pipes', title: 'لوله‌های گرما', cost: 564, layer: 'pipes', after: [{ who: 'kaveh', text: 'لوله‌ها رو تا قهوه‌خونه کشیدیم. قهوه‌خونه شد گرم‌ترین جای تهرون!', mood: 'happy' }] },
+      { id: 'fu.lamp', title: 'چراغ نفتی', cost: 566, layer: 'lamp', after: [{ who: 'morteza', text: 'چراغ نفتی خودم رو آوردم. نفتش رو هم خودم پر کردم. مجانی!', mood: 'happy' }, { who: 'mahin', text: 'آقا مرتضی، این مدرسه شما رو عوض کرده!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'narges', text: 'کل محله تو قهوه‌خونه جمع شدن. بچه‌ها، پیرها، همسایه‌های کوچه‌ی بغلی…' },
+      { who: 'golab', text: 'حاجی اگه بود، می‌گفت: «یه شب سرد، یه کوچه رو به هم نزدیک‌تر می‌کنه».' },
+    ],
+  },
+  {
+    id: 'snownight',
+    name: 'شب برفی',
+    intro: [
+      { who: 'mahin', text: 'خبر داغ: برق اومد! … ولی هیچ‌کس نمی‌خواد بره خونه!', mood: 'happy' },
+      { who: 'sepideh', text: 'اومدم ببینم کوچه‌ی «آشپزی محله» تو برف چطوره. چه حس خوبیه این‌جا.', mood: 'happy' },
+    ],
+    tasks: [
+      { id: 'sn.fire', title: 'آتیش وسط کوچه', cost: 564, layer: 'fire', after: [{ who: 'reza', text: 'آتیش روشن شد! حالا سیب‌زمینی تو خاکستر… این دفعه واقعاً!', mood: 'happy' }] },
+      { id: 'sn.ash', title: 'آش رشته‌ی زمستونی', cost: 566, layer: 'ash', after: [{ who: 'fakhri', text: 'آش رشته با کشک و نعنا داغ. زمستون بدون آش، زمستون نیست.' }] },
+      { id: 'sn.snowmen', title: 'آدم‌برفی‌های بچه‌ها', cost: 568, layer: 'snowmen', after: [{ who: 'shirin', text: 'بچه‌ها ده تا آدم‌برفی ساختن! یکی‌شون شبیه آقا مرتضی‌ه، با سبیل!', mood: 'happy' }] },
+      { id: 'sn.music', title: 'ساز و آواز', cost: 570, layer: 'music', after: [{ who: 'bahman', text: 'تار داداش، زیر برف. یه آهنگ قدیمی، برای همه‌ی زمستون‌های این کوچه.' }] },
+      { id: 'sn.sky', title: 'آسمون صاف', cost: 572, layer: 'sky', after: [{ who: 'narges', text: 'برف بند اومد و ماه دراومد. کوچه‌ی ما هیچ‌وقت این‌قدر قشنگ نبود.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'golab', text: 'زمستون که تموم بشه، یه آرزو دارم. می‌خوام یه بار دیگه برم قمصر، فصل گلاب‌گیری.' },
+      { who: 'narges', text: 'قمصر؟', mood: 'surprised' },
+      { who: 'golab', text: 'پدرم مادرم رو اولین بار تو باغ گل محمدی قمصر دید. اسمم رو هم از همون‌جا گذاشتن.', mood: 'happy' },
+      { who: 'mahin', text: 'سفر بهاری به قمصر! … من چمدونم رو از همین الان می‌بندم!', mood: 'happy' },
+    ],
+  },
 ];
 
 export function findTask(id: string): { place: Place; task: Task; index: number } | null {

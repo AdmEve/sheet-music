@@ -7,7 +7,7 @@ import { WEDDING } from './chainsO';
 import { camel } from './chainsP';
 import { INK, O, THIN, sparkle } from './kit';
 
-export const MAP_H = 9170;
+export const MAP_H = 9700;
 const STEP = 106;
 const faDigits = (n: number) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 
@@ -336,6 +336,23 @@ const FACADES: Record<string, Facade> = {
   bigsofreh: {
     wall: '#c98a52', w: 128, h: 56, door: 'gate',
     deco: `<path d="M-30 0 H30 L44 14 H-44 Z" fill="#fffdf6" ${THIN}/>` + [-60, -40, -20, 0, 20, 40, 60].map((x, i) => `<circle cx="${x}" cy="${-64 + Math.abs(x) / 10}" r="3" fill="${['#ffd36b', '#ff7a9c', '#5fe0e0'][i % 3]}" ${THIN} stroke-width=".8"/>`).join(''),
+  },
+  roofs: {
+    wall: '#c99a62', h: 60, door: 'arch',
+    deco: [-36, 36].map((x) => `<rect x="${x - 6}" y="-80" width="12" height="20" fill="#a8784a" ${THIN}/><path d="M${x} -82 q-5 -7 0 -14" fill="none" stroke="#fff" stroke-width="2"/>`).join(''),
+  },
+  firstsnow: { wall: '#c98a52', h: 66, door: 'gate', deco: `<path d="M-66 -66 Q-30 -74 0 -70 T66 -66 V-62 H-66 Z" fill="#fafdff" ${THIN} stroke-width="1"/>` },
+  korsi: {
+    wall: '#efe3cc', roof: 'gable', roofFill: '#fafdff', door: 'arch',
+    deco: `<path d="M24 -28 H48 L52 -12 H20 Z" fill="url(#gRed)" ${THIN}/>`,
+  },
+  furnace: {
+    wall: '#a8603a', roof: 'dome', roofFill: '#fafdff', door: 'arch', w: 118,
+    deco: `<path d="M48 -74 V-96" stroke="#5a3a2a" stroke-width="6"/><path d="M48 -100 q-6 -8 0 -16" fill="none" stroke="#fff" stroke-width="2.4"/>`,
+  },
+  snownight: {
+    wall: '#4a4a6a', w: 124, h: 56, door: 'gate',
+    deco: `<path d="M-66 -56 Q-30 -64 0 -60 T66 -56 V-52 H-66 Z" fill="#fafdff" ${THIN} stroke-width="1"/>` + `<circle cx="48" cy="-84" r="8" fill="#fff6d0"/><circle cx="51" cy="-86" r="7" fill="#e9d9b8"/>`,
   },
   wedding: {
     wall: 'url(#gWood)', w: 120, h: 70, door: 'gate',
