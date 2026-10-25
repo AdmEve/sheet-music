@@ -41,6 +41,7 @@ export function discover(s: GameState): Item[] {
   };
   for (const c of s.board) if (!c.lock) see(c.item);
   for (const b of s.bag) see(b);
+  for (const g of s.shelf ?? []) see(g);
   return out;
 }
 

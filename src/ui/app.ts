@@ -14,7 +14,7 @@ import { CHAINS, Item, canMerge, isGenerator, itemName, maxLevel, sameItem } fro
 import {
   CELLS, ENERGY_CAP, GameEvent, GameState, Order, adsLeft, bubbleGemCost, ensureGenerators, buySheet, deliver, drop, findHint, msToNextEnergy, needsMet, RUSH_LEVEL, rushOrder,
   placeItem, popBubble, questsClaimable, refreshQuests, sellValue, sell, sheetGemCost, tap, tickBubbles, tickEnergy, toBag,
-  xpForLevel, boostChoices, cycleBoost, tapBoost,
+  xpForLevel, boostChoices, canShelve, cycleBoost, shelve, tapBoost,
 } from '../game/model';
 import { adsAvailable } from '../platform/ads';
 import { MAX_ADS_PER_DAY } from '../platform/config';
@@ -697,7 +697,12 @@ export class App {
     sfx.error();
     switch (f.reason) {
       case 'noEnergy': return void this.modals.energy();
-      case 'boardFull': return this.toast('صفحه پره! چند تا وسیله رو ادغام کن، بفروش یا بذار تو کیف.');
+      case 'boardFull': {
+        const gens = this.s.board.filter((c) => !c.lock && canShelve(c.item)).length;
+        return this.toast(gens >= 10
+          ? 'صفحه پره! مولدهایی رو که فعلاً لازم نداری بفرست انبار: مولد رو انتخاب کن و «انبار» رو بزن.'
+          : 'صفحه پره! چند تا وسیله رو ادغام کن، بفروش یا بذار تو کیف.');
+      }
       case 'locked': return this.toast('این خونه قفله. یه وسیله‌ی مشابه روش بکش.');
       case 'missing': return this.toast('هنوز همه‌ی وسایل سفارش آماده نیست.');
       case 'notEnoughGems': return void this.modals.shop();
@@ -771,7 +776,16 @@ export class App {
     if (!cell.lock && !isGenerator(it) && !def.collectible) {
       actions.push(h('button', { class: 'chip', onclick: () => this.handle(sell(this.s, i), i) }, 'فروش ', fa(sellValue(it)), h('span', { html: svgIcon(ICONS.coin) })));
     }
-    if (!cell.lock) {
+    if (!cell.lock && canShelve(it)) {
+      actions.push(h('button', { class: 'chip', id: 'shelve-chip', onclick: () => {
+        shelve(this.s, i);
+        this.toast(`«${itemName(it)}» رفت انبار مولدها؛ تا اون‌جاست کسی ازش سفارش نمی‌ده. از «کیف» برش گردون.`);
+        this.renderCell(i);
+        this.select(null);
+        this.renderNav();
+        this.dirty();
+      } }, 'انبار ', h('span', { html: svgIcon(ICONS.bag) })));
+    } else if (!cell.lock) {
       actions.push(h('button', { class: 'chip', onclick: () => {
         const ev = toBag(this.s, i);
         if (ev.length) return this.fail(ev);

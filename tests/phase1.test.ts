@@ -299,6 +299,48 @@ describe('rush an order with gems', () => {
   });
 });
 
+describe('generator storeroom', () => {
+  it('holds any number of generators, pauses their chains and never gets them handed out again', async () => {
+    const { ensureGenerators, fillOrders, shelve, unshelve } = await import('../src/game/model');
+    const { PLACES } = await import('../src/story/story');
+    const s = emptyGame();
+    s.scriptStep = 99;
+    s.level = 40;
+    s.tasksDone = PLACES.slice(0, 30).flatMap((p) => p.tasks.map((t) => t.id));
+    s.board[0] = { item: { chain: 'genTea', level: 1 } };
+    ensureGenerators(s);
+    const gens = s.board.flatMap((c, i) => (c.item && c.item.chain !== 'genTea' && c.item.chain.startsWith('gen') ? [i] : []));
+    expect(gens.length).toBeGreaterThan(8);
+    for (const i of gens) shelve(s, i);
+    expect(s.shelf).toHaveLength(gens.length);
+    expect(s.bag.every((b) => b === null)).toBe(true); // no bag slots used
+    expect(ensureGenerators(s)).toEqual([]); // stored ones still count as owned
+    for (let k = 0; k < 30; k++) {
+      s.orders = [];
+      fillOrders(s);
+      expect(s.orders.flatMap((o) => o.needs).every((n) => n.chain === 'tea')).toBe(true);
+    }
+    const back = s.shelf[0].chain;
+    const [e] = unshelve(s, 0);
+    expect(e).toMatchObject({ type: 'spawn' });
+    expect(s.board.some((c) => c.item?.chain === back)).toBe(true);
+    expect(s.shelf).toHaveLength(gens.length - 1);
+  });
+
+  it('refuses event generators and products, and old saves load with it empty', async () => {
+    const { shelve } = await import('../src/game/model');
+    const s = emptyGame();
+    s.board[0] = { item: { chain: 'genSchool', level: 1 } };
+    s.board[1] = { item: { chain: 'tea', level: 3 } };
+    shelve(s, 0);
+    shelve(s, 1);
+    expect(s.shelf).toEqual([]);
+    const raw = JSON.parse(JSON.stringify(s));
+    delete raw.shelf;
+    expect(loadState(JSON.stringify(raw))?.shelf).toEqual([]);
+  });
+});
+
 describe('bagged generators', () => {
   it('pause their chain: new orders only ask for chains with a generator on the board', async () => {
     const { fillOrders, toBag } = await import('../src/game/model');

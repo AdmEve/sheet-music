@@ -25,7 +25,7 @@ import {
 import { CHAINS, ChainId, GENERATOR_CHAINS, Item, PRODUCT_CHAINS, itemKey, itemName, maxLevel } from '../game/items';
 import {
   BAG_MAX, COIN_CHEST_PRICE, COIN_ENERGY_AMOUNT, DAILY_REWARDS, ENERGY_CAP, addEnergy, adsLeft, bagSlotCost, buyBagSlot,
-  buyChestWithCoins, buyEnergyWithCoins, buyRefill, claimQuest, claimQuestBonus, coinEnergyLeft, coinEnergyPrice, countAd, fromBag,
+  buyChestWithCoins, buyEnergyWithCoins, buyRefill, claimQuest, claimQuestBonus, coinEnergyLeft, coinEnergyPrice, countAd, fromBag, unshelve,
   Order, allQuestsClaimed, loadState, needsMet, newGame, questDone, questProgress, refillPrice, rushPrice, xpForLevel,
 } from '../game/model';
 import { CAST } from '../story/story';
@@ -717,6 +717,18 @@ export class Modals {
             this.app.dirty();
             render();
           } }, `یک خونه‌ی بیشتر با ${fa(bagSlotCost(s))}`, h('span', { html: svgIcon(ICONS.gem) })));
+        }
+        if (s.shelf.length) {
+          const shelf = h('div', { class: 'chainrow', id: 'shelf' });
+          s.shelf.forEach((it, k) => shelf.append(h('button', { class: 'lv', onclick: () => {
+            const ev = unshelve(s, k);
+            if (ev.length && ev[0].type === 'fail') return this.app.fail(ev);
+            this.app.handle(ev);
+            this.app.dirty();
+            close();
+          } }, h('span', { html: svgIcon(itemArt(it)) }), itemName(it))));
+          body.append(h('h3', { style: 'margin:14px 0 4px;font-size:15px' }, `انبار مولدها (${fa(s.shelf.length)})`),
+            h('p', { style: 'font-size:13px' }, 'تا وقتی یه مولد این‌جاست، کسی ازش سفارش نمی‌ده. بزن تا برگرده.'), shelf);
         }
       };
       render();

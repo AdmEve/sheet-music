@@ -243,6 +243,13 @@ saves are written into localStorage `mahalle.save.v1`.
       out to be a retired teacher, Morteza, Jalal and Yadollah are her students; map of 80
       places; Season 17 teased (a TV cooking contest in the alley)
 
+- [x] Phase 28: generator storeroom «انبار مولدها». By Season 16 a full game holds ~22
+      generators, a third of the 63 cells, and the 4–10 bag slots cannot hold them. Product
+      generators now go to an unlimited storeroom (their «انبار» chip replaces the bag chip);
+      a stored generator pauses its chain exactly like a bagged one, still counts as owned
+      (never handed out again), and comes back from a section in the bag screen. A full
+      board with 10+ generators suggests the storeroom. Unit tests + smoke
+
 Next (in order):
 1. Season 17 «مسابقه‌ی آشپزی»
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)

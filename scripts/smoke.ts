@@ -273,6 +273,21 @@ async function drag(page: Page, a: number, b: number): Promise<void> {
   const st = await saved(page);
   check(st.boost === 2 && st.energy === before - 2, `×2 tap spends 2 energy (${before} → ${st.energy})`);
   check(st.board.some((c: { item: { chain: string; level: number } | null }) => c.item?.chain === 'tea' && c.item.level >= 2), 'boosted tap makes a higher item');
+
+  step = 'generator storeroom';
+  await click(page, gen);
+  await page.waitForTimeout(300);
+  await click(page, '#shelve-chip');
+  await page.waitForTimeout(300);
+  let sv = await saved(page);
+  check(sv.shelf?.length === 1 && !sv.board.some((c: { item: { chain: string } | null }) => c.item?.chain === 'genTea'), 'generator goes to the storeroom');
+  await click(page, '.navbtn:has-text("کیف")');
+  await page.waitForTimeout(300);
+  check(await page.$('#shelf .lv'), 'storeroom shows in the bag');
+  await click(page, '#shelf .lv');
+  await page.waitForTimeout(400);
+  sv = await saved(page);
+  check(sv.shelf.length === 0 && sv.board.some((c: { item: { chain: string } | null }) => c.item?.chain === 'genTea'), 'generator comes back from the storeroom');
   await page.close();
 }
 

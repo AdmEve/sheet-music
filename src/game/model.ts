@@ -104,6 +104,8 @@ export interface GameState {
   decor: Record<string, number>;
   /** Generator boost: each tap costs this much energy and makes a higher item (1 = off). */
   boost: number;
+  /** Generators put away in the storeroom (no bag slots); their chains pause like bagged ones. */
+  shelf: Item[];
 }
 
 export type GameEvent =
@@ -226,6 +228,7 @@ export function newGame(seed: number, now: number): GameState {
     race: emptyRace(),
     decor: {},
     boost: 1,
+    shelf: [],
   };
   const put = (r: number, c: number, item: Item, lock?: Lock) => {
     s.board[idx(r, c)] = lock ? { item, lock } : { item };
@@ -515,6 +518,31 @@ export function fromBag(s: GameState, slot: number): GameEvent[] {
   return [{ type: 'spawn', from: to, to, item: it }];
 }
 
+/** Product generators can go to the storeroom; event generators leave with their event. */
+export function canShelve(it: Item | null): boolean {
+  return !!it && !!CHAINS[it.chain].produces && !CHAINS[it.chain].event;
+}
+
+/** Puts a generator away in the storeroom: no bag slot used, its chain stops appearing in orders. */
+export function shelve(s: GameState, at: number): GameEvent[] {
+  const cell = s.board[at];
+  if (cell.lock || !canShelve(cell.item)) return [];
+  s.shelf.push(cell.item!);
+  cell.item = null;
+  return [];
+}
+
+/** Brings a stored generator back to the board. */
+export function unshelve(s: GameState, k: number): GameEvent[] {
+  const it = s.shelf[k];
+  if (!it) return [];
+  const to = nearestEmpty(s, idx(ROWS - 1, Math.floor(COLS / 2)));
+  if (to === null) return [{ type: 'fail', reason: 'boardFull' }];
+  s.board[to] = { item: it };
+  s.shelf.splice(k, 1);
+  return [{ type: 'spawn', from: to, to, item: it }];
+}
+
 export const BAG_MAX = 10;
 export const bagSlotCost = (s: GameState) => 10 + (s.bag.length - 4) * 10;
 
@@ -661,7 +689,7 @@ export function generatorDue(s: GameState, g: ChainId): boolean {
 }
 
 export function ensureGenerators(s: GameState): Item[] {
-  const owned = new Set([...s.board.map((c) => c.item?.chain), ...s.bag.map((b) => b?.chain)]);
+  const owned = new Set([...s.board.map((c) => c.item?.chain), ...s.bag.map((b) => b?.chain), ...s.shelf.map((g) => g.chain)]);
   const given: Item[] = [];
   for (const g of GENERATOR_CHAINS) {
     if (owned.has(g) || !generatorDue(s, g)) continue;
@@ -761,7 +789,7 @@ export function loadState(json: string | null): GameState | null {
       found: raw.found ?? [], codexClaimed: raw.codexClaimed ?? [],
       piggy: raw.piggy ?? 0, offers: raw.offers ?? [], giftAt: raw.giftAt ?? 0, pass: raw.pass ?? emptyPass(),
       event: raw.event ?? emptyEvent(), trophies: raw.trophies ?? [], race: raw.race ?? emptyRace(), decor: raw.decor ?? {},
-      boost: raw.boost ?? 1,
+      boost: raw.boost ?? 1, shelf: raw.shelf ?? [],
     } as GameState;
     // Saves from before the album: everything the player holds now counts as found.
     if (!raw.found) discover(s);
