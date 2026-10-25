@@ -27,10 +27,10 @@ describe('progression', () => {
     const s = newGame(1, 0);
     expect(progress(s).place?.id).toBe('teahouse');
     expect(completeNextTask(s)).toEqual({ ok: false, reason: 'notEnoughStars' });
-    s.stars = 100_000;
+    s.stars = 1_000_000;
     let finished = 0;
     let guard = 0;
-    while (progress(s).next && guard++ < 2700) {
+    while (progress(s).next && guard++ < 2900) {
       const r = completeNextTask(s);
       expect(r.ok).toBe(true);
       if (r.ok && r.placeFinished) finished++;
@@ -38,7 +38,7 @@ describe('progression', () => {
     expect(finished).toBe(PLACES.length);
     expect(completeNextTask(s)).toEqual({ ok: false, reason: 'allDone' });
     const total = PLACES.flatMap((p) => p.tasks).reduce((a, t) => a + t.cost, 0);
-    expect(s.stars).toBe(100_000 - total);
+    expect(s.stars).toBe(1_000_000 - total);
   });
 });
 

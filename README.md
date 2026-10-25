@@ -15,7 +15,8 @@ ends with a restoration school in the alley; season 11 «ثبت جهانی» tak
 season 12 «تولد ننه‌گلاب» throws Golab a surprise party and season 13 «عروسی شیرین و آیدین» marries
 Shirin and Aydin with a Tabrizi henna night and Morteza's old Paykan as the wedding car; season 14
 «کاروانسرا» restores a desert caravanserai near Kashan into an eco-lodge; season 15 «رفیق یزدی»
-finds Haj-Baba's old friend, a Yazdi qanat-digger (5 episodes each).
+finds Haj-Baba's old friend, a Yazdi qanat-digger; season 16 «مدرسه‌ی شبونه» reopens the alley's
+old school as a night school for adults (5 episodes each).
 
 - Fully **offline**; progress is saved on the phone.
 - Monetization through store in-app billing (two Android flavors: **Cafe Bazaar** via

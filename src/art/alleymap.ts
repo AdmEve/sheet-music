@@ -7,7 +7,7 @@ import { WEDDING } from './chainsO';
 import { camel } from './chainsP';
 import { INK, O, THIN, sparkle } from './kit';
 
-export const MAP_H = 8110;
+export const MAP_H = 8640;
 const STEP = 106;
 const faDigits = (n: number) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 
@@ -295,6 +295,27 @@ const FACADES: Record<string, Facade> = {
   reunion: {
     wall: '#d9a873', door: 'arch', sign: 'مهمون یزدی',
     deco: `<rect x="39.0" y="-104" width="14" height="30" fill="#c99a62" ${THIN}/><rect x="42.0" y="-100" width="8" height="12.0" fill="#5e3418"/>`,
+  },
+  oldschool: {
+    wall: '#ece4cc', roof: 'gable', roofFill: 'url(#gLeafDark)', door: 'gate', sign: 'دبستان امید',
+    deco: `<path d="M50 -74 V-90" ${O} stroke-width="2"/><path d="M44 -84 C44 -94 56 -94 56 -84 Z" fill="url(#gBrass)" ${THIN}/>`,
+  },
+  firstclass: {
+    wall: '#7fae8e', door: 'arch',
+    deco: [-42, 42].map((x) => `<rect x="${x - 9}" y="-50" width="18" height="22" rx="8" fill="#ffe08a" ${THIN}/>`).join('') +
+      `<rect x="-20" y="-70" width="40" height="18" rx="2" fill="#2f4a3a" ${THIN}/><text x="0" y="-57" text-anchor="middle" font-family="Vazirmatn, sans-serif" font-weight="900" font-size="11" fill="#f4f0e6">آب</text>`,
+  },
+  bookvan: {
+    wall: '#d9a873', w: 120, h: 54, door: 'shop',
+    deco: `<rect x="-44" y="-80" width="88" height="16" rx="3" fill="url(#gBlue)" ${THIN}/>` + Array.from({ length: 8 }, (_, i) => `<rect x="${-38 + i * 10}" y="-60" width="7" height="${12 + (i % 3) * 2}" fill="${['#e0303f', '#3a76c4', '#3f8a2a', '#f6c945'][i % 4]}" ${THIN} stroke-width=".6"/>`).join(''),
+  },
+  poetry: {
+    wall: '#4a4a6a', w: 116, h: 50, door: 'gate',
+    deco: `<path d="M-58 -62 Q0 -46 58 -62" fill="none" stroke="${INK}" stroke-width="1"/>` + Array.from({ length: 6 }, (_, i) => `<circle cx="${-50 + i * 20}" cy="${-58 + Math.sin(i / 5 * Math.PI) * 6}" r="3" fill="#ffd36b" ${THIN} stroke-width=".8"/>`).join(''),
+  },
+  graduation: {
+    wall: '#ece4cc', roof: 'gable', roofFill: 'url(#gRed)', door: 'gate',
+    deco: `<rect x="34" y="-34" width="22" height="16" fill="#f6e3b0" ${THIN}/><circle cx="50" cy="-20" r="5" fill="url(#gGold)" ${THIN} stroke-width="1"/>`,
   },
   wedding: {
     wall: 'url(#gWood)', w: 120, h: 70, door: 'gate',

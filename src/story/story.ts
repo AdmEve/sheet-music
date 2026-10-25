@@ -1747,6 +1747,111 @@ export const PLACES: Place[] = [
       { who: 'mahin', text: 'آقا مرتضی! این دیگه خبر داغ نیست، این خبر قشنگه!', mood: 'happy' },
     ],
   },
+  // ------------------------------------------------------------------ season 16: مدرسه‌ی شبونه
+  {
+    id: 'oldschool',
+    name: 'مدرسه‌ی قدیمی محله',
+    intro: [
+      { who: 'narges', text: 'مدرسه‌ی قدیمی کوچه. من و شیرین کلاس اول رو همین‌جا خوندیم. بیست ساله درش قفله.', mood: 'sad' },
+      { who: 'shirin', text: 'یادته معلم‌مون همیشه می‌گفت «نرگس، ساکت!»؟ هنوز هم این در رو که می‌بینم، ساکت می‌شم!', mood: 'happy' },
+      { who: 'fakhri', text: 'من سی سال معلم بودم. اگه قراره مدرسه‌ی شبونه راه بیفته، کلاسش با من.' },
+      { who: 'mahin', text: 'فخری‌خانم معلم بوده؟! … چطور من این رو نمی‌دونستم؟!', mood: 'surprised' },
+    ],
+    tasks: [
+      { id: 'os.sign', title: 'تابلوی مدرسه', cost: 480, layer: 'sign', after: [{ who: 'kaveh', text: 'تابلو رو تمیز کردم. زیرش نوشته: «دبستان امید، تأسیس ۱۳۴۲».' }] },
+      { id: 'os.benches', title: 'نیمکت‌های چوبی', cost: 482, layer: 'benches', after: [{ who: 'golab', text: 'رو این نیمکت‌ها اسم سه نسل از بچه‌های کوچه کنده شده.' }] },
+      { id: 'os.board', title: 'تخته‌سیاه', cost: 484, layer: 'board', after: [{ who: 'fakhri', text: 'تخته‌سیاه رو رنگ زدم. حالا فقط شاگرد کم داریم.' }] },
+      { id: 'os.heater', title: 'بخاری نفتی', cost: 486, layer: 'heater', after: [{ who: 'reza', text: 'بخاری نفتی! زمستون‌ها همه دورش جمع می‌شدیم و نون‌مون رو روش گرم می‌کردیم.', mood: 'happy' }] },
+      { id: 'os.bell', title: 'زنگ مدرسه', cost: 488, layer: 'bell', after: [{ who: 'mahin', text: '(زنگ) … دیدید؟ هنوز صداش رو که می‌شنوم، دلم می‌خواد بدوم سر کلاس!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'fakhri', text: 'کلاس از شنبه، ساعت هفت شب. هر کی می‌خواد بیاد، اسم بنویسه.' },
+      { who: 'morteza', text: 'اسم… بنویسه؟ … یکی برام می‌نویسه؟', mood: 'sad' },
+      { who: 'narges', text: 'آقا مرتضی، از شنبه خودتون می‌نویسید.', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'firstclass',
+    name: 'اولین شب کلاس',
+    intro: [
+      { who: 'jalal', text: 'از یزد اومدم که درس بخونم. تو این سن. خنده‌داره، نه؟', mood: 'sad' },
+      { who: 'fakhri', text: 'هیچ‌چی خنده‌دار نیست، جلال‌خان. بفرمایید سر جاتون.', mood: 'angry' },
+      { who: 'yadollah', text: 'منم اومدم! قندی رو دادم دست همسایه. بهش گفتم «قندی، باید باسواد برگردم».', mood: 'happy' },
+    ],
+    tasks: [
+      { id: 'fc.lights', title: 'چراغ‌های کلاس', cost: 486, layer: 'lights', after: [{ who: 'shirin', text: 'کلاس روشن شد. چه حس عجیبیه، شب بیای مدرسه.' }] },
+      { id: 'fc.alphabet', title: 'الفبای دیوار', cost: 488, layer: 'alphabet', after: [{ who: 'fakhri', text: '«آ» مثل آب. «ب» مثل بابا. … آقا مرتضی، «پ» مثل چی؟' }, { who: 'morteza', text: '«پ» مثل… پول!', mood: 'happy' }, { who: 'fakhri', text: 'بد نیست. یعنی خوبه.' }] },
+      { id: 'fc.notebooks', title: 'دفتر و مداد', cost: 490, layer: 'notebooks', after: [{ who: 'yadollah', text: 'دفتر خودم! اسمم رو روش نوشتن. یعنی یه روز خودم می‌تونم بنویسمش؟', mood: 'surprised' }] },
+      { id: 'fc.samovar', title: 'سماور کلاس', cost: 492, layer: 'samovar', after: [{ who: 'golab', text: 'کلاس شبونه بدون چای نمی‌شه. شاگردهای این کلاس همه از شصت گذشتن!', mood: 'happy' }] },
+      { id: 'fc.word', title: 'اولین کلمه', cost: 494, layer: 'word', after: [{ who: 'jalal', text: 'نوشتم! «آب». اولین کلمه‌ای که تو عمرم نوشتم. مقنی باید اول «آب» بنویسه دیگه.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'fakhri', text: 'شاگردهای خوبی هستید. ولی کتاب کم داریم. با یه دفتر و یه تخته، سواد کامل نمی‌شه.' },
+      { who: 'morteza', text: 'کتاب؟ … پیکان من! پیکان رو کتابخونه‌ی سیار کنیم، بره همه‌ی محله‌ها.', mood: 'happy' },
+      { who: 'mahin', text: 'آقا مرتضی پیشنهاد مجانی داد؟! این دیگه از برکت مدرسه‌ست!', mood: 'surprised' },
+    ],
+  },
+  {
+    id: 'bookvan',
+    name: 'کتابخونه‌ی سیار',
+    intro: [
+      { who: 'kaveh', text: 'پیکان عروس، حالا کتابخونه‌ی سیار! صندلی عقب رو برداشتیم، جاش قفسه می‌ذاریم.' },
+      { who: 'aydin', text: 'از تبریز یه بار کتاب قصه فرستادن. ننه‌م گفت «کتاب، بهترین سوغاتیه».' },
+    ],
+    tasks: [
+      { id: 'bv.shelves', title: 'قفسه‌های ماشین', cost: 492, layer: 'shelves', after: [{ who: 'farokhi', text: 'قفسه‌ها رو جوری ساختیم که تو دست‌انداز کتاب‌ها نریزن. مهندسی یعنی همین!' }] },
+      { id: 'bv.books', title: 'کتاب‌های قصه', cost: 494, layer: 'books', after: [{ who: 'narges', text: 'شاهنامه‌ی مصور، قصه‌های مجید، گلستان سعدی… برای هر سنی یه کتاب.' }] },
+      { id: 'bv.sign', title: 'تابلوی کتابخونه', cost: 496, layer: 'sign', after: [{ who: 'shirin', text: 'رو ماشین نوشتیم «کتابخونه‌ی سیار محله». درشت، که از دور خونده بشه.' }] },
+      { id: 'bv.rug', title: 'گلیم و پشتی', cost: 498, layer: 'rug', after: [{ who: 'bahman', text: 'کنار ماشین گلیم پهن کردیم. هر کی کتاب گرفت، همین‌جا می‌شینه و می‌خونه.' }] },
+      { id: 'bv.lamp', title: 'چراغ مطالعه', cost: 500, layer: 'lamp', after: [{ who: 'yadollah', text: 'یه کتاب گرفتم که توش عکس شتر داره. فردا شب برای قندی می‌خونمش!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'mahin', text: 'خبر داغ! بچه‌های محله‌ی بغلی هم صف کشیدن. کتابخونه‌ی سیار از نونوایی رضا شلوغ‌تر شده!', mood: 'surprised' },
+      { who: 'reza', text: 'از نونوایی من شلوغ‌تر؟ … خب، این یکی رو قبول دارم.', mood: 'happy' },
+      { who: 'fakhri', text: 'آخر ماه شب شعر داریم. هر شاگرد یه چیزی می‌نویسه و می‌خونه.' },
+    ],
+  },
+  {
+    id: 'poetry',
+    name: 'شب شعر',
+    intro: [
+      { who: 'fakhri', text: 'امشب شاگردها نوشته‌ی خودشون رو می‌خونن. هیچ‌کس حق نداره بخنده!', mood: 'angry' },
+      { who: 'mahin', text: 'رادیو محله امشب زنده پخش می‌کنه! … ای وای، باتری میکروفون کجاست؟', mood: 'surprised' },
+    ],
+    tasks: [
+      { id: 'pn.stage', title: 'سکوی شعرخوانی', cost: 498, layer: 'stage', after: [{ who: 'kaveh', text: 'سکو رو با آجرهای قدیمی مدرسه ساختیم. هر آجرش یه خاطره‌ست.' }] },
+      { id: 'pn.lanterns', title: 'فانوس‌های حیاط', cost: 500, layer: 'lanterns', after: [{ who: 'golab', text: 'فانوس‌ها رو که روشن کردن، حیاط مدرسه شد مثل شب‌های قدیم.' }] },
+      { id: 'pn.wall', title: 'دیوار نوشته‌ها', cost: 502, layer: 'wall', after: [{ who: 'narges', text: 'دیوار رو پر از نوشته‌ی شاگردها کردیم. خط جلال‌خان از همه قشنگ‌تره!', mood: 'happy' }] },
+      { id: 'pn.tea', title: 'چای و خرما', cost: 504, layer: 'tea', after: [{ who: 'yadollah', text: 'خرمای کویر آوردم. شب شعر بدون خرما مثل کویر بدون ستاره‌ست.', mood: 'happy' }] },
+      { id: 'pn.mic', title: 'میکروفون رادیو', cost: 506, layer: 'mic', after: [{ who: 'morteza', text: '(پشت میکروفون) «من مرتضی‌ام. بقالم. و امشب… اسمم رو خودم نوشتم.»', mood: 'sad' }, { who: 'mahin', text: 'کل محله داره دست می‌زنه، آقا مرتضی!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'jalal', text: 'نوبت منه. «حاجی، رفیقم. چهل سال تو نوشتی و من گوش دادم. حالا من می‌نویسم و تو گوش بده.»', mood: 'sad' },
+      { who: 'bahman', text: 'داداش اگه بود، الان گریه می‌کرد. … منم دارم گریه می‌کنم.', mood: 'sad' },
+      { who: 'fakhri', text: 'ماه دیگه امتحان آخره. هر کی قبول بشه، تقدیرنامه می‌گیره.' },
+    ],
+  },
+  {
+    id: 'graduation',
+    name: 'جشن تقدیرنامه',
+    intro: [
+      { who: 'fakhri', text: 'امتحان تموم شد. … همه قبول شدن. همه‌تون.', mood: 'happy' },
+      { who: 'morteza', text: 'من؟ من هم؟! فخری‌خانم، شوخی که نمی‌کنید؟', mood: 'surprised' },
+      { who: 'fakhri', text: 'من هیچ‌وقت شوخی نمی‌کنم، آقا مرتضی.' },
+    ],
+    tasks: [
+      { id: 'gr.stage', title: 'سن جشن', cost: 504, layer: 'stage', after: [{ who: 'aydin', text: 'سن رو با فرش تبریز فرش کردیم. برای این شاگردها کم‌ترین کاره.' }] },
+      { id: 'gr.certs', title: 'تقدیرنامه‌ها', cost: 506, layer: 'certs', after: [{ who: 'fakhri', text: 'تقدیرنامه‌ها رو با خط خودم نوشتم. هر اسم رو سه بار تمرین کردم.' }] },
+      { id: 'gr.flowers', title: 'گل و شیرینی', cost: 508, layer: 'flowers', after: [{ who: 'reza', text: 'نون‌برنجی و گل محمدی، برای باسوادترین پیرمردهای تهرون!', mood: 'happy' }] },
+      { id: 'gr.photo', title: 'عکس یادگاری', cost: 510, layer: 'photo', after: [{ who: 'shirin', text: 'همه بیاید! شاگردها جلو، معلم وسط. … فخری‌خانم، یه لبخند!' }, { who: 'fakhri', text: '… لبخند زدم دیگه.' }] },
+      { id: 'gr.sign', title: 'تابلوی تازه‌ی بقالی', cost: 512, layer: 'sign', after: [{ who: 'morteza', text: 'تابلوی تازه‌ی بقالی رو خودم نوشتم: «بقالی مرتضی — نسیه هم داریم!»', mood: 'happy' }, { who: 'mahin', text: 'نسیه؟!! آقا مرتضی، سواد آدم رو عوض می‌کنه!', mood: 'surprised' }] },
+    ],
+    outro: [
+      { who: 'mahin', text: 'داغ‌ترین خبر سال! تلویزیون زنگ زد. می‌خوان یه مسابقه‌ی آشپزی تو کوچه‌ی ما ضبط کنن!', mood: 'surprised' },
+      { who: 'reza', text: 'مسابقه‌ی آشپزی؟ … من فقط نون بلدم!', mood: 'surprised' },
+      { who: 'golab', text: 'نترس رضا. این کوچه یه آشپزخونه‌ی بزرگه. فقط باید درش رو باز کرد.', mood: 'happy' },
+    ],
+  },
 ];
 
 export function findTask(id: string): { place: Place; task: Task; index: number } | null {

@@ -237,8 +237,14 @@ saves are written into localStorage `mahalle.save.v1`.
       qanat-digger who never answered Haj-Baba's letters because he could not read); map of
       75 places; Season 16 teased (a night school for adults)
 
+- [x] Phase 27: Season 16 «مدرسه‌ی شبونه» (`src/art/scenes16.ts`: the alley's old school, the first
+      night of class, Morteza's Paykan as a mobile library, a poetry night on the alley radio
+      and the certificate party; «کلاس شبونه» chain + teacher's-desk generator); Fakhri turns
+      out to be a retired teacher, Morteza, Jalal and Yadollah are her students; map of 80
+      places; Season 17 teased (a TV cooking contest in the alley)
+
 Next (in order):
-1. Season 16 «مدرسه‌ی شبونه»
+1. Season 17 «مسابقه‌ی آشپزی»
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)
