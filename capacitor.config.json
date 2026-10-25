@@ -6,9 +6,14 @@
     "allowMixedContent": false
   },
   "plugins": {
+    "SystemBars": {
+      "insetsHandling": "css",
+      "initialViewportFitValueHint": "cover",
+      "style": "DARK"
+    },
     "SplashScreen": {
       "launchShowDuration": 600,
-      "backgroundColor": "#ffd9e4",
+      "backgroundColor": "#3b1d8c",
       "showSpinner": false
     }
   }

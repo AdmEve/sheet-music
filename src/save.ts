@@ -25,6 +25,9 @@ export interface Save {
   settings: { sound: boolean; music: boolean; haptics: boolean };
   stats: { wins: number; losses: number; winsSinceAd: number; sessionStart: number };
   tutorialDone: boolean;
+  /** Stars earned in total, and the last chapter whose chest was opened. */
+  stars: number;
+  chapterClaimed: number;
 }
 
 const KEY = 'pishi-pixel-save-v1';
@@ -37,6 +40,8 @@ function fresh(): Save {
     settings: { sound: true, music: true, haptics: true },
     stats: { wins: 0, losses: 0, winsSinceAd: 0, sessionStart: Date.now() },
     tutorialDone: false,
+    stars: 0,
+    chapterClaimed: 0,
   };
 }
 
@@ -134,4 +139,39 @@ export function claimDaily(): number {
   if (save.daily.streak === 7) save.boosts.bomb++;
   persist();
   return gift;
+}
+
+// ───────────────────────── chapters ─────────────────────────
+
+export const LEVELS_PER_CHAPTER = 10;
+
+/** Each chapter is a stop on a trip around Iran, with its own sky colours. */
+export const CHAPTERS: { name: string; sky: [string, string] }[] = [
+  { name: 'تهران', sky: ['#2b7fd6', '#6a3fd1'] },
+  { name: 'اصفهان', sky: ['#1aa3b5', '#2b5fd6'] },
+  { name: 'شیراز', sky: ['#d6557a', '#7a3fd1'] },
+  { name: 'تبریز', sky: ['#3a8fd6', '#1f4fa8'] },
+  { name: 'یزد', sky: ['#e08a3a', '#b8455c'] },
+  { name: 'کاشان', sky: ['#2fae9a', '#2b6fd6'] },
+  { name: 'گیلان', sky: ['#3fae5a', '#1f7f8b'] },
+  { name: 'کیش', sky: ['#22b8d6', '#2b7fd6'] },
+  { name: 'مشهد', sky: ['#5a6fd6', '#3f2fa8'] },
+  { name: 'کرمان', sky: ['#d66a3a', '#8a3fa8'] },
+  { name: 'همدان', sky: ['#4f8fd6', '#5a3fb8'] },
+  { name: 'قشم', sky: ['#1fb8b0', '#3a6fd6'] },
+];
+
+export function chapterOf(levelIndex: number) {
+  const i = Math.floor(levelIndex / LEVELS_PER_CHAPTER);
+  const c = CHAPTERS[i % CHAPTERS.length];
+  return { index: i, name: c.name, sky: c.sky, first: i * LEVELS_PER_CHAPTER, done: levelIndex - i * LEVELS_PER_CHAPTER };
+}
+
+export function chapterReward(chapter: number) {
+  return { coins: 150 + chapter * 25, bomb: 1, slot: chapter % 2 };
+}
+
+/** 3 stars for a clean win, fewer when boosters or revives were needed. */
+export function starsFor(helpers: number): number {
+  return helpers === 0 ? 3 : helpers === 1 ? 2 : 1;
 }

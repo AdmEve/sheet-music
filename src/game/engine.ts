@@ -23,6 +23,7 @@ export interface LevelDef {
   slots: number;
   capacity: number;
   hard: boolean;
+  veryHard?: boolean;
 }
 
 export type Place = 'queue' | 'pending' | 'belt' | 'slot' | 'gone';
