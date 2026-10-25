@@ -7,7 +7,7 @@ import { WEDDING } from './chainsO';
 import { camel } from './chainsP';
 import { INK, O, THIN, sparkle } from './kit';
 
-export const MAP_H = 11290;
+export const MAP_H = 11820;
 const STEP = 106;
 const faDigits = (n: number) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 
@@ -411,6 +411,29 @@ const FACADES: Record<string, Facade> = {
   twofest: {
     wall: '#d8b48a', w: 132, h: 60, door: 'gate',
     deco: Array.from({ length: 9 }, (_, i) => `<circle cx="${-60 + i * 15}" cy="${-70 + Math.abs(i - 4) * 2}" r="3.2" fill="${['#ffd36b', '#ff7a9c', '#5fe0e0'][i % 3]}" ${THIN} stroke-width=".8"/>`).join('') + `<circle cx="-54" cy="-30" r="12" fill="url(#gLeafDark)" ${THIN}/>`,
+  },
+  dirtlot: {
+    wall: '#c9b89a', w: 116, h: 50, door: 'gate',
+    deco: Array.from({ length: 8 }, (_, i) => `<path d="M${-56 + i * 14} -50 V-62 l5 -5 l5 5 V-50 Z" fill="${['#e0303f', '#f6c945', '#3a76c4', '#3f8a2a'][i % 4]}" ${THIN} stroke-width="1"/>`).join('') +
+      [-40, 40].map((x) => `<path d="M${x} -62 V-80" stroke="#6b4a2a" stroke-width="2.4"/><circle cx="${x}" cy="-84" r="7" fill="#7fc85a" ${THIN}/>`).join(''),
+  },
+  minipark: {
+    wall: '#d8b48a', w: 124, h: 52, door: 'gate',
+    deco: `<path d="M-56 -52 L-46 -90 M-24 -52 L-34 -90 M-48 -90 H-32" stroke="#3a76c4" stroke-width="3" stroke-linecap="round"/><path d="M-42 -90 V-66 M-38 -90 V-66" stroke="#8b8b8b" stroke-width="1"/><rect x="-45" y="-66" width="10" height="3" fill="#e0303f"/>` +
+      `<path d="M50 -52 V-90 M26 -52 C36 -60 38 -84 50 -88" fill="none" stroke="#f6c945" stroke-width="4" stroke-linecap="round"/>`,
+  },
+  muralwall: {
+    wall: '#fbf7ee', w: 128, h: 66, door: 'arch',
+    deco: `<circle cx="-36" cy="-44" r="11" fill="#c0501a" ${THIN}/><circle cx="-36" cy="-44" r="7" fill="#f6c945" ${THIN} stroke-width="1"/><circle cx="40" cy="-50" r="7" fill="#f6c945"/>` +
+      [['#e0303f', -54], ['#3a76c4', -20], ['#3f8a2a', 22], ['#ff7a9c', 54]].map(([c, x]) => `<circle cx="${x}" cy="-12" r="4" fill="${c}" opacity=".85"/>`).join(''),
+  },
+  puppets: {
+    wall: '#c0281a', w: 108, h: 70, roof: 'gable', roofFill: 'url(#gGold)', door: 'shop', sign: 'خیمه‌شب‌بازی',
+    deco: `<path d="M-6 -46 L0 -60 L6 -46 Z" fill="#e0303f" ${THIN} stroke-width="1"/><circle cx="0" cy="-42" r="5" fill="#f0c49a" ${THIN} stroke-width="1"/>`,
+  },
+  summerfest: {
+    wall: '#d2b48a', w: 132, h: 54, door: 'gate',
+    deco: [[-46, -96, '#e0303f'], [0, -110, '#f6c945'], [46, -98, '#3a76c4']].map(([x, y, c]) => `<path d="M${x} ${y} l9 12 l-9 14 l-9 -14 Z" fill="${c}" ${THIN} stroke-width="1"/><path d="M${x} ${Number(y) + 26} q4 6 0 12" fill="none" stroke="${INK}" stroke-width=".8"/>`).join(''),
   },
   wedding: {
     wall: 'url(#gWood)', w: 120, h: 70, door: 'gate',

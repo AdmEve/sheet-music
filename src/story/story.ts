@@ -29,6 +29,7 @@ export const CAST: Record<string, Character> = {
   karim: { id: 'karim', name: 'کریم', role: 'گلکار قمصری' },
   parisa: { id: 'parisa', name: 'مهندس پریسا', role: 'مهندس پروژه‌ی مترو' },
   saburi: { id: 'saburi', name: 'صبوری‌خان', role: 'عطار کوچه‌ی اقاقیا' },
+  arash: { id: 'arash', name: 'آرش', role: 'نوه‌ی صبوری‌خان' },
 };
 
 /** Short thank-you lines shown when an order is delivered (one picked at random). */
@@ -51,6 +52,7 @@ export const THANKS: Record<string, string[]> = {
   karim: ['دستت گل!', 'خدا قوت! مثل گلاب دوآتشه بود.', 'گل‌ها هم ازت ممنونن!'],
   parisa: ['دقیق و به‌موقع، مثل یه مهندس واقعی!', 'با این سرعت، ایستگاه زودتر باز می‌شه.', 'ممنون! بدون اهالی این پروژه نمی‌شد.'],
   saburi: ['دستت درد نکنه بابا. مثل دمنوش گاوزبون آرامش‌بخش بود.', 'خیر ببینی!', 'عطاری بدون تو یه چیزی کم داشت.'],
+  arash: ['ایول! دمت گرم!', 'تو بهترین بزرگ‌ترِ کوچه‌ای!', 'بچه‌ها خیلی خوشحال می‌شن!'],
 };
 
 export interface Line {
@@ -2356,6 +2358,103 @@ export const PLACES: Place[] = [
       { who: 'narges', text: 'تابستون داره میاد. بچه‌های دو کوچه یه جای بازی می‌خوان.' },
       { who: 'kaveh', text: 'زمین خاکی پشت دالون… می‌شه یه پارک کوچیک بشه.' },
       { who: 'mahin', text: 'پارک؟! این خبر داغ تابستونه!', mood: 'surprised' },
+    ],
+  },
+  // ------------------------------------------------------------------ season 22: تابستون بچه‌ها
+  {
+    id: 'dirtlot',
+    name: 'زمین خاکی',
+    intro: [
+      { who: 'arash', text: 'سلام! من آرشم، نوه‌ی صبوری‌خان. این زمین خاکی جای بازی همه‌ی بچه‌هاست… ولی پر از نخاله‌ست.', mood: 'sad' },
+      { who: 'kaveh', text: 'زمین کوچیکیه، ولی برای یه پارک محله‌ای کافیه. اول باید تمیزش کنیم.' },
+    ],
+    tasks: [
+      { id: 'dl.rubble', title: 'جمع کردن نخاله', cost: 660, layer: 'rubble', after: [{ who: 'morteza', text: 'سه تا وانت نخاله! هر کی این‌ها رو این‌جا ریخته، خدا ازش نگذره.', mood: 'angry' }] },
+      { id: 'dl.level', title: 'تسطیح زمین', cost: 662, layer: 'level', after: [{ who: 'parisa', text: 'غلتک مترو یه روز بیکار بود. زمین رو صاف کردیم، صاف مثل کف ایستگاه!', mood: 'happy' }] },
+      { id: 'dl.trees', title: 'نهال‌های چنار', cost: 664, layer: 'trees', after: [{ who: 'golab', text: 'چهار تا نهال چنار کاشتیم. تا آرش بزرگ بشه، این‌ها سایه‌بون کل پارک می‌شن.' }] },
+      { id: 'dl.tap', title: 'شیر آب', cost: 666, layer: 'tap', after: [{ who: 'jalal', text: 'یه شیر آب گذاشتیم. آب، اول هر آبادیه بابا.' }] },
+      { id: 'dl.fence', title: 'نرده‌ی چوبی', cost: 668, layer: 'fence', after: [{ who: 'arash', text: 'نرده‌ی رنگی! حالا دیگه توپمون نمی‌پره تو جوی!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'arash', text: 'حالا یه تاب می‌خوایم! و یه سرسره! و یه الاکلنگ! و…', mood: 'surprised' },
+      { who: 'narges', text: 'یکی‌یکی آرش‌جان. پارک کوچه رو با هم می‌سازیم.', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'minipark',
+    name: 'پارک کوچه',
+    intro: [
+      { who: 'kaveh', text: 'وسایل بازی رو خودمون می‌سازیم. چوب و طناب و یه کم جوشکاری.' },
+      { who: 'morteza', text: 'یه آهنگر می‌شناسم، پسرخاله‌مه. ارزون حساب می‌کنه… یعنی امیدوارم.' },
+    ],
+    tasks: [
+      { id: 'mp.swing', title: 'تاب', cost: 666, layer: 'swing', after: [{ who: 'arash', text: 'تاب! تاب! بلندتر هلم بدید!', mood: 'happy' }] },
+      { id: 'mp.slide', title: 'سرسره', cost: 668, layer: 'slide', after: [{ who: 'shirin', text: 'منم یه بار سر خوردم. فقط یه بار! به کسی نگید.', mood: 'happy' }] },
+      { id: 'mp.seesaw', title: 'الاکلنگ', cost: 670, layer: 'seesaw', after: [{ who: 'morteza', text: 'الاکلنگ مثل ترازوئه. یه ور بالا، یه ور پایین. منصفانه.' }] },
+      { id: 'mp.sandbox', title: 'شن‌بازی', cost: 672, layer: 'sandbox', after: [{ who: 'bahman', text: 'تو هامبورگ هر پارکی یه شن‌بازی داره. حالا پارک کوچه‌ی ما هم داره!', mood: 'happy' }] },
+      { id: 'mp.bench', title: 'نیمکت مادربزرگ‌ها', cost: 674, layer: 'bench', after: [{ who: 'golab', text: 'یه نیمکت هم برای ما پیرها، که بشینیم و بچه‌ها رو تماشا کنیم.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'arash', text: 'پارک خیلی خوب شد، ولی اون دیوار سفید پشتش خیلی زشته.' },
+      { who: 'fakhri', text: 'زشت؟ اون یه بوم نقاشیه که هنوز کسی روش چیزی نکشیده.' },
+    ],
+  },
+  {
+    id: 'muralwall',
+    name: 'دیوار نقاشی',
+    intro: [
+      { who: 'fakhri', text: 'بچه‌ها، هر کی یه قلم‌مو برداره. امروز کلاس نقاشی رو دیواره.' },
+      { who: 'arash', text: 'می‌شه یه شیر بکشیم؟ یه شیر خیلی خیلی بزرگ؟', mood: 'surprised' },
+    ],
+    tasks: [
+      { id: 'mw.white', title: 'دیوار سفید', cost: 672, layer: 'white', after: [{ who: 'kaveh', text: 'دیوار رو گچ زدیم و سفید کردیم. حالا یه بوم بزرگ داریم.' }] },
+      { id: 'mw.paint', title: 'سطل‌های رنگ', cost: 674, layer: 'paint', after: [{ who: 'aydin', text: 'رنگ‌های گیاهی، مثل رنگ‌های فرش! روناس، اسپرک، پوست گردو.', mood: 'happy' }] },
+      { id: 'mw.mural', title: 'نقاشی دیواری', cost: 676, layer: 'mural', after: [{ who: 'fakhri', text: 'یه شیر، یه درخت توت، یه سنگک داغ… و دو تا کوچه که دست هم رو گرفتن. همه‌ش کار بچه‌هاست.', mood: 'happy' }] },
+      { id: 'mw.tables', title: 'میز بچه‌ها', cost: 678, layer: 'tables', after: [{ who: 'sepideh', text: 'برای برنامه‌مون از کلاس نقاشی بچه‌ها فیلم گرفتیم. بیننده‌ها عاشقش می‌شن!', mood: 'happy' }] },
+      { id: 'mw.show', title: 'نمایشگاه نقاشی', cost: 680, layer: 'show', after: [{ who: 'mahin', text: 'خبر داغ! نقاشی‌های بچه‌ها رو تو دالون آویزون کردیم. همه دارن میان ببینن!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'arash', text: 'عمو یدالله می‌گه یه چیزی بلده که دیگه هیچ‌کس بلد نیست.' },
+      { who: 'yadollah', text: 'جوونی که با کاروان سفر می‌کردم، شب‌ها برای بچه‌های آبادی‌ها خیمه‌شب‌بازی راه می‌انداختیم. مبارک رو یادتونه؟', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'puppets',
+    name: 'خیمه‌شب‌بازی',
+    intro: [
+      { who: 'yadollah', text: 'یه خیمه، یه چراغ، چند تا عروسک… و یه مرشد که ضرب بگیره.' },
+      { who: 'bahman', text: 'ضربش با من! تنبک رو از داداش یاد گرفتم.', mood: 'happy' },
+    ],
+    tasks: [
+      { id: 'pp.tent', title: 'خیمه‌ی نمایش', cost: 678, layer: 'tent', after: [{ who: 'kaveh', text: 'خیمه رو با پارچه‌ی قرمز زدیم. یه تئاتر کوچیک، وسط کوچه.' }] },
+      { id: 'pp.puppets', title: 'عروسک‌های نخی', cost: 680, layer: 'puppets', after: [{ who: 'yadollah', text: 'مبارک با کلاه بوقی و لباس قرمزش، و یه شیر چوبی که آرش سفارش داده بود!', mood: 'happy' }] },
+      { id: 'pp.lamp', title: 'چراغ صحنه', cost: 682, layer: 'lamp', after: [{ who: 'sona', text: 'بچگی تو تبریز هم خیمه‌شب‌بازی می‌دیدیم. همین نور چراغ، همین هیجان!', mood: 'happy' }] },
+      { id: 'pp.seats', title: 'زیلوی تماشاچی‌ها', cost: 684, layer: 'seats', after: [{ who: 'jalal', text: 'زیلوی یزدی آوردم. بچه‌ها روش بشینن، خنک می‌مونن.' }] },
+      { id: 'pp.show', title: 'اجرای مبارک', cost: 686, layer: 'show', after: [{ who: 'arash', text: 'مبارک گفت «ای ارباب!» و همه زدن زیر خنده! بهترین شب عمرم بود!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'narges', text: 'تابستون داره تموم می‌شه. بچه‌ها باید با یه جشن ازش خداحافظی کنن.' },
+      { who: 'arash', text: 'جشن آخر تابستون! با بستنی! و بادبادک!', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'summerfest',
+    name: 'جشن آخر تابستون',
+    intro: [
+      { who: 'mahin', text: 'خبر داغ! همه‌ی بچه‌های دو کوچه امروز این‌جان. مامان‌باباها هم!', mood: 'happy' },
+      { who: 'saburi', text: 'شربت تخم‌شربتی برای همه. آرش، اول به مهمون‌ها بده.', mood: 'happy' },
+    ],
+    tasks: [
+      { id: 'sf.bikes', title: 'مسابقه‌ی دوچرخه', cost: 684, layer: 'bikes', after: [{ who: 'kaveh', text: 'مسیر مسابقه از پارک تا دالون و برگشت. آرش دوم شد… با یه زانوی زخمی!', mood: 'happy' }] },
+      { id: 'sf.icecream', title: 'بستنی سنتی', cost: 686, layer: 'icecream', after: [{ who: 'reza', text: 'بستنی سنتی با زعفرون و گلاب قمصر! نون‌بستنی هم برای اون‌هایی که عجله دارن.', mood: 'happy' }] },
+      { id: 'sf.kites', title: 'بادبادک‌ها', cost: 688, layer: 'kites', after: [{ who: 'farokhi', text: 'بعد از پنجاه سال دوباره بادبادک هوا کردم. یادم رفته بود چقدر کیف داره.', mood: 'happy' }] },
+      { id: 'sf.water', title: 'آب‌بازی', cost: 690, layer: 'water', after: [{ who: 'shirin', text: 'آب‌بازی! هیچ‌کس خشک نموند. حتی آقا مرتضی!', mood: 'happy' }] },
+      { id: 'sf.photo', title: 'عکس آخر تابستون', cost: 692, layer: 'photo', after: [{ who: 'narges', text: 'عکس آخر تابستون: بچه‌ها جلو، بزرگ‌ترها پشت، و پارک کوچه پشت سرمون.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'arash', text: 'نرگس‌خانم، اوستا رضا شاگرد می‌خواد. می‌شه من برم؟' },
+      { who: 'reza', text: 'شاگرد؟ نونوایی کار سختیه بچه‌جون. صبح زود، تنور داغ…', mood: 'surprised' },
+      { who: 'arash', text: 'من از تنور نمی‌ترسم! قول می‌دم.', mood: 'happy' },
     ],
   },
 ];

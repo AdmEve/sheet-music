@@ -93,7 +93,7 @@ const scarfFront = (fill: string) =>
 const dots = (color: string) =>
   [[34, 26], [46, 22], [58, 24], [68, 32], [28, 38], [72, 46]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2" fill="${color}"/>`).join('');
 
-export const CAST_IDS = ['narges', 'mahin', 'reza', 'shirin', 'kaveh', 'morteza', 'golab', 'fakhri', 'farokhi', 'bahman', 'aydin', 'sona', 'yadollah', 'jalal', 'sepideh', 'karim', 'parisa', 'saburi'];
+export const CAST_IDS = ['narges', 'mahin', 'reza', 'shirin', 'kaveh', 'morteza', 'golab', 'fakhri', 'farokhi', 'bahman', 'aydin', 'sona', 'yadollah', 'jalal', 'sepideh', 'karim', 'parisa', 'saburi', 'arash'];
 export const MOOD_LIST: Mood[] = ['neutral', 'happy', 'sad', 'angry', 'surprised'];
 
 const PORTRAITS: Record<string, (m: FaceOpts) => string> = {
@@ -224,6 +224,16 @@ const PORTRAITS: Record<string, (m: FaceOpts) => string> = {
     `<path d="M44 70 C44 80 56 80 56 70 C53 73 47 73 44 70 Z" fill="#b8b8b0" ${THIN}/>` +
     `<path d="M41 63 C44 60 48 61 50 62 C52 61 56 60 59 63 C56 65 53 64 50 64.5 C47 64 44 65 41 63 Z" fill="#b8b8b0"/>` +
     `<circle cx="41" cy="52" r="6.5" fill="none" stroke="#3a3a3a" stroke-width="1.8"/><circle cx="59" cy="52" r="6.5" fill="none" stroke="#3a3a3a" stroke-width="1.8"/><path d="M47.5 52 h5" stroke="#3a3a3a" stroke-width="1.8"/>`,
+  arash: (m) =>
+    bg('#e0f4ff', '#5ab8e8') +
+    // Striped summer T-shirt.
+    shoulders('#e0303f', `<path d="M22 90 H78 M18 96 H82" stroke="#fffdf6" stroke-width="3"/><path d="M42 79 Q50 85 58 79" fill="none" stroke="#fffdf6" stroke-width="2.4"/>`) +
+    face({ eyes: 'open', brows: 'soft', mouth: 'grin', skin: '#f0c49a', blush: true, ...m }) +
+    // Messy short hair with a cowlick, freckles and a plaster on one cheek.
+    `<path d="M29 48 C24 26 40 20 50 22 C62 20 78 28 71 48 C68 38 62 34 56 36 L54 31 L50 36 L44 32 L42 37 C36 36 32 40 29 48 Z" fill="#2b1b12" ${O}/>` +
+    `<path d="M50 23 Q53 12 61 13 Q55 16 55 23 Z" fill="#2b1b12" ${THIN}/>` +
+    [[34, 60], [37, 63], [40, 60]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1" fill="#b8784a"/>`).join('') +
+    `<rect x="62" y="56" width="9" height="4.5" rx="2" fill="#f6dcb4" ${THIN} stroke-width=".8" transform="rotate(-25 66.5 58)"/><path d="M66 56.5 l1.4 3" stroke="#c9a27a" stroke-width=".8"/>`,
 };
 
 const cache = new Map<string, string>();

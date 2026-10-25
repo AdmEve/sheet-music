@@ -289,9 +289,15 @@ saves are written into localStorage `mahalle.save.v1`.
       walled-up passage between the alleys reopened, and a festival of both alleys; «عطاری»
       chain + herb-planter generator; new character Saburi, the herbalist); map of 105
       places; Season 22 teased (a summer park for the children of both alleys)
+- [x] Phase 35: Season 22 «تابستون بچه‌ها» (`src/art/scenes22.ts`: the rubble-strewn lot behind the
+      passage cleared and fenced, a little park with swings, slide, seesaw and sandbox, a mural
+      painted by the children, Yadollah's old string-puppet show (Mobarak and a wooden lion) and an
+      end-of-summer party with a bike race, kites and water play; «بازی» toys chain + toy-chest
+      generator; new character Arash, Saburi's grandson); map of 110 places; Season 23 teased
+      (Arash wants to be Reza's apprentice at the bakery)
 
 Next (in order):
-1. Season 22 «تابستون بچه‌ها»
+1. Season 23 «شاگرد نونوا»
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)

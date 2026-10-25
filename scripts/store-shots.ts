@@ -129,7 +129,7 @@ const shots: Shot[] = [
       await page.evaluate(() => (window as any).__showLine?.('kaveh'));
       await page.waitForTimeout(900);
     } },
-  { name: '8-map', caption: '۱۰۵ قسمت، بیست‌ویک فصل', sub: 'آفلاین، بدون تبلیغ اجباری', state: lateState(20, 2),
+  { name: '8-map', caption: '۱۱۰ قسمت، بیست‌ودو فصل', sub: 'آفلاین، بدون تبلیغ اجباری', state: lateState(20, 2),
     act: async (page) => {
       await ready(page);
       await page.click('#nav-alley', { force: true }); await page.waitForTimeout(500); await skipStory(page);
