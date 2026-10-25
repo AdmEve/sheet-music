@@ -219,8 +219,9 @@ saves are written into localStorage `mahalle.save.v1`.
 - [x] Phase 24: Season 14 «کاروانسرا» (`src/art/scenes14.ts`: a roadside teahouse, the Safavid
       caravanserai courtyard, a guest chamber, a desert night and the eco-lodge opening;
       «کویر» chain + saddlebag generator; new character Uncle Yadollah, the caretaker, and
-      his camel Qandi); map of 70 places; sim step cap raised to 800k; Season 15 teased
-      (a photo of Haj-Baba with «سفر یزد، به یاد رفیقم…»)
+      his camel Qandi); map of 70 places; sim step cap raised to 800k (20 of 20 games now
+      finish all 70 episodes, no-pay regen hours per episode rising smoothly to ~167);
+      Season 15 teased (a photo of Haj-Baba with «سفر یزد، به یاد رفیقم…»)
 
 Next (in order):
 1. Season 15 «رفیق یزدی»
