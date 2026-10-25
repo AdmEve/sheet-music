@@ -27,6 +27,7 @@ export const CAST: Record<string, Character> = {
   jalal: { id: 'jalal', name: 'استاد جلال', role: 'مقنی پیر یزدی' },
   sepideh: { id: 'sepideh', name: 'سپیده', role: 'مجری برنامه‌ی آشپزی' },
   karim: { id: 'karim', name: 'کریم', role: 'گلکار قمصری' },
+  parisa: { id: 'parisa', name: 'مهندس پریسا', role: 'مهندس پروژه‌ی مترو' },
 };
 
 /** Short thank-you lines shown when an order is delivered (one picked at random). */
@@ -47,6 +48,7 @@ export const THANKS: Record<string, string[]> = {
   jalal: ['خیر ببینی بابا.', 'مثل آب قنات، زلال و به‌موقع!', 'حاجی بود حتماً بهت می‌نازید.'],
   sepideh: ['عالی بود! دوربین، کات!', 'این صحنه رو باید دوباره پخش کنیم!', 'بیننده‌هامون عاشقت می‌شن!'],
   karim: ['دستت گل!', 'خدا قوت! مثل گلاب دوآتشه بود.', 'گل‌ها هم ازت ممنونن!'],
+  parisa: ['دقیق و به‌موقع، مثل یه مهندس واقعی!', 'با این سرعت، ایستگاه زودتر باز می‌شه.', 'ممنون! بدون اهالی این پروژه نمی‌شد.'],
 };
 
 export interface Line {
@@ -2154,6 +2156,105 @@ export const PLACES: Place[] = [
       { who: 'farokhi', text: 'یه خبر دارم. شهرداری می‌خواد زیر محله‌ی ما ایستگاه مترو بسازه.' },
       { who: 'kaveh', text: 'زیر کوچه؟! پی خونه‌های قدیمی طاقت لرزش حفاری رو نداره!', mood: 'surprised' },
       { who: 'narges', text: 'این دفعه نمی‌جنگیم. کمک می‌کنیم درست ساخته بشه. با کوچه، نه به جای کوچه.' },
+    ],
+  },
+  // ------------------------------------------------------------------ season 20: مترو
+  {
+    id: 'siteoffice',
+    name: 'دفتر کارگاه مترو',
+    intro: [
+      { who: 'parisa', text: 'سلام، من پریسام، مهندس پروژه. می‌دونم نگرانید. ولی قول می‌دم مترو با کوچه‌تون مهربون باشه.' },
+      { who: 'kaveh', text: 'خونه‌های این کوچه صد ساله‌ان. یه لرزش اشتباه، و یه دیوار می‌ریزه.', mood: 'sad' },
+      { who: 'parisa', text: 'برای همین اومدم این‌جا، نه پشت میز. نقشه رو با هم درست می‌کنیم.' },
+    ],
+    tasks: [
+      { id: 'so.container', title: 'کانتینر دفتر', cost: 600, layer: 'container', after: [{ who: 'farokhi', text: 'یه روز می‌خواستم این‌جا برج بسازم. حالا دارم کمک می‌کنم مترو درست ساخته بشه.' }] },
+      { id: 'so.maps', title: 'نقشه‌های مترو', cost: 602, layer: 'maps', after: [{ who: 'parisa', text: 'خط مترو از زیر خیابون اصلی رد می‌شه. فقط ورودی ایستگاه نزدیک کوچه‌ست.' }] },
+      { id: 'so.table', title: 'میز جلسه', cost: 604, layer: 'table', after: [{ who: 'mahin', text: 'جلسه‌ی مهم! من صورتجلسه رو می‌نویسم. … و بعد به همه می‌گم!', mood: 'happy' }] },
+      { id: 'so.sign', title: 'تابلوی پروژه', cost: 606, layer: 'sign', after: [{ who: 'kaveh', text: 'رو تابلو نوشتیم: «ایستگاه محله، با همکاری اهالی». یعنی ما هم صاحب این پروژه‌ایم.' }] },
+      { id: 'so.tea', title: 'چای جلسه', cost: 608, layer: 'tea', after: [{ who: 'golab', text: 'جلسه بدون چای که جلسه نیست. مهندس جان، یه استکان دیگه؟', mood: 'happy' }, { who: 'parisa', text: 'تو هیچ کارگاهی همچین چایی نخورده بودم!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'parisa', text: 'فردا حفاری آزمایشی شروع می‌شه. رو دیوارها حسگر می‌ذاریم که هر لرزشی رو ببینیم.' },
+      { who: 'reza', text: 'رو دیوار نونوایی هم بذارید. تنور من هر روز لرزه داره، از بس نون می‌پزه!', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'testdig',
+    name: 'حفاری آزمایشی',
+    intro: [
+      { who: 'kaveh', text: 'گود حفاری آماده‌ست. اگه حسگرها قرمز بشن، همه‌چی متوقف می‌شه.' },
+      { who: 'morteza', text: 'یه گود به این بزرگی… با این پول می‌شد صد تا بقالی ساخت.' },
+    ],
+    tasks: [
+      { id: 'td.pit', title: 'گود حفاری', cost: 606, layer: 'pit', after: [{ who: 'parisa', text: 'حفاری آروم پیش می‌ره. حسگرها سبزن. کوچه آروم خوابیده.' }] },
+      { id: 'td.scaffold', title: 'داربست ایمنی', cost: 608, layer: 'scaffold', after: [{ who: 'aydin', text: 'داربست رو محکم بستیم. بچه‌ها، کسی نزدیک گود نشه!' }] },
+      { id: 'td.sensors', title: 'حسگرهای لرزه', cost: 610, layer: 'sensors', after: [{ who: 'kaveh', text: 'حسگرها رو دیوار قهوه‌خونه، حموم و خونه‌ی ننه‌گلاب. هر لرزشی رو می‌بینیم.' }] },
+      { id: 'td.pump', title: 'پمپ آب', cost: 612, layer: 'pump', after: [{ who: 'jalal', text: 'آب؟ این‌جا آب هست؟ … این بوی آب قناته! یه قنات قدیمی زیر این کوچه‌ست!', mood: 'surprised' }] },
+      { id: 'td.lights', title: 'نورافکن‌ها', cost: 614, layer: 'lights', after: [{ who: 'parisa', text: '(صدای کلنگ) … صبر کنید! همه دست نگه دارید. یه چیزی این پایین هست.', mood: 'surprised' }] },
+    ],
+    outro: [
+      { who: 'parisa', text: 'یه کوره‌ی سفالگری قدیمی! و کلی تکه‌سفال. باید باستان‌شناس‌ها رو خبر کنیم.', mood: 'surprised' },
+      { who: 'narges', text: 'یعنی زیر کوچه‌ی ما یه کارگاه سفالگری صدها ساله بوده؟', mood: 'surprised' },
+    ],
+  },
+  {
+    id: 'excavation',
+    name: 'یافته‌ی باستانی',
+    intro: [
+      { who: 'kaveh', text: 'باستان‌شناس‌ها می‌گن این کوره مال هفتصد سال پیشه، دوره‌ی شهر ری.', mood: 'surprised' },
+      { who: 'golab', text: 'مادربزرگم همیشه می‌گفت زیر این کوچه یه «گنج» هست. همه فکر می‌کردیم قصه‌ست!', mood: 'surprised' },
+    ],
+    tasks: [
+      { id: 'ex.grid', title: 'شبکه‌ی کاوش', cost: 612, layer: 'grid', after: [{ who: 'parisa', text: 'هر مربع یه شماره داره. هیچ تکه‌ای نباید گم بشه.' }] },
+      { id: 'ex.shards', title: 'سفال‌های لعابی', cost: 614, layer: 'shards', after: [{ who: 'fakhri', text: 'لاجوردی و فیروزه‌ای… هفتصد سال گذشته و رنگشون هنوز زنده‌ست.' }] },
+      { id: 'ex.brushes', title: 'برس و کاردک', cost: 616, layer: 'brushes', after: [{ who: 'yadollah', text: 'با برس، آروم آروم. مثل وقتی که تو کویر شن رو از روی یه سنگ قدیمی کنار می‌زنی.' }] },
+      { id: 'ex.crates', title: 'جعبه‌ی یافته‌ها', cost: 618, layer: 'crates', after: [{ who: 'shirin', text: 'یه کاسه‌ی سالم! با نقش یه پرنده. هفتصد سال زیر کوچه‌ی ما خوابیده بود.', mood: 'surprised' }] },
+      { id: 'ex.tent', title: 'چادر باستان‌شناسی', cost: 620, layer: 'tent', after: [{ who: 'bahman', text: 'داداش همیشه می‌گفت این کوچه از چیزی که فکر می‌کنیم قدیمی‌تره. حق با اون بود.' }] },
+    ],
+    outro: [
+      { who: 'parisa', text: 'تصمیم گرفتیم: ایستگاه رو جوری می‌سازیم که این کوره همون‌جا بمونه، پشت شیشه. یه موزه زیر زمین!', mood: 'happy' },
+      { who: 'kaveh', text: 'مسافرهای مترو از کنار هفتصد سال تاریخ رد می‌شن. بهترین طرح ممکنه.', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'metrostation',
+    name: 'ایستگاه کوچه',
+    intro: [
+      { who: 'parisa', text: 'ایستگاه آماده‌ی تزئینه. شهرداری گفته اهالی خودشون انتخاب کنن.' },
+      { who: 'narges', text: 'پس شبیه کوچه‌ی خودمون می‌سازیمش. با کاشی، با آجر، با قصه.' },
+    ],
+    tasks: [
+      { id: 'st.portal', title: 'سردر ایستگاه', cost: 618, layer: 'portal', after: [{ who: 'kaveh', text: 'سردر ایستگاه رو مثل سردر قهوه‌خونه ساختیم. آجر و کاشی فیروزه‌ای.' }] },
+      { id: 'st.tiles', title: 'کاشی‌های قصه', cost: 620, layer: 'tiles', after: [{ who: 'aydin', text: 'رو دیوار ایستگاه، قصه‌ی کوچه با کاشی: قهوه‌خونه، عروسی، زمستون، قمصر… همه‌چی!', mood: 'happy' }] },
+      { id: 'st.showcase', title: 'ویترین کوره‌ی سفال', cost: 622, layer: 'showcase', after: [{ who: 'golab', text: 'کوره‌ی هفتصدساله، پشت شیشه. … مادربزرگم راست می‌گفت، گنج همین بود.', mood: 'happy' }] },
+      { id: 'st.escalator', title: 'پله‌برقی', cost: 624, layer: 'escalator', after: [{ who: 'morteza', text: 'پله‌برقی؟! من سوار نمی‌شم. یعنی… خب، یه بار امتحان می‌کنم. مجانیه دیگه؟', mood: 'surprised' }] },
+      { id: 'st.sign', title: 'تابلوی «ایستگاه حاج‌بابا»', cost: 626, layer: 'sign', after: [{ who: 'narges', text: 'شهرداری قبول کرد! اسم ایستگاه: «حاج‌بابا». … حاج‌بابا، اسمت حالا زیر کل شهره.', mood: 'sad' }] },
+    ],
+    outro: [
+      { who: 'mahin', text: 'داغ‌ترین خبر صد سال اخیر! هفته‌ی دیگه صدمین سالگرد ساخت اولین خونه‌ی کوچه‌ست!', mood: 'surprised' },
+      { who: 'golab', text: 'صد سال… پدربزرگ حاجی اولین خشت رو گذاشت. بیاید جشن بگیریم، همون روزی که ایستگاه باز می‌شه.', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'centennial',
+    name: 'صدسالگی کوچه',
+    intro: [
+      { who: 'narges', text: 'صد سال پیش این‌جا یه خونه بود و یه درخت. حالا یه کوچه‌ست، یه خانواده‌ست.', mood: 'happy' },
+      { who: 'sepideh', text: 'تلویزیون زنده پخش می‌کنه: «صدسالگی کوچه‌ی حاج‌بابا و افتتاح ایستگاه». دوربین، حرکت!', mood: 'happy' },
+    ],
+    tasks: [
+      { id: 'cn.lights', title: 'ریسه‌های صدرنگ', cost: 624, layer: 'lights', after: [{ who: 'shirin', text: 'صد تا رنگ، از سر کوچه تا ته کوچه! … خب، شاید نود و هشت تا. کی می‌شمره؟', mood: 'happy' }] },
+      { id: 'cn.photos', title: 'دیوار صد سال', cost: 626, layer: 'photos', after: [{ who: 'bahman', text: 'عکس‌های صد سال کوچه، کنار هم. این منم، شش‌سالگی، با داداش. اون موقع هنوز موهام سیاه بود!', mood: 'happy' }] },
+      { id: 'cn.cake', title: 'کیک صدسالگی', cost: 628, layer: 'cake', after: [{ who: 'reza', text: 'کیک صد طبقه نشد، ولی صد تا شمع داره! فخری‌خانم، شما فوت کنید، نفستون از همه قوی‌تره.', mood: 'happy' }, { who: 'fakhri', text: '… بد نیست. یعنی خوبه.' }] },
+      { id: 'cn.train', title: 'اولین قطار', cost: 630, layer: 'train', after: [{ who: 'parisa', text: 'اولین قطار رسید! مسافرها از ایستگاه که بیرون میان، اول از همه قهوه‌خونه‌ی حاج‌بابا رو می‌بینن.', mood: 'happy' }] },
+      { id: 'cn.fireworks', title: 'آتیش‌بازی', cost: 632, layer: 'fireworks', after: [{ who: 'narges', text: 'صد سال… و ما تازه اولشیم.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'golab', text: 'حاجی، می‌بینی؟ کوچه‌ت صد ساله شد. و از همیشه زنده‌تره.', mood: 'sad' },
+      { who: 'mahin', text: 'خبر داغ! گلاب کوچولو اولین کلمه‌ش رو گفت: «کوچه»!', mood: 'surprised' },
+      { who: 'narges', text: 'و یه خبر دیگه: کوچه‌ی بغلی داره خالی می‌شه. خونه‌هاش رو دارن می‌فروشن.', mood: 'sad' },
+      { who: 'kaveh', text: 'پس صد سال دوم کوچه از همین‌جا شروع می‌شه.' },
     ],
   },
 ];

@@ -18,7 +18,9 @@ Shirin and Aydin with a Tabrizi henna night and Morteza's old Paykan as the wedd
 finds Haj-Baba's old friend, a Yazdi qanat-digger; season 16 «مدرسه‌ی شبونه» reopens the alley's
 old school as a night school for adults; season 17 «مسابقه‌ی آشپزی» films a TV cooking contest
 in the alley; season 18 «زمستون برفی» gets the alley through a snowstorm; season 19 «گلاب‌گیری»
-takes Golab to Qamsar for rosewater season (5 episodes each).
+takes Golab to Qamsar for rosewater season; season 20 «مترو» builds a metro station under the
+neighbourhood around a 700-year-old kiln and ends with the alley's centenary in episode 100 (5
+episodes each).
 
 - Fully **offline**; progress is saved on the phone.
 - Monetization through store in-app billing (two Android flavors: **Cafe Bazaar** via

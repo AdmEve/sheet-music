@@ -7,7 +7,7 @@ import { WEDDING } from './chainsO';
 import { camel } from './chainsP';
 import { INK, O, THIN, sparkle } from './kit';
 
-export const MAP_H = 10230;
+export const MAP_H = 10760;
 const STEP = 106;
 const faDigits = (n: number) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 
@@ -373,6 +373,27 @@ const FACADES: Record<string, Facade> = {
   rosealley: {
     wall: '#d9a873', door: 'arch', sign: 'باغ گلاب',
     deco: [-54, -44, 44, 54].map((x) => `<circle cx="${x}" cy="-6" r="4" fill="url(#gRoseDeep)" ${THIN} stroke-width=".8"/>`).join(''),
+  },
+  siteoffice: {
+    wall: '#3a76c4', w: 116, h: 50, door: 'shop',
+    deco: `<circle cx="46" cy="-64" r="8" fill="#e0303f" ${THIN}/><text x="46" y="-60.4" text-anchor="middle" font-family="Vazirmatn, sans-serif" font-weight="900" font-size="10" fill="#fffdf6">M</text>` + `<path d="M46 -56 V-50" stroke="#5a5a60" stroke-width="2"/>`,
+  },
+  testdig: {
+    wall: '#b8a888', w: 118, h: 46, door: 'gate',
+    deco: `<path d="M-60 -50 H60 M-60 -40 H60" stroke="#f6c945" stroke-width="3"/>` + [-56, -28, 0, 28, 56].map((x) => `<path d="M${x} -50 V-34" stroke="#f6c945" stroke-width="3"/>`).join(''),
+  },
+  excavation: {
+    wall: '#e8dcc6', w: 110, h: 44, door: 'arch',
+    deco: `<path d="M-56 -44 L-36 -82 L-16 -44 Z" fill="#e8dcc6" ${THIN}/><path d="M30 -44 Q46 -66 62 -44 Z" fill="#b8784a" ${THIN}/>`,
+  },
+  metrostation: {
+    wall: '#c98a52', door: 'gate', sign: 'ایستگاه حاج‌بابا',
+    deco: `<circle cx="-50" cy="-84" r="8" fill="#e0303f" ${THIN}/><text x="-50" y="-80.4" text-anchor="middle" font-family="Vazirmatn, sans-serif" font-weight="900" font-size="10" fill="#fffdf6">M</text>` + `<path d="M-20 -50 Q0 -62 20 -50" fill="none" stroke="url(#gTurq)" stroke-width="4"/>`,
+  },
+  centennial: {
+    wall: '#d9a873', w: 132, h: 66, door: 'gate', sign: 'صدسالگی',
+    deco: Array.from({ length: 9 }, (_, i) => `<circle cx="${-60 + i * 15}" cy="${-82 + Math.abs(i - 4) * 2}" r="3.2" fill="${['#ffd36b', '#ff7a9c', '#5fe0e0', '#9be36b', '#c58bff'][i % 5]}" ${THIN} stroke-width=".8"/>`).join('') +
+      [[-40, -112, '#ffd36b'], [36, -118, '#ff7a9c']].map(([x, y, c]) => Array.from({ length: 8 }, (_, k) => { const a = (k / 8) * Math.PI * 2; return `<path d="M${Number(x) + Math.cos(a) * 3} ${Number(y) + Math.sin(a) * 3} L${Number(x) + Math.cos(a) * 9} ${Number(y) + Math.sin(a) * 9}" stroke="${c}" stroke-width="2" stroke-linecap="round"/>`; }).join('')).join(''),
   },
   wedding: {
     wall: 'url(#gWood)', w: 120, h: 70, door: 'gate',

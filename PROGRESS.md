@@ -259,7 +259,9 @@ saves are written into localStorage `mahalle.save.v1`.
 - [x] Phase 30: Season 18 «زمستون برفی» (`src/art/scenes18.ts`: the mud roofs before the snow, the
       first snow with a beet cart, Golab's korsi when she catches a cold, the old hammam
       furnace relit in a power cut, and a snowy night by a bonfire; «زمستون» chain + wood-stove
-      generator); map of 90 places; Season 19 teased (rosewater-making in Qamsar)
+      generator); map of 90 places; Season 19 teased (rosewater-making in Qamsar). Balance
+      sim (through Season 17): 20 of 20 games finish all 85 episodes; no-pay regen hours per
+      episode rise smoothly to ~200 (slow but steady late-game pacing, by design for live ops)
 
 - [x] Phase 31: Season 19 «گلاب‌گیری» (`src/art/scenes19.ts`: a Qamsar rose garden at dawn, the
       copper-still distillery, the old guesthouse whose ledger holds Golab's father's name, the
@@ -271,8 +273,16 @@ saves are written into localStorage `mahalle.save.v1`.
       pays energy (60), gems (22–40) and a copper chest, once per season; episode 100 pays a
       golden chest, 150 energy and 100 gems with its own «صدمین قسمت!» screen
 
+- [x] Phase 32: Season 20 «مترو» (`src/art/scenes20.ts`: the metro site office, a test dig with
+      vibration sensors on the old houses, a 700-year-old pottery kiln found under the alley,
+      «ایستگاه حاج‌بابا» designed around it, and the alley's centenary in episode 100; «کاوش»
+      chain + dig-basket generator; new character Parisa, the metro engineer); map of 100
+      places; Season 21 teased (the neighbouring alley is being sold off). A new story test
+      checks unique place ids, a scene per place and that every task changes its scene (it
+      caught the S20 station reusing Season 9's `station` id)
+
 Next (in order):
-1. Season 20 «مترو» (episode 100)
+1. Season 21 «کوچه‌ی بغلی»
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)

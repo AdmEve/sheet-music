@@ -20,6 +20,19 @@ describe('story data', () => {
       for (let i = 1; i < p.tasks.length; i++) expect(p.tasks[i].cost).toBeGreaterThanOrEqual(p.tasks[i - 1].cost);
     }
   });
+
+  it('has unique place ids, each with its own scene and every task layer drawn', async () => {
+    const { sceneSvg } = await import('../src/art/places');
+    const ids = PLACES.map((p) => p.id);
+    expect(new Set(ids).size, 'duplicate place id').toBe(ids.length);
+    for (const p of PLACES) {
+      expect(sceneSvg(p.id, () => false).length, p.id).toBeGreaterThan(200);
+      const layers = p.tasks.map((t) => t.layer);
+      expect(new Set(layers).size, `${p.id}: duplicate layer`).toBe(layers.length);
+      // Each task's layer must change the picture when it is done.
+      for (const l of layers) expect(sceneSvg(p.id, (x) => x === l), `${p.id}.${l}`).not.toBe(sceneSvg(p.id, () => false));
+    }
+  });
 });
 
 describe('progression', () => {
@@ -30,7 +43,7 @@ describe('progression', () => {
     s.stars = 1_000_000;
     let finished = 0;
     let guard = 0;
-    while (progress(s).next && guard++ < 3500) {
+    while (progress(s).next && guard++ < 3700) {
       const r = completeNextTask(s);
       expect(r.ok).toBe(true);
       if (r.ok && r.placeFinished) finished++;

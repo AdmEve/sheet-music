@@ -82,7 +82,7 @@ for (let g = 0; g < GAMES; g++) {
   const s = newGame(1000 + g, now);
   let energyUsed = 0, placeStart = { taps: 0, orders: 0, time: 0 };
   let idx = 0;
-  for (let it = 0; it < 1500000 && idx < PLACES.length; it++) {
+  for (let it = 0; it < 1800000 && idx < PLACES.length; it++) {
     tickBubbles(s, now);
     const before = s.energy;
     const acted = step(s, now);
