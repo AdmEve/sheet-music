@@ -32,8 +32,9 @@ export const BABY: string[] = [
   shadow(50, 88, 28) + onesie(50, 58, 1.15, 'url(#gYellow)') + `<path d="M40 50 q10 6 20 0" fill="none" stroke="#e0303f" stroke-width="2"/>`,
   // 5 عروسک نمدی
   shadow(50, 90, 24) + `<path d="M34 86 L38 60 Q50 54 62 60 L66 86 Z" fill="url(#gRose)" ${O}/>` +
-    // Headscarf (Iranian content rules apply to dolls too).
-    `<path d="M32 50 C30 30 40 24 50 24 C60 24 70 30 68 50 C70 60 62 66 50 66 C38 66 30 60 32 50 Z" fill="url(#gTurq)" ${O}/>` +
+    // Pigtails with turquoise ribbons.
+    `<circle cx="35" cy="50" r="6.4" fill="#6a3a1a" ${THIN}/><circle cx="65" cy="50" r="6.4" fill="#6a3a1a" ${THIN}/><path d="M30 44 l5 4 l-5 4 Z M70 44 l-5 4 l5 4 Z" fill="url(#gTurq)" ${THIN} stroke-width="1"/>` +
+    `<path d="M37 48 C35 33 43 30 50 30 C57 30 65 33 63 48 Z" fill="#6a3a1a" ${THIN}/>` +
     `<circle cx="50" cy="46" r="12" fill="#f3c7a0" ${O}/><path d="M39 42 Q42 34 50 34 Q58 34 61 42 Q56 38 50 38 Q44 38 39 42 Z" fill="#6a3a1a" ${THIN}/>` +
     `<circle cx="45" cy="47" r="1.6" fill="${INK}"/><circle cx="55" cy="47" r="1.6" fill="${INK}"/><path d="M46 52 q4 3 8 0" fill="none" ${THIN} stroke-width="1.4"/>` +
     `<path d="M38 66 L28 74 M62 66 L72 74" ${O} stroke-width="4"/>` + [44, 50, 56].map((x) => `<path d="M${x} 70 v10" stroke="#fff" stroke-width="1.2" stroke-dasharray="2 2"/>`).join(''),

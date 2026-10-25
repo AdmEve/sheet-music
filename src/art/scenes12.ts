@@ -8,10 +8,10 @@ import { darkness, text, wall } from './scenes3';
 const frame = (x: number, y: number, w: number, h: number, inner: string) =>
   `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" fill="url(#gGold)" ${O}/><rect x="${x + 4}" y="${y + 4}" width="${w - 8}" height="${h - 8}" fill="#e8d3a8" ${THIN}/>` + inner;
 
-/** A woman in a headscarf, in sepia, for old photographs. */
+/** A woman with her hair in a bun, in sepia, for old photographs. */
 const sepiaLady = (cx: number, base: number, s: number) =>
   `<g transform="translate(${cx} ${base}) scale(${s})"><path d="M-12 0 C-12 -18 12 -18 12 0 Z" fill="#8a6a48"/>` +
-  `<path d="M-11 -18 C-13 -34 13 -34 11 -18 C13 -10 7 -6 0 -6 C-7 -6 -13 -10 -11 -18 Z" fill="#8a6a48"/><circle cx="0" cy="-20" r="6.5" fill="#e8c8a0"/></g>`;
+  `<circle cx="0" cy="-31" r="4.2" fill="#6a4a30"/><path d="M-9 -16 C-11 -32 11 -32 9 -16 C10 -11 8 -9 6 -9 H-6 C-8 -9 -10 -11 -9 -16 Z" fill="#6a4a30"/><circle cx="0" cy="-20" r="6.5" fill="#e8c8a0"/></g>`;
 
 const cake = (x: number, base: number, s: number, candles: number) =>
   `<g transform="translate(${x} ${base}) scale(${s})">` +

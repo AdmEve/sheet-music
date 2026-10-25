@@ -126,8 +126,8 @@ const MIRRORHALL: Record<string, Layer> = {
   portrait: (d) =>
     d
       ? `<rect x="292" y="96" width="50" height="62" rx="2" fill="url(#gGold)" ${O}/><rect x="297" y="101" width="40" height="52" fill="#e8d3a8" ${THIN}/>` +
-        // The aunt, in her headscarf, painted in sepia.
-        `<path d="M305 148 C305 128 329 128 329 148 Z" fill="#8a6a48"/><path d="M306 128 C304 110 330 110 328 128 C330 138 324 142 317 142 C310 142 304 138 306 128 Z" fill="#8a6a48"/>` +
+        // The aunt, painted in sepia, her hair in a bun.
+        `<path d="M305 148 C305 128 329 128 329 148 Z" fill="#8a6a48"/><circle cx="317" cy="113" r="4.6" fill="#6a4a30"/><path d="M308 130 C306 112 328 112 326 130 C327 136 325 138 322 138 H312 C309 138 307 136 308 130 Z" fill="#6a4a30"/>` +
         `<circle cx="317" cy="126" r="7" fill="#e8c8a0"/>` + glow(317, 126, 30, 0.3)
       : `<rect x="292" y="96" width="50" height="62" fill="none" stroke="#9b8a76" stroke-width="2" stroke-dasharray="4 4"/>`,
 };

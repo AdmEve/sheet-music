@@ -31,6 +31,7 @@ export const CAST: Record<string, Character> = {
   saburi: { id: 'saburi', name: 'صبوری‌خان', role: 'عطار کوچه‌ی اقاقیا' },
   arash: { id: 'arash', name: 'آرش', role: 'نوه‌ی صبوری‌خان' },
   mahbanu: { id: 'mahbanu', name: 'خاله ماه‌بانو', role: 'آسیابون روستای بالادست' },
+  rahimi: { id: 'rahimi', name: 'خانم رحیمی', role: 'معلم کلاس سوم آرش' },
 };
 
 /** Short thank-you lines shown when an order is delivered (one picked at random). */
@@ -55,6 +56,7 @@ export const THANKS: Record<string, string[]> = {
   saburi: ['دستت درد نکنه بابا. مثل دمنوش گاوزبون آرامش‌بخش بود.', 'خیر ببینی!', 'عطاری بدون تو یه چیزی کم داشت.'],
   arash: ['ایول! دمت گرم!', 'تو بهترین بزرگ‌ترِ کوچه‌ای!', 'بچه‌ها خیلی خوشحال می‌شن!'],
   mahbanu: ['خیر ببینی مادر، مثل آرد تازه پاکی.', 'آسیاب هم ازت ممنونه.', 'نون و نمکت حلال!'],
+  rahimi: ['آفرین! بیست!', 'مثل یه شاگرد زرنگ!', 'بچه‌ها ازت یاد می‌گیرن.'],
 };
 
 export interface Line {
@@ -2557,6 +2559,104 @@ export const PLACES: Place[] = [
       { who: 'reza', text: 'آفرین شاگرد. از فردا صبح‌ها با من، عصرها با مدرسه.', mood: 'happy' },
       { who: 'arash', text: 'مدرسه… مهر داره میاد. ولی کلاس ما سقفش چکه می‌کنه.', mood: 'sad' },
       { who: 'kaveh', text: 'سقف چکه می‌کنه؟ پس قبل از اول مهر یه کار دیگه داریم.' },
+    ],
+  },
+  // ------------------------------------------------------------------ season 24: اول مهر
+  {
+    id: 'acaciaschool',
+    name: 'دبستان اقاقیا',
+    intro: [
+      { who: 'rahimi', text: 'سلام! من رحیمی‌ام، معلم کلاس سوم. ده روز به اول مهر مونده و سقف کلاس‌ها چکه می‌کنه.', mood: 'sad' },
+      { who: 'arash', text: 'دیروز بارون اومد، رو نیمکت من یه دریاچه درست شد!', mood: 'surprised' },
+      { who: 'kaveh', text: 'سقف شیروونیه. ورق‌ها رو عوض می‌کنیم، قبل از بارون بعدی.' },
+    ],
+    tasks: [
+      { id: 'as.roof', title: 'سقف شیروونی', cost: 720, layer: 'roof', after: [{ who: 'jalal', text: 'سقف درست شد. حالا بارون فقط رو شیروونی ضرب می‌گیره، نه رو سر بچه‌ها.', mood: 'happy' }] },
+      { id: 'as.benches', title: 'نیمکت‌ها', cost: 722, layer: 'benches', after: [{ who: 'morteza', text: 'نیمکت‌ها رو سنباده زدیم. زیر یکیش هنوز اسم من کنده شده: «مرتضی، کلاس سوم». پنجاه سال پیش!', mood: 'surprised' }] },
+      { id: 'as.windows', title: 'شیشه‌های کلاس', cost: 724, layer: 'windows', after: [{ who: 'shirin', text: 'شیشه‌ها رو برق انداختیم. نور که بیاد تو، بچه‌ها حواسشون جمع‌تره.', mood: 'happy' }] },
+      { id: 'as.paint', title: 'رنگ کلاس', cost: 726, layer: 'paint', after: [{ who: 'fakhri', text: 'دیوارها رو زرد کم‌رنگ زدیم. رنگ آفتاب صبح.' }] },
+      { id: 'as.board', title: 'تخته سبز', cost: 728, layer: 'board', after: [{ who: 'rahimi', text: 'تخته‌ی نو! … دلم برای صدای گچ رو تخته تنگ شده بود.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'rahimi', text: 'کلاس آماده‌ست. ولی حیاط مدرسه… بچه‌ها زنگ تفریح کجا بازی کنن؟' },
+      { who: 'arash', text: 'حیاط پر از آجر شکسته‌ست. دیروز دوستم زمین خورد.', mood: 'sad' },
+    ],
+  },
+  {
+    id: 'schoolyard',
+    name: 'حیاط مدرسه',
+    intro: [
+      { who: 'narges', text: 'حیاط مدرسه‌ی من هم همین شکلی بود. یه درخت توت و یه آبخوری.' },
+      { who: 'reza', text: 'زنگ تفریح بدون لقمه‌ی نون و پنیر نمی‌شه. اون با من!', mood: 'happy' },
+    ],
+    tasks: [
+      { id: 'sy.paving', title: 'کف حیاط', cost: 726, layer: 'paving', after: [{ who: 'kaveh', text: 'آجرهای شکسته رو جمع کردیم و حیاط رو آجرفرش کردیم. دیگه کسی زمین نمی‌خوره.' }] },
+      { id: 'sy.fountain', title: 'آبخوری', cost: 728, layer: 'fountain', after: [{ who: 'jalal', text: 'آبخوری سه‌شیره. آبش خنکه، مثل آب قنات.' }] },
+      { id: 'sy.bell', title: 'زنگ مدرسه', cost: 730, layer: 'bell', after: [{ who: 'golab', text: 'این زنگ برنجی مال مدرسه‌ی بچگی منه. صداش هنوز همونه!', mood: 'happy' }] },
+      { id: 'sy.court', title: 'زمین وسطی', cost: 732, layer: 'court', after: [{ who: 'arash', text: 'خط‌های زمین وسطی رو کشیدیم! زنگ تفریح دیگه کسی گوشه‌ی حیاط نمی‌شینه!', mood: 'happy' }] },
+      { id: 'sy.hopscotch', title: 'لی‌لی', cost: 734, layer: 'hopscotch', after: [{ who: 'mahin', text: 'لی‌لی! بچه که بودم، قهرمان لی‌لی محله بودم. … جدی می‌گم!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'rahimi', text: 'یه آرزوی دیگه هم دارم. مدرسه‌مون یه آزمایشگاه داشت، ولی سال‌هاست درش قفله.' },
+      { who: 'parisa', text: 'آزمایشگاه؟ من مهندسم! بذارید کمک کنم.', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'sciencelab',
+    name: 'آزمایشگاه مدرسه',
+    intro: [
+      { who: 'parisa', text: 'بچه که بودم، تو آزمایشگاه مدرسه عاشق علم شدم. حالا نوبت این بچه‌هاست.' },
+      { who: 'arash', text: 'یعنی می‌تونیم آتشفشان درست کنیم؟!', mood: 'surprised' },
+    ],
+    tasks: [
+      { id: 'sl.tables', title: 'میزهای آزمایش', cost: 732, layer: 'tables', after: [{ who: 'kaveh', text: 'رو میزها سنگ سیاه کار کردیم. نه می‌سوزه، نه لک می‌شه.' }] },
+      { id: 'sl.shelf', title: 'قفسه‌ی شیشه‌ها', cost: 734, layer: 'shelf', after: [{ who: 'saburi', text: 'شیشه‌های عطاری رو آوردم. شیمی و عطاری، دو تا خواهرن.', mood: 'happy' }] },
+      { id: 'sl.microscope', title: 'میکروسکوپ', cost: 736, layer: 'microscope', after: [{ who: 'arash', text: 'یه برگ اقاقیا رو زیر میکروسکوپ دیدم! پر از خونه‌های کوچیکه!', mood: 'surprised' }] },
+      { id: 'sl.planets', title: 'مدل منظومه‌ی شمسی', cost: 738, layer: 'planets', after: [{ who: 'bahman', text: 'تو هامبورگ یه مدل منظومه‌ی شمسی دیده بودم. این یکی قشنگ‌تره، چون کار بچه‌هاست.', mood: 'happy' }] },
+      { id: 'sl.volcano', title: 'آتشفشان آزمایشی', cost: 740, layer: 'volcano', after: [{ who: 'parisa', text: 'جوش‌شیرین و سرکه… و بوم! آتشفشان ما فوران کرد! بچه‌ها از ذوق جیغ زدن.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'parisa', text: 'یه تلسکوپ قدیمی تو انبار کارگاه مترو پیدا کردم. اگه یه شب صاف داشته باشیم…' },
+      { who: 'rahimi', text: 'پشت‌بوم مدرسه! یه شب رصد، با بچه‌ها و خانواده‌هاشون.', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'stargazing',
+    name: 'شب رصد',
+    intro: [
+      { who: 'yadollah', text: 'تو کویر، آسمون پر از ستاره‌ست. این‌جا تهرونه… ولی امشب چراغ‌ها رو خاموش می‌کنیم.' },
+      { who: 'arash', text: 'اون ستاره‌ی پرنوره چیه؟', mood: 'surprised' },
+    ],
+    tasks: [
+      { id: 'sg.roof', title: 'نرده‌ی پشت‌بوم', cost: 738, layer: 'roof', after: [{ who: 'kaveh', text: 'دور پشت‌بوم نرده کشیدیم. حالا بچه‌ها با خیال راحت بالا میان.' }] },
+      { id: 'sg.telescope', title: 'تلسکوپ', cost: 740, layer: 'telescope', after: [{ who: 'parisa', text: 'لنزها رو تمیز کردیم. اون ستاره‌ی پرنور، سیاره‌ی مشتریه! ماه‌هاش هم پیداست!', mood: 'surprised' }] },
+      { id: 'sg.blankets', title: 'پتو و پشتی', cost: 742, layer: 'blankets', after: [{ who: 'sona', text: 'پتو و پشتی آوردم. شب‌های مهر سرده، بچه‌ها سرما نخورن.' }] },
+      { id: 'sg.chart', title: 'نقشه‌ی آسمون', cost: 744, layer: 'chart', after: [{ who: 'fakhri', text: 'اسم صورت‌های فلکی رو خوشنویسی کردم: «خوشه‌ی پروین»، «دب اکبر»… مثل کتاب‌های قدیم.' }] },
+      { id: 'sg.lights', title: 'خاموشی محله', cost: 746, layer: 'lights', after: [{ who: 'mahin', text: 'خبر داغ! کل محله یه ساعت چراغ‌هاش رو خاموش کرد. حتی آقا مرتضی تلویزیونش رو!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'rahimi', text: 'فردا اول مهره. بچه‌ها با ستاره تو چشم‌هاشون میان مدرسه.', mood: 'happy' },
+      { who: 'narges', text: 'پس فردا صبح، یه اول مهر واقعی!', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'firstday',
+    name: 'اول مهر',
+    intro: [
+      { who: 'rahimi', text: 'بچه‌ها، به کلاس سوم خوش اومدید!', mood: 'happy' },
+      { who: 'arash', text: 'خانم! من تابستون شاگرد نونوا شدم، پارک ساختیم، و مشتری رو با تلسکوپ دیدم!', mood: 'happy' },
+    ],
+    tasks: [
+      { id: 'fd.gate', title: 'در مدرسه', cost: 744, layer: 'gate', after: [{ who: 'aydin', text: 'در مدرسه رو با گل تزئین کردیم. اولین قدم کلاس اولی‌ها باید یه خاطره باشه.', mood: 'happy' }] },
+      { id: 'fd.bags', title: 'کیف و کتاب', cost: 746, layer: 'bags', after: [{ who: 'golab', text: 'برای بچه‌هایی که کیف نداشتن، کیف دوختیم. هیچ بچه‌ای نباید دست‌خالی بیاد مدرسه.' }] },
+      { id: 'fd.breakfast', title: 'صبحونه‌ی اول مهر', cost: 748, layer: 'breakfast', after: [{ who: 'reza', text: 'سنگک داغ، پنیر و گردو! آرش خودش پخته. … با یه کم کمک.', mood: 'happy' }] },
+      { id: 'fd.bell', title: 'زنگ اول', cost: 750, layer: 'bell', after: [{ who: 'rahimi', text: 'زنگ اول سال تحصیلی… هر سال دلم می‌لرزه.', mood: 'happy' }] },
+      { id: 'fd.photo', title: 'عکس کلاس', cost: 752, layer: 'photo', after: [{ who: 'narges', text: 'عکس کلاس سوم: آرش ردیف اول، با یه لبخند تا بناگوش.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'fakhri', text: 'نرگس‌جان، یه نامه از شیراز رسیده. از برادرزاده‌م.' },
+      { who: 'fakhri', text: 'باغ نارنج خانواده‌ی ما… می‌خوان بفروشنش.', mood: 'sad' },
+      { who: 'kaveh', text: 'باغ نارنج مادربزرگ؟ همون که بچگی بهارها اون‌جا بودیم؟', mood: 'surprised' },
     ],
   },
 ];

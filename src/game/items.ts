@@ -3,8 +3,8 @@
 // they produce; merging two generators makes a stronger one.
 
 export type ChainId =
-  | 'tea' | 'bread' | 'garden' | 'tools' | 'textile' | 'pottery' | 'sweets' | 'post' | 'baby' | 'lamp' | 'saz' | 'tile' | 'football' | 'sea' | 'craft' | 'callig' | 'party' | 'wed' | 'desert' | 'yazd' | 'night' | 'kitchen' | 'winter' | 'qamsar' | 'dig' | 'herbs' | 'toys' | 'mill'
-  | 'genTea' | 'genBread' | 'genGarden' | 'genTools' | 'genTextile' | 'genPottery' | 'genSweets' | 'genPost' | 'genBaby' | 'genLamp' | 'genSaz' | 'genTile' | 'genFootball' | 'genSea' | 'genCraft' | 'genCallig' | 'genParty' | 'genWed' | 'genDesert' | 'genYazd' | 'genNight' | 'genKitchen' | 'genWinter' | 'genQamsar' | 'genDig' | 'genHerbs' | 'genToys' | 'genMill'
+  | 'tea' | 'bread' | 'garden' | 'tools' | 'textile' | 'pottery' | 'sweets' | 'post' | 'baby' | 'lamp' | 'saz' | 'tile' | 'football' | 'sea' | 'craft' | 'callig' | 'party' | 'wed' | 'desert' | 'yazd' | 'night' | 'kitchen' | 'winter' | 'qamsar' | 'dig' | 'herbs' | 'toys' | 'mill' | 'science'
+  | 'genTea' | 'genBread' | 'genGarden' | 'genTools' | 'genTextile' | 'genPottery' | 'genSweets' | 'genPost' | 'genBaby' | 'genLamp' | 'genSaz' | 'genTile' | 'genFootball' | 'genSea' | 'genCraft' | 'genCallig' | 'genParty' | 'genWed' | 'genDesert' | 'genYazd' | 'genNight' | 'genKitchen' | 'genWinter' | 'genQamsar' | 'genDig' | 'genHerbs' | 'genToys' | 'genMill' | 'genScience'
   | 'chest' | 'coins' | 'energy'
   | 'yalda' | 'genYalda' | 'nowruz' | 'genNowruz' | 'kite' | 'genKite' | 'lavashak' | 'genLavashak'
   | 'ash' | 'genAsh' | 'icecream' | 'genIcecream' | 'suri' | 'genSuri' | 'school' | 'genSchool';
@@ -167,6 +167,11 @@ export const CHAINS: Record<ChainId, ChainDef> = {
     name: 'آسیاب',
     levels: ['غربال', 'پیمانه‌ی چوبی', 'گونی گندم', 'تغار خمیر', 'پاروی نونوایی', 'سنگ آسیاب', 'چرخ آسیاب', 'آسیاب آبی'],
   },
+  science: {
+    id: 'science',
+    name: 'آزمایشگاه',
+    levels: ['ذره‌بین', 'آهن‌ربا', 'لوله‌ی آزمایش', 'ارلن', 'میکروسکوپ', 'کره‌ی ماه', 'منظومه‌ی شمسی', 'تلسکوپ'],
+  },
   genTea: { id: 'genTea', name: 'قوطی چای', levels: ['قوطی چای', 'قوطی چای حلبی', 'صندوقچه چای'], produces: 'tea', unlockLevel: 1 },
   genBread: { id: 'genBread', name: 'تنور', levels: ['تنور کوچک', 'تنور', 'تنور بزرگ'], produces: 'bread', unlockLevel: 1 },
   genGarden: { id: 'genGarden', name: 'باغچه', levels: ['باغچه کوچک', 'باغچه', 'باغچه گل'], produces: 'garden', unlockLevel: 2 },
@@ -195,6 +200,7 @@ export const CHAINS: Record<ChainId, ChainDef> = {
   genHerbs: { id: 'genHerbs', name: 'جعبه‌ی گیاه', levels: ['گلدون نعنا', 'جعبه‌ی گیاه', 'باغچه‌ی دارویی'], produces: 'herbs', unlockPlace: 'acacia' },
   genToys: { id: 'genToys', name: 'صندوق اسباب‌بازی', levels: ['جعبه‌ی تیله', 'صندوق اسباب‌بازی', 'دکه‌ی اسباب‌بازی'], produces: 'toys', unlockPlace: 'dirtlot' },
   genMill: { id: 'genMill', name: 'انبار گندم', levels: ['کیسه‌ی گندم', 'انبار گندم', 'آسیاب دستی'], produces: 'mill', unlockPlace: 'apprentice' },
+  genScience: { id: 'genScience', name: 'جعبه‌ی آزمایش', levels: ['کیف آزمایش', 'جعبه‌ی آزمایش', 'میز آزمایشگاه'], produces: 'science', unlockPlace: 'acaciaschool' },
   chest: { id: 'chest', name: 'صندوقچه', levels: ['صندوقچه چوبی', 'صندوقچه مسی', 'صندوقچه طلایی'] },
   coins: { id: 'coins', name: 'سکه', levels: ['چند سکه', 'کیسه سکه', 'کوزه سکه'], collectible: 'coins' },
   energy: { id: 'energy', name: 'انرژی', levels: ['استکان انرژی', 'قوری انرژی', 'سماور انرژی'], collectible: 'energy' },
@@ -216,8 +222,8 @@ export const CHAINS: Record<ChainId, ChainDef> = {
   genSchool: { id: 'genSchool', name: 'جعبه‌ی لوازم‌التحریر', levels: ['جعبه‌ی لوازم‌التحریر'], produces: 'school', event: 'school' },
 };
 
-export const PRODUCT_CHAINS: ChainId[] = ['tea', 'bread', 'garden', 'tools', 'textile', 'pottery', 'sweets', 'post', 'baby', 'lamp', 'saz', 'tile', 'football', 'sea', 'craft', 'callig', 'party', 'wed', 'desert', 'yazd', 'night', 'kitchen', 'winter', 'qamsar', 'dig', 'herbs', 'toys', 'mill'];
-export const GENERATOR_CHAINS: ChainId[] = ['genTea', 'genBread', 'genGarden', 'genTools', 'genTextile', 'genPottery', 'genSweets', 'genPost', 'genBaby', 'genLamp', 'genSaz', 'genTile', 'genFootball', 'genSea', 'genCraft', 'genCallig', 'genParty', 'genWed', 'genDesert', 'genYazd', 'genNight', 'genKitchen', 'genWinter', 'genQamsar', 'genDig', 'genHerbs', 'genToys', 'genMill'];
+export const PRODUCT_CHAINS: ChainId[] = ['tea', 'bread', 'garden', 'tools', 'textile', 'pottery', 'sweets', 'post', 'baby', 'lamp', 'saz', 'tile', 'football', 'sea', 'craft', 'callig', 'party', 'wed', 'desert', 'yazd', 'night', 'kitchen', 'winter', 'qamsar', 'dig', 'herbs', 'toys', 'mill', 'science'];
+export const GENERATOR_CHAINS: ChainId[] = ['genTea', 'genBread', 'genGarden', 'genTools', 'genTextile', 'genPottery', 'genSweets', 'genPost', 'genBaby', 'genLamp', 'genSaz', 'genTile', 'genFootball', 'genSea', 'genCraft', 'genCallig', 'genParty', 'genWed', 'genDesert', 'genYazd', 'genNight', 'genKitchen', 'genWinter', 'genQamsar', 'genDig', 'genHerbs', 'genToys', 'genMill', 'genScience'];
 
 export interface Item {
   chain: ChainId;
