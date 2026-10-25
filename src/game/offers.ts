@@ -118,3 +118,22 @@ export function welcomeBack(s: GameState, last: number, now: number): WelcomeGif
   if (days < AWAY_DAYS) return null;
   return { days, energy: 100, gems: Math.min(30, 5 * days), chest: Math.min(3, 1 + Math.floor(days / 5)) };
 }
+
+/** Episodes in a season (the story's seasons are five episodes long). */
+export const EPISODES_PER_SEASON = 5;
+
+export interface SeasonReward {
+  season: number;
+  gems: number;
+  energy: number;
+  /** Chest level (1 wooden, 2 copper, 3 golden). */
+  chest: number;
+}
+
+/** What finishing a season pays (on its last episode); every twentieth season, episode 100, pays more. */
+export function seasonReward(placeIndex: number): SeasonReward | null {
+  const n = placeIndex + 1;
+  if (n % EPISODES_PER_SEASON) return null;
+  const season = n / EPISODES_PER_SEASON;
+  return season % 20 === 0 ? { season, gems: 100, energy: 150, chest: 3 } : { season, gems: 20 + Math.min(season, 10) * 2, energy: 60, chest: 2 };
+}

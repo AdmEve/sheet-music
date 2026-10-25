@@ -7,7 +7,7 @@ import {
   CHAIN_BONUS_GEMS, CODEX_CHAINS, Reward, chainComplete, chainKey, claimAllCodex, claimCodex, codexClaimable, codexReward, isFound,
 } from '../game/codex';
 import {
-  OFFER_SKU, OfferId, PIGGY_CAP, PIGGY_MIN, PIGGY_PER_ORDER, WelcomeGift, activeOffers, breakPiggy, endOffer, firstBonusOpen, openGift, piggyReady,
+  OFFER_SKU, OfferId, PIGGY_CAP, PIGGY_MIN, PIGGY_PER_ORDER, SeasonReward, WelcomeGift, activeOffers, breakPiggy, endOffer, firstBonusOpen, openGift, piggyReady,
   skipGift,
 } from '../game/offers';
 import { monthEnd } from '../game/calendar';
@@ -788,6 +788,35 @@ export class Modals {
           close();
         } }, 'ممنون!'),
       );
+    }, false);
+  }
+
+  /** The prize for finishing a season; the hundredth episode gets a golden one. */
+  seasonReward(r: SeasonReward): Promise<void> {
+    const s = this.app.s;
+    sfx.levelUp();
+    const chip = (icon: string, text: string) => h('span', { class: 'got' }, h('span', { html: svgIcon(icon) }), text);
+    const chest = { chain: 'chest' as const, level: r.chest };
+    const big = r.season % 20 === 0;
+    return this.open(big ? 'صدمین قسمت!' : `فصل ${fa(r.season)} تموم شد!`, (body, close) => {
+      add(body,
+        h('div', { class: 'hero-wrap small' }, rays(), h('b', { class: 'ep-name' }, big ? 'صد قسمت قصه‌ی کوچه' : 'جایزه‌ی پایان فصل')),
+        h('div', { class: 'order-sheet' },
+          h('div', { class: 'who', html: svgIcon(portrait('narges', 'happy')) }),
+          h('p', { style: 'flex:1;text-align:right;margin:0' }, big
+            ? 'صد قسمت کنار همسایه‌ها! هیچ‌کدوم از این‌ها بدون تو نمی‌شد. این جایزه‌ی ویژه‌ی صدمین قسمته.'
+            : 'یه فصل دیگه از قصه‌ی کوچه تموم شد. همسایه‌ها برات یه جایزه کنار گذاشتن!')),
+        h('div', { class: 'contents' }, chip(ICONS.energy, faNum(r.energy)), chip(ICONS.gem, faNum(r.gems)), chip(itemArt(chest), itemName(chest))),
+        h('button', { class: 'btn big', onclick: () => {
+          addEnergy(s, r.energy);
+          s.gems += r.gems;
+          this.app.giveItem(chest);
+          this.app.renderAll();
+          this.app.dirty();
+          close();
+        } }, 'ممنون!'),
+      );
+      if (big) setTimeout(() => confetti(80), 300);
     }, false);
   }
 

@@ -110,3 +110,15 @@ describe('welcome back', () => {
     expect(welcomeBack(s, day, day + 5 * day)).toBeNull();
   });
 });
+
+describe('season rewards', () => {
+  it('pay on the last episode of each season, and more on episode 100', async () => {
+    const { seasonReward } = await import('../src/game/offers');
+    expect(seasonReward(0)).toBeNull();
+    expect(seasonReward(3)).toBeNull();
+    expect(seasonReward(4)).toMatchObject({ season: 1, chest: 2 });
+    expect(seasonReward(49)?.gems).toBe(40);
+    expect(seasonReward(54)?.gems).toBe(40); // capped from season 10 on
+    expect(seasonReward(99)).toEqual({ season: 20, gems: 100, energy: 150, chest: 3 });
+  });
+});

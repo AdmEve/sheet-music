@@ -7,7 +7,7 @@ import { MAP_H, MapState, mapSvg, plot } from '../art/alleymap';
 import { layerHasStyles, sceneSvg } from '../art/places';
 import { CHAINS, itemName } from '../game/items';
 import { ensureGenerators } from '../game/model';
-import { offerOnEpisode } from '../game/offers';
+import { EPISODES_PER_SEASON, offerOnEpisode, seasonReward } from '../game/offers';
 import { completeNextTask, introKey, markSeen, outroKey, progress } from '../game/progress';
 import { buzz } from '../platform/haptics';
 import { CAST, Line, PLACES, Place } from '../story/story';
@@ -16,7 +16,6 @@ import { add, clear, fa, h, svgIcon, wait } from './dom';
 import { confetti, rays } from './celebrate';
 import { sfx } from './sound';
 
-const EPISODES_PER_SEASON = 5;
 export class PlaceScreen {
   readonly places = PLACES;
 
@@ -270,6 +269,8 @@ export class PlaceScreen {
     if (r.placeFinished) {
       await this.episodeDone(r.place);
       if (markSeen(s, outroKey(r.place.id))) await this.dialogue(r.place.outro);
+      const sr = seasonReward(PLACES.indexOf(r.place));
+      if (sr && markSeen(s, `season:${sr.season}`)) await this.app.modals.seasonReward(sr);
       if (r.place.id === PLACES[0].id && markSeen(s, 'ask:rate')) await this.app.modals.rateAsk();
       if (r.nextPlace && markSeen(s, introKey(r.nextPlace.id))) {
         this.render(screen, back);

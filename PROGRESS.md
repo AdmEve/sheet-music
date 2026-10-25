@@ -267,6 +267,10 @@ saves are written into localStorage `mahalle.save.v1`.
       generator; new character Karim, a Qamsari rose farmer); map of 95 places; Season 20
       teased (a metro station planned under the neighbourhood)
 
+- [x] Phase 31b: season-finale reward «جایزه‌ی پایان فصل»: finishing a season's fifth episode
+      pays energy (60), gems (22–40) and a copper chest, once per season; episode 100 pays a
+      golden chest, 150 energy and 100 gems with its own «صدمین قسمت!» screen
+
 Next (in order):
 1. Season 20 «مترو» (episode 100)
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
