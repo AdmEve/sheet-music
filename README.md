@@ -13,8 +13,12 @@ in Persian pictures (pomegranate, tea glass, goldfish, Azadi tower…), Persian 
 | Path | What |
 | --- | --- |
 | `src/game/engine.ts` | The simulation (belt, shooters, slots, ice, links, boosters). No rendering. |
-| `src/game/levelgen.ts` | Builds level *n* from a picture; every level is checked by the solver bot. |
-| `src/game/bot.ts` | Greedy solver used to prove levels are beatable (and for tutorial hints). |
+| `src/game/levelgen.ts` | Difficulty curve, level assembly, and the packed format of shipped levels. |
+| `src/game/bot.ts` | Careful solver (proves levels are beatable, drives hints) and a casual-player model. |
+| `src/game/search.ts` | Build-time search that reorders a level's queue towards a target win rate. |
+| `src/data/levels.json` | The 300 pre-tuned levels the game ships with (`scripts/tune-all.sh`). |
+| `src/gfx/` | Cached sprites (blocks, cats), particles, easing. |
+| `src/ui/` | Screens and dialogs, SVG icon set, transitions, flying coins. |
 | `src/data/pictures.json` | Pixel art baked from Noto emoji (`npm run bake-pictures`, needs Playwright). |
 | `src/play.ts`, `src/art.ts` | Canvas renderer, effects, input. |
 | `src/main.ts` | Screens: home, game, win/lose, shop, lives, daily gift, gallery, settings. |
@@ -33,6 +37,21 @@ npm run android:sync # build web + copy into android/
 ```
 
 `?debug` in the URL exposes `window.__pishi` for automated playtests.
+
+## Difficulty
+
+Levels are tuned at build time, not on the phone. For each level, `scripts/tune-all.sh`
+simulates casual players (they misjudge which colours are reachable, react slowly and
+sometimes just tap a cat) and searches the cat queue, and if needed the number of slots,
+lanes and ammo sizes, until the simulated win rate matches the curve in `levelParams`:
+the first 3 levels always win, then about 65% for normal levels, about 45% for every 5th
+(hard) level and about 30% for every 10th (very hard), with an easy breather after each.
+Every shipped level is also beaten by the careful solver, which the tests check.
+
+```sh
+TUNE_LOG=/tmp/tune.log scripts/tune-all.sh 300   # ~3 min on 4 cores; rewrites src/data/levels.json
+npx vite-node scripts/difficulty-report.ts 60    # win rates of the shipped levels
+```
 
 ## Before publishing on Cafe Bazaar
 

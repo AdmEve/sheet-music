@@ -842,16 +842,18 @@ export class PlayView {
     const lost = this.loseT >= 0;
     const won = this.winT >= 0;
     // queue (back to front), lanes' "+N" counters
+    // as many rows as fit above the booster bar
+    const rows = Math.max(2, Math.min(4, Math.floor((this.ch - this.queueY - this.qR * 0.8) / (this.rowH * 0.78)) + 1));
     for (let ci = 0; ci < g.columns.length; ci++) {
       const col = g.columns[ci];
-      const shown = Math.min(col.length, 4);
+      const shown = Math.min(col.length, rows);
       for (let d = shown - 1; d >= 0; d--) this.drawOne(ctx, col[d], d, fronts, lost, won);
-      if (col.length > 4) {
-        const x = this.colX(ci), y = this.queueY + this.rowH * 0.25 + 4 * this.rowH * 0.78 - this.qR * 0.2;
+      if (col.length > rows) {
+        const x = this.colX(ci), y = Math.min(this.ch - 6, this.queueY + this.rowH * 0.25 + rows * this.rowH * 0.78 - this.qR * 0.2);
         ctx.font = `800 ${Math.round(this.qR * 0.55)}px Vazirmatn`;
         ctx.textAlign = 'center';
         ctx.fillStyle = 'rgba(255,255,255,0.75)';
-        ctx.fillText(`+${String(col.length - 4).replace(/[0-9]/g, (x) => '۰۱۲۳۴۵۶۷۸۹'[+x])}`, x, y);
+        ctx.fillText(`+${String(col.length - rows).replace(/[0-9]/g, (x) => '۰۱۲۳۴۵۶۷۸۹'[+x])}`, x, y);
       }
     }
     // links between paired cats in the queue
