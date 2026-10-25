@@ -30,6 +30,7 @@ export const CAST: Record<string, Character> = {
   parisa: { id: 'parisa', name: 'مهندس پریسا', role: 'مهندس پروژه‌ی مترو' },
   saburi: { id: 'saburi', name: 'صبوری‌خان', role: 'عطار کوچه‌ی اقاقیا' },
   arash: { id: 'arash', name: 'آرش', role: 'نوه‌ی صبوری‌خان' },
+  mahbanu: { id: 'mahbanu', name: 'خاله ماه‌بانو', role: 'آسیابون روستای بالادست' },
 };
 
 /** Short thank-you lines shown when an order is delivered (one picked at random). */
@@ -53,6 +54,7 @@ export const THANKS: Record<string, string[]> = {
   parisa: ['دقیق و به‌موقع، مثل یه مهندس واقعی!', 'با این سرعت، ایستگاه زودتر باز می‌شه.', 'ممنون! بدون اهالی این پروژه نمی‌شد.'],
   saburi: ['دستت درد نکنه بابا. مثل دمنوش گاوزبون آرامش‌بخش بود.', 'خیر ببینی!', 'عطاری بدون تو یه چیزی کم داشت.'],
   arash: ['ایول! دمت گرم!', 'تو بهترین بزرگ‌ترِ کوچه‌ای!', 'بچه‌ها خیلی خوشحال می‌شن!'],
+  mahbanu: ['خیر ببینی مادر، مثل آرد تازه پاکی.', 'آسیاب هم ازت ممنونه.', 'نون و نمکت حلال!'],
 };
 
 export interface Line {
@@ -2455,6 +2457,106 @@ export const PLACES: Place[] = [
       { who: 'arash', text: 'نرگس‌خانم، اوستا رضا شاگرد می‌خواد. می‌شه من برم؟' },
       { who: 'reza', text: 'شاگرد؟ نونوایی کار سختیه بچه‌جون. صبح زود، تنور داغ…', mood: 'surprised' },
       { who: 'arash', text: 'من از تنور نمی‌ترسم! قول می‌دم.', mood: 'happy' },
+    ],
+  },
+  // ------------------------------------------------------------------ season 23: شاگرد نونوا
+  {
+    id: 'apprentice',
+    name: 'خمیرخونه‌ی اوستا رضا',
+    intro: [
+      { who: 'reza', text: 'ساعت چهار صبحه بچه‌جون. نونوا قبل از خروس بیدار می‌شه.' },
+      { who: 'arash', text: 'من ساعت سه بیدار شدم! … ولی چرا این‌جا این‌قدر به‌هم‌ریخته‌ست؟', mood: 'surprised' },
+      { who: 'reza', text: 'خمیرخونه‌ی پشتی رو سال‌هاست تنهایی نمی‌رسم مرتب کنم. دستام دیگه مثل قدیم نیست.', mood: 'sad' },
+    ],
+    tasks: [
+      { id: 'ap.trough', title: 'تغار خمیر', cost: 690, layer: 'trough', after: [{ who: 'reza', text: 'این تغار مال اوستای خودمه. پنجاه سال توش خمیر ورز دادیم.' }] },
+      { id: 'ap.sieve', title: 'الک آرد', cost: 692, layer: 'sieve', after: [{ who: 'arash', text: 'آرد رو الک کردم! … یه کم هم ریخت رو سرم.', mood: 'happy' }] },
+      { id: 'ap.peel', title: 'پاروی بلند', cost: 694, layer: 'peel', after: [{ who: 'kaveh', text: 'دسته‌ی پارو رو عوض کردم. چوب گردو، سبک و محکم.' }] },
+      { id: 'ap.pebbles', title: 'سنگ‌ریزه‌های تنور', cost: 696, layer: 'pebbles', after: [{ who: 'reza', text: 'سنگ‌ریزه‌ها رو شستیم. سنگک بدون سنگ‌ریزه‌ی تمیز، سنگک نیست.' }] },
+      { id: 'ap.apron', title: 'پیش‌بند آرش', cost: 698, layer: 'apron', after: [{ who: 'golab', text: 'یه پیش‌بند برای آرش دوختم. شاگرد نونوا باید سر و وضعش مرتب باشه.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'arash', text: 'اوستا، چرا سنگک شما از همه‌ی نونوایی‌ها خوشمزه‌تره؟' },
+      { who: 'reza', text: 'رازش تو آرده. آرد سبوس‌دار، از آسیاب آبی خاله ماه‌بانو، بالای روستا.' },
+      { who: 'mahin', text: 'خبر داغ! شنیدم آسیاب ماه‌بانو داره تعطیل می‌شه. جوی آبش خشک شده.', mood: 'surprised' },
+    ],
+  },
+  {
+    id: 'watermill',
+    name: 'آسیاب آبی',
+    intro: [
+      { who: 'mahbanu', text: 'خوش اومدید. من ماه‌بانوام. این آسیاب سیصد ساله که می‌چرخه… یعنی می‌چرخید.', mood: 'sad' },
+      { who: 'jalal', text: 'جوی آب از کوه میاد. یه جاش ریزش کرده. بازش می‌کنیم، مثل قنات.' },
+    ],
+    tasks: [
+      { id: 'wm.stream', title: 'جوی آسیاب', cost: 696, layer: 'stream', after: [{ who: 'jalal', text: 'آب راه افتاد! صداش رو می‌شنوید؟ صدای زندگیه.', mood: 'happy' }] },
+      { id: 'wm.chute', title: 'ناودون چوبی', cost: 698, layer: 'chute', after: [{ who: 'kaveh', text: 'ناودون رو با چوب توت ساختیم. آب با فشار می‌ریزه رو پره‌ها.' }] },
+      { id: 'wm.wheel', title: 'پره‌های آسیاب', cost: 700, layer: 'wheel', after: [{ who: 'arash', text: 'داره می‌چرخه! داره می‌چرخه!', mood: 'surprised' }] },
+      { id: 'wm.stone', title: 'سنگ آسیاب', cost: 702, layer: 'stone', after: [{ who: 'mahbanu', text: 'سنگ رو تیز کردیم. گندم رو آروم آرد می‌کنه، که بوی گندم توش بمونه.' }] },
+      { id: 'wm.store', title: 'انبار گندم', cost: 704, layer: 'store', after: [{ who: 'morteza', text: 'انبار رو حساب کردم: گندم تا بهار بسه. البته اگه آقا رضا زیادی نون نپزه.' }] },
+    ],
+    outro: [
+      { who: 'mahbanu', text: 'آسیاب راه افتاد، ولی گندم امسال هنوز رو زمینه. دروگرها همه رفتن شهر.', mood: 'sad' },
+      { who: 'narges', text: 'دروگر؟ ما یه محله‌ایم! همه با هم میایم.', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'wheatfield',
+    name: 'گندم‌زار',
+    intro: [
+      { who: 'mahbanu', text: 'گندم‌زار ما. حاج‌بابا جوونی هر سال برای درو میومد این‌جا. نمی‌دونستید؟' },
+      { who: 'narges', text: 'حاج‌بابا؟ … پس سنگک اوستا رضا از گندم همین زمینه، از همون اول.', mood: 'surprised' },
+    ],
+    tasks: [
+      { id: 'wf.sickles', title: 'داس‌ها', cost: 702, layer: 'sickles', after: [{ who: 'yadollah', text: 'داس‌ها رو تیز کردم. یادم رفته بود دست آدم چقدر خوب یاد می‌مونه.' }] },
+      { id: 'wf.sheaves', title: 'بافه‌های گندم', cost: 704, layer: 'sheaves', after: [{ who: 'bahman', text: 'بافه‌ها رو بستیم. کمرم درد گرفت، ولی دلم باز شد.', mood: 'happy' }] },
+      { id: 'wf.cart', title: 'گاری', cost: 706, layer: 'cart', after: [{ who: 'aydin', text: 'گاری رو تعمیر کردیم. چرخش دیگه جیرجیر نمی‌کنه.' }] },
+      { id: 'wf.scarecrow', title: 'مترسک', cost: 708, layer: 'scarecrow', after: [{ who: 'arash', text: 'مترسک رو من ساختم! کلاه اوستا رضا رو سرش گذاشتم. … اوستا نفهمه.', mood: 'happy' }] },
+      { id: 'wf.lunch', title: 'ناهار زیر درخت', cost: 710, layer: 'lunch', after: [{ who: 'sepideh', text: 'نون و پنیر و هندونه زیر درخت گردو. این قسمت برنامه‌مون پربیننده‌ترین می‌شه!', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'reza', text: 'آرد تازه رسید. ولی نونوایی خودم هم یه دستی می‌خواد. سقفش دوده گرفته، پیشخونش شکسته.' },
+      { who: 'arash', text: 'نونوایی نو! من می‌خوام تابلوش رو رنگ کنم!', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'newbakery',
+    name: 'نونوایی نو',
+    intro: [
+      { who: 'kaveh', text: 'نونوایی رضا قدیمی‌ترین نونوایی محله‌ست. نو می‌کنیم، ولی قدیمی نگهش می‌داریم.' },
+      { who: 'reza', text: 'فقط به تنورم دست نزنید! … خب، یه کم دست بزنید.', mood: 'surprised' },
+    ],
+    tasks: [
+      { id: 'nb.dome', title: 'گنبد تنور', cost: 708, layer: 'dome', after: [{ who: 'fakhri', text: 'گنبد تنور رو آجر نو چیدیم، ولی همون نقش قدیمی رو نگه داشتیم.' }] },
+      { id: 'nb.counter', title: 'پیشخون سنگی', cost: 710, layer: 'counter', after: [{ who: 'morteza', text: 'یه پیشخون سنگی! نون داغ روش بذاری، خنک نمی‌شه، خراب هم نمی‌شه.' }] },
+      { id: 'nb.rack', title: 'میله‌ی نون', cost: 712, layer: 'rack', after: [{ who: 'shirin', text: 'میله‌های نون رو برنجی کردیم. سنگک‌ها روش مثل تابلو می‌مونن!', mood: 'happy' }] },
+      { id: 'nb.fan', title: 'پنکه‌ی سقفی', cost: 714, layer: 'fan', after: [{ who: 'reza', text: 'بالاخره! سی سال تابستون جلوی تنور پختم.', mood: 'happy' }] },
+      { id: 'nb.sign', title: 'تابلوی «نونوایی سنگکی»', cost: 716, layer: 'sign', after: [{ who: 'arash', text: 'تابلو رو خودم رنگ کردم. زیرش با خط ریز نوشتم: «و شاگردش آرش».', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'reza', text: 'آرش، فردا صبح اولین سنگکت رو خودت می‌پزی. برای کل محله.' },
+      { who: 'arash', text: 'کل محله؟! … اگه بسوزه چی؟', mood: 'surprised' },
+      { who: 'mahbanu', text: 'نمی‌سوزه پسرم. آردش از گندم‌هاییه که خودت درو کردی.', mood: 'happy' },
+    ],
+  },
+  {
+    id: 'firstbread',
+    name: 'اولین سنگک آرش',
+    intro: [
+      { who: 'narges', text: 'صبحونه‌ی محله! اولین سنگک آرش رو با هم می‌خوریم.', mood: 'happy' },
+      { who: 'saburi', text: 'نوه‌ی من، نونوا… خدایا، پدرم بود چه کیفی می‌کرد.', mood: 'happy' },
+    ],
+    tasks: [
+      { id: 'fb.sofreh', title: 'سفره‌ی بلند', cost: 714, layer: 'sofreh', after: [{ who: 'golab', text: 'سفره رو از سر کوچه تا دالون پهن کردیم. همه جا دارن.' }] },
+      { id: 'fb.cheese', title: 'پنیر و گردو', cost: 716, layer: 'cheese', after: [{ who: 'sona', text: 'پنیر لیقوان از تبریز آوردم! با گردو و سبزی تازه.', mood: 'happy' }] },
+      { id: 'fb.honey', title: 'کره و عسل', cost: 718, layer: 'honey', after: [{ who: 'karim', text: 'عسل گون از کوه‌های قمصر. برای سنگک داغ، بهترین همراه.' }] },
+      { id: 'fb.samovar', title: 'سماور بزرگ', cost: 720, layer: 'samovar', after: [{ who: 'reza', text: 'سماور نونوایی و سماور ننه‌گلاب رو آوردیم. چای تازه‌دم برای همه.' }] },
+      { id: 'fb.bread', title: 'سنگک آرش', cost: 722, layer: 'bread', after: [{ who: 'arash', text: 'نسوخت! نسوخت! … فقط یه گوشه‌ش یه کم برشته شد.', mood: 'happy' }] },
+    ],
+    outro: [
+      { who: 'reza', text: 'آفرین شاگرد. از فردا صبح‌ها با من، عصرها با مدرسه.', mood: 'happy' },
+      { who: 'arash', text: 'مدرسه… مهر داره میاد. ولی کلاس ما سقفش چکه می‌کنه.', mood: 'sad' },
+      { who: 'kaveh', text: 'سقف چکه می‌کنه؟ پس قبل از اول مهر یه کار دیگه داریم.' },
     ],
   },
 ];

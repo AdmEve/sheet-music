@@ -7,7 +7,7 @@ import { WEDDING } from './chainsO';
 import { camel } from './chainsP';
 import { INK, O, THIN, sparkle } from './kit';
 
-export const MAP_H = 11820;
+export const MAP_H = 12350;
 const STEP = 106;
 const faDigits = (n: number) => String(n).replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
 
@@ -424,7 +424,7 @@ const FACADES: Record<string, Facade> = {
   },
   muralwall: {
     wall: '#fbf7ee', w: 128, h: 66, door: 'arch',
-    deco: `<circle cx="-36" cy="-44" r="11" fill="#c0501a" ${THIN}/><circle cx="-36" cy="-44" r="7" fill="#f6c945" ${THIN} stroke-width="1"/><circle cx="40" cy="-50" r="7" fill="#f6c945"/>` +
+    deco: `<circle cx="0" cy="-53" r="10" fill="#c0501a" ${THIN}/><circle cx="0" cy="-53" r="6.4" fill="#f6c945" ${THIN} stroke-width="1"/><circle cx="52" cy="-58" r="5" fill="#f6c945"/>` +
       [['#e0303f', -54], ['#3a76c4', -20], ['#3f8a2a', 22], ['#ff7a9c', 54]].map(([c, x]) => `<circle cx="${x}" cy="-12" r="4" fill="${c}" opacity=".85"/>`).join(''),
   },
   puppets: {
@@ -434,6 +434,29 @@ const FACADES: Record<string, Facade> = {
   summerfest: {
     wall: '#d2b48a', w: 132, h: 54, door: 'gate',
     deco: [[-46, -96, '#e0303f'], [0, -110, '#f6c945'], [46, -98, '#3a76c4']].map(([x, y, c]) => `<path d="M${x} ${y} l9 12 l-9 14 l-9 -14 Z" fill="${c}" ${THIN} stroke-width="1"/><path d="M${x} ${Number(y) + 26} q4 6 0 12" fill="none" stroke="${INK}" stroke-width=".8"/>`).join(''),
+  },
+  apprentice: {
+    wall: '#b88a62', w: 116, h: 60, door: 'arch',
+    deco: `<path d="M30 -60 V-82 H42 V-60" fill="#8a6a4a" ${THIN}/><path d="M36 -86 q-4 -8 2 -14 M36 -92 q4 -6 0 -12" fill="none" stroke="#d8d8d8" stroke-width="2"/>` +
+      `<rect x="-52" y="-80" width="22" height="12" rx="2" fill="url(#gCrust)" ${THIN} stroke-width="1"/>`,
+  },
+  watermill: {
+    wall: '#c9b89a', roof: 'gable', roofFill: 'url(#gWoodDark)', w: 104, h: 62, door: 'arch',
+    deco: `<circle cx="-64" cy="-26" r="20" fill="none" stroke="#5e3418" stroke-width="4"/>` + Array.from({ length: 6 }, (_, i) => { const a = (i / 6) * Math.PI * 2; return `<path d="M-64 -26 L${-64 + Math.cos(a) * 20} ${-26 + Math.sin(a) * 20}" stroke="#8b5328" stroke-width="2.4"/>`; }).join('') +
+      `<path d="M-90 2 Q-64 -6 -40 2" fill="none" stroke="#7cc4ef" stroke-width="4"/>`,
+  },
+  wheatfield: {
+    wall: '#e8c060', w: 128, h: 50, door: 'gate',
+    deco: Array.from({ length: 9 }, (_, i) => `<path d="M${-56 + i * 14} -50 V-66" stroke="#c9952e" stroke-width="2"/><ellipse cx="${-56 + i * 14}" cy="-70" rx="2.6" ry="5" fill="#f0c050" stroke="#a5621f" stroke-width=".6"/>`).join(''),
+  },
+  newbakery: {
+    wall: '#e8c99a', roof: 'awning', roofFill: 'url(#gNavy)', door: 'shop', sign: 'نونوایی سنگکی',
+    deco: `<path d="M-60 -4 H-30 V-26 Q-45 -40 -60 -26 Z" fill="#c98a52" ${THIN}/><path d="M-52 -4 V-16 Q-45 -24 -38 -16 V-4 Z" fill="url(#gFire)"/>`,
+  },
+  firstbread: {
+    wall: '#e0b07a', w: 132, h: 60, door: 'gate',
+    deco: `<path d="M-60 -66 H60" stroke="#fffdf6" stroke-width="6"/><path d="M-60 -66 H60" stroke="#e0303f" stroke-width="1.4" stroke-dasharray="5 4"/>` +
+      `<path d="M-14 -72 Q0 -78 14 -72 L12 -66 H-12 Z" fill="url(#gCrust)" ${THIN} stroke-width="1"/><path d="M-4 -80 q-3 -6 1 -10 M4 -80 q-3 -6 1 -10" fill="none" stroke="#fff" stroke-width="1.4"/>`,
   },
   wedding: {
     wall: 'url(#gWood)', w: 120, h: 70, door: 'gate',

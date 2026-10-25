@@ -295,9 +295,15 @@ saves are written into localStorage `mahalle.save.v1`.
       end-of-summer party with a bike race, kites and water play; «بازی» toys chain + toy-chest
       generator; new character Arash, Saburi's grandson); map of 110 places; Season 23 teased
       (Arash wants to be Reza's apprentice at the bakery)
+- [x] Phase 36: Season 23 «شاگرد نونوا» (`src/art/scenes23.ts`: Reza's dough room set right for his
+      new apprentice, Mah-Banoo's 300-year-old watermill that grinds the bakery's flour, the wheat
+      harvest (Haj-Baba used to come every year), the bakery renovated around its old oven, and a
+      dawn breakfast for Arash's first sangak; «آسیاب» chain + grain-store generator; new
+      character Mah-Banoo, the miller); map of 115 places; Season 24 teased (Arash's classroom
+      roof leaks before the school year starts)
 
 Next (in order):
-1. Season 23 «شاگرد نونوا»
+1. Season 24 «اول مهر»
 2. Owner: Bazaar account, signing key, GitHub secrets, upload (see `docs/LAUNCH-fa.md`)
 
 ## Needs from the owner (Amirhossein)

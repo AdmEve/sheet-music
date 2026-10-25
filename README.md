@@ -21,7 +21,8 @@ in the alley; season 18 «زمستون برفی» gets the alley through a snows
 takes Golab to Qamsar for rosewater season; season 20 «مترو» builds a metro station under the
 neighbourhood around a 700-year-old kiln and ends with the alley's centenary in episode 100;
 season 21 «کوچه‌ی بغلی» saves the neighbouring Acacia alley; season 22 «تابستون بچه‌ها»
-builds a summer park for the children of both alleys (5 episodes each).
+builds a summer park for the children of both alleys; season 23 «شاگرد نونوا» makes Arash
+Reza's apprentice and restores the watermill that grinds the bakery's flour (5 episodes each).
 
 - Fully **offline**; progress is saved on the phone.
 - Monetization through store in-app billing (two Android flavors: **Cafe Bazaar** via
