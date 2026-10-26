@@ -27,7 +27,7 @@ export interface PlayCallbacks {
   onWin(game: Game): void;
   onLose(game: Game): void;
   onProgress(p: number): void;
-  onBelt(count: number, capacity: number): void;
+  onBelt(count: number, capacity: number, movesLeft: number): void;
   onDanger(level: number): void;
 }
 
@@ -121,7 +121,7 @@ export class PlayView {
     this.last = performance.now();
     this.raf = requestAnimationFrame(this.frame);
     cb.onProgress(0);
-    cb.onBelt(0, this.game.capacity);
+    cb.onBelt(0, this.game.capacity, this.game.movesLeft);
   }
 
   destroy() {
@@ -496,8 +496,10 @@ export class PlayView {
           break;
         case 'lost': {
           this.loseT = 0;
-          const v = this.vis[e.shooter];
-          this.ghosts.push({ x: v.x, y: v.y, color: g.shooters[e.shooter].color, t: -1, r: this.beltR });
+          if (e.shooter >= 0) {
+            const v = this.vis[e.shooter];
+            this.ghosts.push({ x: v.x, y: v.y, color: g.shooters[e.shooter].color, t: -1, r: this.beltR });
+          }
           this.shake(0.5, 6);
           haptic('error');
           sfx.lose();
@@ -507,7 +509,7 @@ export class PlayView {
     }
     g.events.length = 0;
     this.cb.onProgress(g.progress());
-    this.cb.onBelt(g.belt.length + g.pending.length, g.capacity);
+    this.cb.onBelt(g.belt.length + g.pending.length, g.capacity, g.movesLeft);
   }
 
   private revealIfHidden(id: number) {

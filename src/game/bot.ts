@@ -35,28 +35,29 @@ export function botPick(g: Game): number {
   return -1;
 }
 
-export function botSolve(level: LevelDef, maxTime = 900): { won: boolean; time: number; minFree: number } {
+export function botSolve(level: LevelDef, maxTime = 900): { won: boolean; time: number; minFree: number; taps: number } {
   const g = new Game(level);
   const dt = 1 / 30;
   let cooldown = 0;
   let minFree = level.slots;
+  let taps = 0;
   while (g.status === 'playing' && g.time < maxTime) {
     cooldown -= dt;
     if (cooldown <= 0) {
       const pick = botPick(g);
-      if (pick >= 0) { g.tap(pick); cooldown = 0.25; }
+      if (pick >= 0) { if (g.tap(pick)) taps++; cooldown = 0.25; }
       else if (!g.belt.length && !g.pending.length) {
         // Stuck with an empty belt: force a move, as a human would.
         const any = [...g.slots.filter((s) => s >= 0), ...g.columns.filter((c) => c.length).map((c) => c[0])].find((id) => g.canLaunch(id));
         if (any === undefined) break;
-        g.tap(any);
+        if (g.tap(any)) taps++;
       }
     }
     g.step(dt);
     g.events.length = 0;
     minFree = Math.min(minFree, g.slots.filter((s) => s < 0).length);
   }
-  return { won: g.status === 'won', time: g.time, minFree };
+  return { won: g.status === 'won', time: g.time, minFree, taps };
 }
 
 /**

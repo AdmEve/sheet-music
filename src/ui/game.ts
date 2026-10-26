@@ -43,7 +43,7 @@ export function startLevel() {
   const progress = h('i', {});
   const pct = h('em', {}, '۰٪');
   const belt = h('b', {}, '');
-  const beltPill = h('div', { class: 'belt-pill' }, icon('paw'), belt);
+  const beltPill = h('div', { class: 'belt-pill moves-pill' }, h('small', {}, 'حرکت'), belt);
   const slotBtn = btn('boost', [], () => useBoost('slot'), false);
   const bombBtn = btn('boost', [], () => useBoost('bomb'), false);
   boostEls = { slot: slotBtn, bomb: bombBtn };
@@ -67,9 +67,9 @@ export function startLevel() {
       pct.textContent = `${fa(Math.floor(p * 100))}٪`;
       if (removeCoach && level.index === 0 && p > 0) { /* keep the tutorial bubble until the first launch */ }
     },
-    onBelt: (n, cap) => {
-      belt.textContent = `${fa(n)}/${fa(cap)}`;
-      beltPill.classList.toggle('full', n >= cap);
+    onBelt: (n, _cap, left) => {
+      belt.textContent = Number.isFinite(left) ? fa(left) : '∞';
+      beltPill.classList.toggle('full', Number.isFinite(left) && left <= 3);
       if (level.index === 0 && n > 0 && removeCoach) {
         removeCoach();
         removeCoach = coach(stage, 'هر پیشی فقط به بلوک‌های هم‌رنگِ خودش شلیک می‌کنه، اونم بلوکی که جلوی دیدش باشه.', mascotCanvas(54, 1, { cushion: false }));
@@ -92,7 +92,7 @@ function levelBanner(level: LevelDef, host: HTMLElement) {
   const el = h('div', { class: 'level-banner' + (level.hard ? ' hard' : '') },
     level.hard ? icon('flame') : null,
     h('b', {}, level.veryHard ? 'خیلی سخت!' : level.hard ? 'مرحله سخت!' : `مرحله ${fa(level.index + 1)}`),
-    h('small', {}, level.slots <= 2 ? `فقط ${fa(level.slots)} جای خالی!` : `${fa(level.slots)} جای خالی`));
+    h('small', {}, `${level.moves !== undefined ? `${fa(level.moves)} حرکت · ` : ''}${level.slots <= 2 ? `فقط ${fa(level.slots)} جای خالی!` : `${fa(level.slots)} جای خالی`}`));
   host.append(el);
   setTimeout(() => el.remove(), 2100);
   if (level.hard) haptic('heavy');
@@ -198,6 +198,12 @@ function introFor(level: LevelDef, stage: HTMLElement) {
     mark('slots');
     const rm = coach(stage, 'پیشی‌ای که تیرش تموم نشه، میره توی جایگاه‌های پایین. اگه همه پر بشن، می‌بازی!', mascotCanvas(54, 5, { cushion: false }));
     setTimeout(rm, 6500);
+    return;
+  }
+  if (level.index === 2 && !seen.includes('moves')) {
+    mark('moves');
+    const rm = coach(stage, 'حرکت‌هات محدوده! هر بار فرستادن یک پیشی یک حرکته؛ پیشی‌ای که برگرده و دوباره بفرستیش، حرکت اضافه می‌خوره.', mascotCanvas(54, 3, { cushion: false }));
+    setTimeout(rm, 7000);
     return;
   }
   const show = (key: string, kind: 'hidden' | 'ice' | 'link' | 'hard', title: string, text: string) => {
@@ -347,6 +353,8 @@ function onLose() {
   const price = PRICES.revive[Math.min(revivesUsed, PRICES.revive.length - 1)];
   const g = view?.game;
   const done = g ? g.progress() : 0;
+  const outOfMoves = g?.lostReason === 'moves';
+  const what = outOfMoves ? '۵ حرکت اضافه' : 'یک جای اضافه';
   const revive = (how: 'coins' | 'ad') => async () => {
     if (how === 'coins') {
       if (!spend(price)) { toast('سکه کافی نداری', 'coin'); openShop(); return; }
@@ -357,7 +365,7 @@ function onLose() {
     }
     revivesUsed++;
     m.close();
-    view?.game.addSlot();
+    if (outOfMoves) view?.game.addMoves(5); else view?.game.addSlot();
     view?.resume();
   };
   const giveUp = (to: 'retry' | 'home') => async () => {
@@ -368,10 +376,10 @@ function onLose() {
   };
   const m = modal('ای وای!', h('div', { class: 'lose' },
     mascotCanvas(110, 5, { mood: 'sad', cushion: false }),
-    h('p', { class: 'lose-msg' }, 'جایگاه‌ها پر شد!'),
+    h('p', { class: 'lose-msg' }, outOfMoves ? 'حرکت‌ها تموم شد!' : 'جایگاه‌ها پر شد!'),
     h('div', { class: 'near' }, h('div', { class: 'near-bar' }, h('i', { style: `width:${Math.round(done * 100)}%` })), h('small', {}, `${fa(Math.floor(done * 100))}٪ از تصویر رو ترکوندی — خیلی نزدیکی!`)),
-    btn('gold big', [icon('slot'), h('span', {}, 'یک جای اضافه'), h('em', { class: 'price' }, icon('coin'), fa(price))], revive('coins')),
-    !freeReviveUsed && rewardedAvailable() ? btn('ad', [icon('film'), h('span', {}, 'جای اضافه رایگان')], revive('ad')) : null,
+    btn('gold big', [icon(outOfMoves ? 'play' : 'slot'), h('span', {}, what), h('em', { class: 'price' }, icon('coin'), fa(price))], revive('coins')),
+    !freeReviveUsed && rewardedAvailable() ? btn('ad', [icon('film'), h('span', {}, `${what} رایگان`)], revive('ad')) : null,
     h('div', { class: 'row' },
       btn('ghost', [icon('retry'), h('span', {}, 'از اول')], giveUp('retry')),
       btn('ghost', [icon('home'), h('span', {}, 'خانه')], giveUp('home'))),

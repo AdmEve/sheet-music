@@ -160,7 +160,7 @@ export class Planner {
    * Beam search for a winning sequence using at most `slots` waiting slots. Prefers progress and
    * free slots; returns the best minimum of free slots seen along the winning line.
    */
-  solve(slots: number, beam = 48): PlanResult {
+  solve(slots: number, beam = 48, fewestMoves = false): PlanResult {
     interface Node { s: PState; minFree: number; moves: number[] }
     let layer: Node[] = [{ s: this.start(slots), minFree: slots, moves: [] }];
     let best = null as Node | null;
@@ -181,11 +181,22 @@ export class Planner {
           if (!prev || prev.minFree < node.minFree) next.set(k, node);
         }
       }
-      if (best && best.minFree >= slots) break;
-      const score = (n: Node) => (total - n.s.remaining) * 1 + this.free(n.s) * 4 + n.minFree * 6;
+      if (best && (fewestMoves || best.minFree >= slots)) break;
+      // Fewest moves: value progress per send; otherwise keep slots free.
+      const score = fewestMoves
+        ? (n: Node) => (total - n.s.remaining) * 10 + this.free(n.s)
+        : (n: Node) => (total - n.s.remaining) * 1 + this.free(n.s) * 4 + n.minFree * 6;
       layer = [...next.values()].sort((a, b) => score(b) - score(a)).slice(0, beam);
     }
     return best ? { won: true, minFree: best.minFree, moves: best.moves } : { won: false, minFree: -1, moves: [] };
+  }
+
+  /** Fewest sends (taps) the planner can win with, using `slots` waiting slots; -1 if none found. */
+  minMoves(slots: number, beam = 96): number {
+    const a = this.solve(slots, beam, true);
+    const b = this.solve(slots, beam, false);
+    const best = [a, b].filter((r) => r.won).map((r) => r.moves.length);
+    return best.length ? Math.min(...best) : -1;
   }
 
   /** Fewest slots the planner needs to win (up to `max`), or -1. */

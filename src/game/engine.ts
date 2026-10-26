@@ -24,6 +24,8 @@ export interface LevelDef {
   capacity: number;
   hard: boolean;
   veryHard?: boolean;
+  /** How many cats the player may send (each tap is one move); undefined = unlimited. */
+  moves?: number;
 }
 
 export type Place = 'queue' | 'pending' | 'belt' | 'slot' | 'gone';
@@ -49,7 +51,7 @@ export type GameEvent =
   | { type: 'reject'; shooter: number }
   | { type: 'blast'; cells: number[] }
   | { type: 'won' }
-  | { type: 'lost'; shooter: number };
+  | { type: 'lost'; shooter: number; reason: 'slots' | 'moves' };
 
 export const BELT_MARGIN = 1.1;
 const SPACING = 1.5;
@@ -92,6 +94,9 @@ export class Game {
   status: 'playing' | 'won' | 'lost' = 'playing';
   /** The shooter that had nowhere to park (kept so a revive can place it). */
   overflow = -1;
+  /** Taps left; a level is lost when they run out with blocks still standing. */
+  movesLeft: number;
+  lostReason: 'slots' | 'moves' | null = null;
   events: GameEvent[] = [];
   time = 0;
   remaining: number;
@@ -112,6 +117,7 @@ export class Game {
     }));
     this.slots = new Array(level.slots).fill(-1);
     this.capacity = level.capacity;
+    this.movesLeft = level.moves ?? Infinity;
     this.remaining = this.hp.filter((v) => v > 0).length;
     this.total = this.remaining;
     this.length = beltLength(this.w, this.h);
@@ -129,7 +135,7 @@ export class Game {
   }
 
   canLaunch(id: number): boolean {
-    if (this.status !== 'playing') return false;
+    if (this.status !== 'playing' || this.movesLeft <= 0) return false;
     const s = this.shooters[id];
     if (s.place === 'slot') return this.belt.length + this.pending.length + 1 <= this.capacity;
     if (s.place !== 'queue') return false;
@@ -144,6 +150,7 @@ export class Game {
       this.events.push({ type: 'reject', shooter: id });
       return false;
     }
+    this.movesLeft--;
     const s = this.shooters[id];
     if (s.place === 'slot') {
       this.slots[s.slot] = -1;
@@ -229,7 +236,9 @@ export class Game {
     if (this.remaining === 0) {
       this.status = 'won';
       this.events.push({ type: 'won' });
+      return;
     }
+    if (s.ammo <= 0) this.checkMoves();
   }
 
   private finishLap(s: Shooter) {
@@ -238,11 +247,33 @@ export class Game {
     if (free < 0) {
       s.place = 'gone';
       this.overflow = s.id;
-      this.status = 'lost';
-      this.events.push({ type: 'lost', shooter: s.id });
+      this.lose('slots', s.id);
       return;
     }
     this.park(s, free);
+    this.checkMoves();
+  }
+
+  private lose(reason: 'slots' | 'moves', shooter: number) {
+    this.status = 'lost';
+    this.lostReason = reason;
+    this.events.push({ type: 'lost', shooter, reason });
+  }
+
+  /** Out of moves with nothing left in flight and blocks still standing → lost. */
+  private checkMoves() {
+    if (this.status === 'playing' && this.movesLeft <= 0 && !this.belt.length && !this.pending.length && this.remaining > 0) {
+      this.lose('moves', -1);
+    }
+  }
+
+  /** Revive after running out of moves. */
+  addMoves(n: number) {
+    this.movesLeft += n;
+    if (this.status === 'lost' && this.lostReason === 'moves') {
+      this.status = 'playing';
+      this.lostReason = null;
+    }
   }
 
   private park(s: Shooter, slot: number) {
@@ -261,6 +292,7 @@ export class Game {
       const s = this.shooters[this.overflow];
       this.overflow = -1;
       this.status = 'playing';
+      this.lostReason = null;
       this.park(s, this.slots.length - 1);
     }
   }

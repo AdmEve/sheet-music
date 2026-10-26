@@ -594,3 +594,8 @@ button { font-family: inherit; color: inherit; border: 0; background: none; curs
   background: radial-gradient(circle at 50% 45%, #7a45e0, #2b1263 70%);
 }
 .wipe-logo .ic { width: 72px; height: 72px; color: #ffd84a; animation: bump 0.5s infinite; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4)); }
+
+.moves-pill { flex-direction: column; justify-content: center; gap: 0; line-height: 1.05; min-width: 58px; }
+.moves-pill small { font-size: 10px; opacity: 0.85; }
+.moves-pill b { font-size: 20px; font-weight: 900; }
+.moves-pill.full { animation: bump 0.6s infinite; }
