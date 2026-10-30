@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { botSolve, winRate } from '../src/game/bot';
+import { botSolve } from '../src/game/bot';
 import { Game } from '../src/game/engine';
 import { TUNED_COUNT, baseLevel, buildLevel, encodeLevel, solutionFor } from '../src/game/levelgen';
 import type { LevelDef } from '../src/game/engine';
+import { Planner } from '../src/game/plan';
+import { fewestMoves } from '../src/game/trap';
 import { PICTURE_IDS, loadPicture } from '../src/game/pictures';
 import tuned from '../src/data/levels.json';
 
@@ -49,28 +51,42 @@ describe('shipped levels (src/data/levels.json)', () => {
     expect(failed).toEqual([]);
   }, 300_000);
 
-  it('hard levels beat the obvious strategies; normal levels leave little slack', () => {
-    let hard = 0, hardBeaten = 0, normal = 0, normalTight = 0;
-    for (let i = 10; i < TUNED_COUNT; i++) {
+  it('levels from 6 on trap the obvious player (and hard ones a 2-step lookahead)', () => {
+    let normal = 0, normalFooled = 0, hard = 0, hardFooled = 0;
+    for (let i = 5; i < TUNED_COUNT; i++) {
       const l = buildLevel(i);
-      const expert = botSolve(l);
-      if (l.hard) { hard++; if (!expert.won) hardBeaten++; }
-      else { normal++; if (!expert.won || expert.minFree <= 1) normalTight++; }
+      const fits = (beam: number) => fewestMoves(l, l.slots, beam) <= l.moves!;
+      if (l.hard) { hard++; if (!fits(1) && !fits(2)) hardFooled++; }
+      else { normal++; if (!fits(1)) normalFooled++; }
     }
-    expect(hardBeaten / hard).toBeGreaterThan(0.6);
-    expect(normalTight / normal).toBeGreaterThan(0.6);
+    expect(normalFooled / normal).toBeGreaterThan(0.85);
+    expect(hardFooled / hard).toBeGreaterThan(0.85);
   }, 300_000);
 
-  it('the first levels are gentle', () => {
-    for (let i = 0; i < 3; i++) {
-      expect(botSolve(buildLevel(i)).won).toBe(true);
-      expect(winRate(buildLevel(i), 0.55, 8)).toBe(1);
+  it('a real-time expert bot loses most levels past the opening', () => {
+    let n = 0, won = 0;
+    for (let i = 8; i < TUNED_COUNT; i++) { n++; if (botSolve(buildLevel(i)).won) won++; }
+    expect(won / n).toBeLessThan(0.5);
+  }, 300_000);
+
+  it('the opening is friendly: levels 1-4 fit the obvious player and the expert bot', () => {
+    for (let i = 0; i < 4; i++) {
+      const l = buildLevel(i);
+      expect([i, fewestMoves(l, l.slots, 1) <= l.moves!]).toEqual([i, true]);
+      expect([i, botSolve(l).won]).toEqual([i, true]);
     }
   });
 
   it('levels past the tuned set are still generated and beatable', () => {
-    const l = baseLevel(TUNED_COUNT + 3);
-    expect(botSolve(l).won).toBe(true);
+    for (const i of [TUNED_COUNT + 3, TUNED_COUNT + 40]) {
+      const l = baseLevel(i);
+      expect(l.moves).toBeGreaterThan(0);
+      // beatable: the planner finds a winning line within the budget, and it wins in the real engine
+      const line = new Planner(l).solve(l.slots, 48, true);
+      expect(line.won).toBe(true);
+      expect(line.moves.length).toBeLessThanOrEqual(l.moves!);
+      expect(replay(l, line.moves)).toBe(true);
+    }
   });
 });
 

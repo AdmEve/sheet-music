@@ -14,7 +14,8 @@ in Persian pictures (pomegranate, tea glass, goldfish, Azadi tower…), Persian 
 | --- | --- |
 | `src/game/engine.ts` | The simulation (belt, shooters, slots, ice, links, boosters). No rendering. |
 | `src/game/levelgen.ts` | Difficulty curve, level assembly, and the packed format of shipped levels. |
-| `src/game/plan.ts` | Exact abstract model + planner: required slots, winning lines, greedy baseline. |
+| `src/game/plan.ts` | Exact abstract model + beam-search planner: slots/moves a level needs, winning lines. |
+| `src/game/trap.ts` | Hill-climbs the cat queue so shallow thinkers overspend the move budget. |
 | `src/game/bot.ts` | Real-time expert bot (difficulty check, tutorial hints) and a casual-player model. |
 | `src/data/levels.json` | The 300 pre-tuned levels the game ships with (`scripts/tune-all.sh`). |
 | `src/gfx/` | Cached sprites (blocks, cats), particles, easing. |
@@ -40,19 +41,28 @@ npm run android:sync # build web + copy into android/
 
 ## Difficulty
 
-You only lose when a cat comes back with ammo and every waiting slot is full, so the number of
-slots *is* the difficulty. Levels are tuned at build time (`scripts/tune-all.sh`):
+The game is a planning puzzle, so difficulty means *how far ahead you must think*. Levels are
+tuned at build time (`scripts/tune-all.sh`), against thinkers of different depth:
 
-1. `src/game/plan.ts` is an exact, fast model of the game (one cat per lap, linked pairs
-   interleaved like the engine) with a beam-search planner. For several queue layouts it finds
-   the fewest slots the level can be won with.
-2. The level gets exactly that many slots plus its slack: +3 on the first levels, +2 up to
-   level 10 and after each hard level, +1 normally, **+0 on hard levels** (every 5th).
-3. Two obvious strategies are played against each layout: "send whatever shoots most" and a
-   real-time expert that waits for useful cats and keeps the belt busy. Hard levels are chosen
-   so that both fail: only planning ahead wins.
-4. The planner's winning line is stored with the level; the tests replay it in the real engine,
-   so every shipped level is provably beatable.
+1. `src/game/plan.ts` is an exact, fast model of the game with a beam-search planner. A beam
+   of width 1 is the player who always sends "the cat that shoots most right now"; wider beams
+   keep more options in mind (2, 4, 8 ≈ looking a few sends ahead).
+2. Each level has a **move budget**: the fewest sends the deep search (beam 96) can win with,
+   plus a little slack, and a **slot count**: the fewest the deep search needs, plus slack.
+3. `src/game/trap.ts` hill-climbs the order of the cat queue so that the shallow thinkers
+   *overspend* that budget. Normal levels (from 6) fool the width-1 and width-2 thinkers; hard
+   levels (every 5th) also width 4 and have 1 spare move and no spare slot; very hard levels
+   (every 10th) fool width 8 as well and have no spare move.
+4. Levels 1-2 teach, 3-4 are easy (slack of 4+ moves), 5 is the first trap.
+5. The deep search's line is stored with each level and the tests replay it in the real engine,
+   so every level is provably beatable.
+
+```sh
+TUNE_LOG=/tmp/tune.log scripts/tune-all.sh 300   # ~10 min on 4 cores; rewrites src/data/levels.json
+npx vite-node scripts/depth-report.ts 0 150      # how wide a search each shipped level needs
+```
+
+Difficulty knobs live in `levelParams` (`trap`, `slackMoves`, `slackSlots`).
 
 Pictures are pixel art baked from Twemoji (`npm run bake-pictures`), curated by hand
 (`src/data/emoji-list.json`). Twemoji graphics © Twitter, Inc. and contributors, CC-BY 4.0.

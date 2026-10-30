@@ -1,6 +1,7 @@
 import tuned from '../data/levels.json';
 import { botSolve, winRate } from './bot';
 import { Planner } from './plan';
+import { SHALLOW_BEAMS, climb, fewestMoves, fitness, measure } from './trap';
 import { COLOR_INDEX, PALETTE } from './palette';
 import { pictureTitle } from './pictures';
 import type { LevelDef, ShooterDef } from './engine';
@@ -32,42 +33,56 @@ export interface LevelParams {
   ice: number;
   links: number;
   veryHard: boolean;
-  /** Share of simulated casual players that should beat the level. */
-  target: number;
+  /** How many of the shallow thinkers (search widths 1, 2, 4, 8) the level must beat: its "trap depth". */
+  trap: number;
+  /** Spare sends on top of the fewest the deep search needs. */
+  slackMoves: number;
+  /** Spare waiting slots on top of what the deep search needs. */
+  slackSlots: number;
   /** Ammo sizes the cats are cut into; smaller = more cats = more decisions. */
   ammo?: number[];
 }
 
 /**
- * The difficulty curve. `target` is the share of simulated casual players who should win:
- * a gentle start, then a sawtooth where every 5th level is hard and every 10th very hard,
- * each followed by a breather.
+ * The difficulty curve. Difficulty here means "how far ahead must you think": `trap` is how many
+ * of the shallow thinkers (search widths 1, 2, 4, 8) must overspend the move budget. The first
+ * two levels teach, the next two are easy, then it gets serious: normal levels fool anyone who
+ * just sends the cat that shoots most; every 5th level (hard) also fools a two-step lookahead and
+ * has no spare moves; every 10th (very hard) fools even a wide lookahead.
  */
 export function levelParams(index: number): LevelParams {
   const n = index + 1;
   const veryHard = n >= 20 && n % 10 === 0;
-  const hard = veryHard || (n >= 10 && n % 5 === 0);
-  const breather = n > 10 && (n - 1) % 5 === 0;
-  const size = n <= 15 ? 16 : n <= 40 ? 18 : n <= 90 ? 20 : n <= 150 ? 22 : 24;
-  const maxColors = n <= 2 ? 2 : n <= 6 ? 3 : n <= 15 ? 4 : n <= 35 ? 5 : n <= 70 ? 6 : 7;
-  const columns = n <= 3 ? 2 : hard && n >= 20 ? 2 : 3;
+  const hard = veryHard || (n >= 5 && n % 5 === 0);
+  const breather = n > 5 && (n - 1) % 5 === 0;
+  const size = n <= 12 ? 16 : n <= 40 ? 18 : n <= 90 ? 20 : n <= 150 ? 22 : 24;
+  const maxColors = n <= 2 ? 2 : n <= 5 ? 3 : n <= 12 ? 4 : n <= 30 ? 5 : n <= 60 ? 6 : 7;
+  const columns = n <= 2 ? 2 : 3;
   const ramp = Math.min(1, n / 120);
-  const target =
-    n <= 3 ? 1 : n <= 8 ? 0.9 : breather ? 0.85 : veryHard ? 0.3 : hard ? 0.42 : n <= 20 ? 0.72 : 0.62 - ramp * 0.07;
+  let trap: number, slackMoves: number, slackSlots: number;
+  if (n <= 2) { trap = 0; slackMoves = 8; slackSlots = 3; } // learn the controls
+  else if (n <= 4) { trap = 0; slackMoves = 4; slackSlots = 2; } // easy
+  else if (veryHard) { trap = 4; slackMoves = 0; slackSlots = 0; } // fools even a wide lookahead
+  else if (hard) { trap = n === 5 ? 1 : 3; slackMoves = n === 5 ? 2 : 1; slackSlots = n === 5 ? 1 : 0; }
+  else if (breather) { trap = 1; slackMoves = 3; slackSlots = 1; }
+  else { trap = n <= 9 ? 1 : 2; slackMoves = 2; slackSlots = 1; } // "send the best shooter" overspends
   return {
     size,
     maxColors: maxColors + (hard && n > 10 ? 1 : 0),
     columns,
-    noise: n <= 3 ? 0.5 : 3,
-    slots: n <= 15 ? 5 : breather ? 5 : 4,
+    noise: n <= 2 ? 0.5 : 3,
+    slots: 5,
     capacity: 5,
     hard,
     veryHard,
-    target,
+    trap,
+    slackMoves,
+    slackSlots,
     hidden: n >= 12 ? Math.min(0.3, 0.1 + ramp * 0.2) : 0,
     ice: n >= 25 ? Math.min(0.15, 0.04 + ramp * 0.1) : 0,
     links: n >= 40 ? Math.min(3, 1 + Math.floor(ramp * 3)) : 0,
-    ammo: size <= 12 ? [5, 10, 10] : size <= 16 ? [10, 10, 15, 20] : [10, 15, 20, 25],
+    // smaller cats = more cats = a longer queue to plan through
+    ammo: size <= 18 ? [5, 10, 10, 15] : size <= 20 ? [10, 10, 15, 20] : [10, 15, 20, 25],
   };
 }
 
@@ -121,7 +136,7 @@ export function acceptable(id: string, p: LevelParams, index: number): Picture |
  */
 const assigned: string[] = [];
 let cycleStart = 0;
-function pictureFor(index: number, p: LevelParams): Picture {
+export function pictureFor(index: number, p: LevelParams): Picture {
   while (assigned.length <= index) {
     const i = assigned.length;
     const used = new Set(assigned.slice(cycleStart));
@@ -185,110 +200,90 @@ export function assemble(index: number, pic: Picture, p: LevelParams, noise: num
 
 const cache = new Map<number, LevelDef>();
 
-/** Quick build for levels past the shipped set: a moderately bent order, slots from the planner. */
+/** Quick build for levels past the shipped set: a few hill-climb steps, slots and moves from the planner. */
 export function baseLevel(index: number): LevelDef {
   const p = levelParams(index);
   const pic = pictureFor(index, p);
-  for (const adv of [0.5, 0.3, 0.1, 0]) {
+  for (const adv of [0.6, 0.3, 0]) {
     const l = assemble(index, pic, p, p.noise, adv, index * 7919 + Math.round(adv * 1000) + 17);
     const pl = new Planner(l);
     const R = pl.requiredSlots(5, 24);
     if (R < 0) continue;
-    const slots = Math.max(1, R + slackFor(index));
-    const sol = pl.solve(slots, 24, true);
-    return { ...l, slots, ...(sol.won ? { moves: sol.moves.length + moveSlackFor(index) } : {}) };
+    const slots = Math.max(minSlotsFor(index), R + p.slackSlots);
+    let best = l;
+    if (p.trap > 0) best = climb(l, slots, p.slackMoves, p.trap, { iterations: 12, deepBeam: 16 }).level;
+    const sol = new Planner(best).solve(slots, 24, true);
+    if (!sol.won) continue;
+    return { ...best, slots, moves: sol.moves.length + p.slackMoves };
   }
   // Last resort: ideal order, plain cats, generous slots.
   return assemble(index, pic, { ...p, hidden: 0, links: 0, ice: 0, slots: 5 }, 0, 0, index + 1);
 }
 
-export interface TunedLevel { level: LevelDef; required: number; greedyWins: boolean; expertWins: boolean; rate: number; solution: number[] }
-
-/** Spare waiting slots on top of what the best play needs: none on hard levels. */
-export function slackFor(index: number): number {
-  const n = index + 1;
+export function minSlotsFor(index: number): number {
   const p = levelParams(index);
-  if (n <= 3) return 3;
-  if (n === 10) return 1; // the first hard level: tough, with one spare slot
-  if (n <= 10) return 2;
-  if (p.hard) return 0;
-  if ((n - 1) % 5 === 0) return 2; // breather after a hard level
-  return 1;
+  const n = index + 1;
+  return n <= 4 ? 3 : p.hard ? 1 : 2;
+}
+
+export interface TunedLevel {
+  level: LevelDef;
+  required: number;
+  /** For search widths 1, 2, 4, 8: does that thinker fit the move budget? */
+  shallowFits: boolean[];
+  expertWins: boolean;
+  rate: number;
+  solution: number[];
 }
 
 /**
- * Build-time tuning. For several queue layouts (from cruel to gentle orderings) the planner finds
- * the fewest waiting slots the level can be won with; the level then gets exactly that many plus
- * its slack. Hard levels also have to defeat the obvious "send whatever shoots most" strategy.
+ * Build-time tuning: pick starting layouts, hill-climb the cat queue until the shallow thinkers
+ * overspend the move budget (see trap.ts), then fix slots and moves from the deep search.
  */
 export function tunedLevel(index: number): TunedLevel {
   const p = levelParams(index);
   const pic = pictureFor(index, p);
   const n = index + 1;
-  const slack = slackFor(index);
-  interface Cand { l: LevelDef; R: number; greedyWins: boolean; expert: { won: boolean; minFree: number }; solution: number[] }
-  const cands: Cand[] = [];
-  const advs = n <= 3 ? [0] : [0.95, 0.8, 0.6, 0.45, 0.3, 0.15, 0];
-  // hard levels get more tries, and with two lanes as well as three
-  const variants = p.hard ? [[p.columns, 0], [p.columns, 1], [2, 2], [3, 3]] : [[p.columns, 0], [p.columns, 1]];
+  interface Start { l: LevelDef; R: number; slots: number; fit: number }
+  const starts: Start[] = [];
+  const advs = n <= 2 ? [0] : [0.9, 0.6, 0.3, 0];
+  const variants = p.hard ? [[p.columns, 0], [2, 1], [3, 2]] : [[p.columns, 0], [p.columns, 1]];
   for (const adv of advs) for (const [columns, k] of variants) {
     const l = assemble(index, pic, { ...p, columns }, p.noise, adv, index * 7919 + Math.round(adv * 1000) + k * 104729 + 17);
-    const pl = new Planner(l);
-    const R = pl.requiredSlots(5);
+    const R = new Planner(l).requiredSlots(5, 32);
     if (R < 0) continue;
-    const slots = Math.max(n <= 3 ? 4 : 1, R + slack);
-    const level = { ...l, slots };
-    cands.push({ l: level, R, greedyWins: pl.greedy(slots).won, expert: botSolve(level), solution: pl.solve(slots).moves });
+    const slots = Math.max(minSlotsFor(index), R + p.slackSlots);
+    const fit = p.trap ? fitness(measure(l, slots), p.slackMoves, p.trap) : 0;
+    starts.push({ l, R, slots, fit });
   }
-  if (!cands.length) {
+  if (!starts.length) {
     const l = baseLevel(index);
-    return { level: l, required: -1, greedyWins: true, expertWins: true, rate: winRate(l, 0.55, 12), solution: [] };
+    return { level: l, required: -1, shallowFits: [true, true, true, true], expertWins: true, rate: winRate(l, 0.55, 12), solution: [] };
   }
-  // Two "obvious" strategies are checked against every layout: send-whatever-shoots-most (greedy)
-  // and a real-time expert that waits for useful cats and keeps the belt busy. Hard levels must
-  // beat both (only planning ahead wins); normal levels should leave the expert almost no slack.
-  const score = (c: Cand) => {
-    let sc = -Math.abs(Math.min(c.R, 4) - (p.hard ? 3 : n <= 10 ? 2 : 2.5)) * 0.5;
-    if (n < 10) {
-      if (!c.greedyWins || !c.expert.won) sc -= 20; // early levels must be friendly
-    } else if (n === 10) {
-      if (!c.greedyWins) sc += 10;
-      if (!c.expert.won) sc -= 5;
-    } else if (p.hard) {
-      if (!c.greedyWins) sc += 10;
-      if (!c.expert.won) sc += 10;
-    } else {
-      if (!c.greedyWins) sc += 2;
-      if (c.expert.won && c.expert.minFree <= 1) sc += 3;
-      if (!c.expert.won) sc += p.veryHard ? 3 : -1;
+  starts.sort((a, b) => b.fit - a.fit);
+  let best: { l: LevelDef; slots: number; R: number; fit: number } = { ...starts[0] };
+  if (p.trap > 0) {
+    const goal = p.trap * 2;
+    // Round 1 climbs the best starts; if a level still is not fooling its thinkers (e.g. a
+    // picture with one dominant colour), round 2 retries from fresh random layouts.
+    for (let round = 0; round < 2 && best.fit < goal; round++) {
+      const pool = round === 0 ? starts.slice(0, p.hard ? 3 : 2) : starts.slice(0, 3);
+      for (const st of pool) {
+        const l0 = round === 0 ? st.l : assemble(index, pic, p, p.noise * 2, 0.5, index * 5003 + st.R * 17 + 99991);
+        const r = climb(l0, st.slots, p.slackMoves, p.trap, { iterations: (p.hard ? 140 : 90) * (round + 1), seed: index * 131 + st.R + round * 7 });
+        if (r.fit > best.fit || best.l === starts[0].l) best = { l: r.level, slots: st.slots, R: st.R, fit: r.fit };
+        if (best.fit >= goal) break;
+      }
     }
-    return sc;
-  };
-  cands.sort((a, b) => score(b) - score(a));
-  const best = cands[0];
-  // Move budget: the fewest sends the planner found, plus a small margin.
+  }
+  // Budget: the fewest sends the deep search can find, plus the level's slack.
   const pl = new Planner(best.l);
-  const short = [pl.solve(best.l.slots, 96, true), pl.solve(best.l.slots, 96, false)]
-    .filter((r) => r.won).sort((a, b) => a.moves.length - b.moves.length)[0];
-  const solution = short ? short.moves : best.solution;
-  const level = { ...best.l, moves: solution.length + moveSlackFor(index) };
+  const lines = [pl.solve(best.slots, 96, true), pl.solve(best.slots, 96, false)].filter((r) => r.won).sort((a, b) => a.moves.length - b.moves.length);
+  const solution = lines[0].moves;
+  const level: LevelDef = { ...best.l, slots: best.slots, moves: solution.length + p.slackMoves };
+  const fits = SHALLOW_BEAMS.map((b) => fewestMoves(level, level.slots, b) <= level.moves!);
   const expert = botSolve(level);
-  return {
-    level, required: best.R, greedyWins: pl.greedy(level.slots).won && pl.greedy(level.slots).moves.length <= level.moves,
-    expertWins: expert.won, rate: winRate(level, 0.55, 12), solution,
-  };
-}
-
-/** Spare moves on top of the fewest the planner needs. */
-export function moveSlackFor(index: number): number {
-  const n = index + 1;
-  const p = levelParams(index);
-  if (n <= 3) return 8;
-  if (n <= 9) return 4;
-  if (p.veryHard) return 0;
-  if (p.hard) return 1;
-  if ((n - 1) % 5 === 0) return 4;
-  return 2;
+  return { level, required: best.R, shallowFits: fits, expertWins: expert.won, rate: winRate(level, 0.55, 12), solution };
 }
 
 /** Level `index` (0-based): the pre-tuned one shipped with the game, or a quick build past those. */

@@ -844,19 +844,15 @@ export class PlayView {
     const lost = this.loseT >= 0;
     const won = this.winT >= 0;
     // queue (back to front), lanes' "+N" counters
-    // as many rows as fit above the booster bar
-    const rows = Math.max(2, Math.min(4, Math.floor((this.ch - this.queueY - this.qR * 0.8) / (this.rowH * 0.78)) + 1));
+    // Full-size cats for as many rows as fit; the rest of each lane is shown as a strip of
+    // little cats (colour + ammo) so the whole queue can be planned around.
+    const room = this.ch - this.queueY - this.qR * 0.8;
+    const rows = Math.max(2, Math.min(4, Math.floor((room - 34) / (this.rowH * 0.78)) + 1));
     for (let ci = 0; ci < g.columns.length; ci++) {
       const col = g.columns[ci];
       const shown = Math.min(col.length, rows);
       for (let d = shown - 1; d >= 0; d--) this.drawOne(ctx, col[d], d, fronts, lost, won);
-      if (col.length > rows) {
-        const x = this.colX(ci), y = Math.min(this.ch - 6, this.queueY + this.rowH * 0.25 + rows * this.rowH * 0.78 - this.qR * 0.2);
-        ctx.font = `800 ${Math.round(this.qR * 0.55)}px Vazirmatn`;
-        ctx.textAlign = 'center';
-        ctx.fillStyle = 'rgba(255,255,255,0.75)';
-        ctx.fillText(`+${String(col.length - rows).replace(/[0-9]/g, (x) => '۰۱۲۳۴۵۶۷۸۹'[+x])}`, x, y);
-      }
+      if (col.length > rows) this.drawQueueStrip(ctx, ci, col.slice(rows), rows);
     }
     // links between paired cats in the queue
     for (const s of g.shooters) {
@@ -925,6 +921,44 @@ export class PlayView {
     });
     ctx.restore();
     if (v.revealT > 0.45 && v.revealT < 0.55) this.fx.stars(v.x, v.y, 3, 70);
+  }
+
+  /** The part of a lane beyond the full-size rows, as tiny cats in reading order. */
+  private drawQueueStrip(ctx: CanvasRenderingContext2D, lane: number, ids: number[], rows: number) {
+    const g = this.game;
+    const laneW = this.colW * 0.84;
+    const cell = Math.max(15, Math.min(22, laneW / 5.2));
+    const perRow = Math.max(3, Math.floor(laneW / cell));
+    const x0 = this.colX(lane) - (Math.min(ids.length, perRow) * cell) / 2 + cell / 2;
+    const y0 = this.queueY + this.rowH * 0.25 + (rows - 1) * this.rowH * 0.78 + this.qR * 1.35 + cell * 0.45;
+    const maxRows = Math.max(1, Math.floor((this.ch - y0 - 2) / cell) + 1);
+    const cap = perRow * maxRows;
+    ids.slice(0, cap).forEach((id, k) => {
+      const col = k % perRow, row = Math.floor(k / perRow);
+      const inRow = Math.min(perRow, ids.length - row * perRow);
+      const rx = this.colX(lane) - (inRow * cell) / 2 + cell / 2 + col * cell;
+      const ry = y0 + row * cell;
+      const sh = g.shooters[id];
+      drawCat(ctx, rx, ry, cell * 0.44, sh.color, { hidden: sh.hidden, shadow: false, alpha: 0.95 });
+      // ammo as small outlined digits (the full badge would be wider than the cat)
+      ctx.font = `900 ${Math.round(cell * 0.46)}px Vazirmatn`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.lineWidth = 2.5;
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = 'rgba(30,12,50,0.9)';
+      const label = sh.hidden ? '؟' : String(sh.ammo).replace(/[0-9]/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d]);
+      ctx.strokeText(label, rx, ry + cell * 0.2);
+      ctx.fillStyle = '#fff';
+      ctx.fillText(label, rx, ry + cell * 0.2);
+    });
+    if (ids.length > cap) {
+      ctx.font = `800 ${Math.round(this.qR * 0.5)}px Vazirmatn`;
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(255,255,255,0.8)';
+      ctx.fillText(`+${String(ids.length - cap).replace(/[0-9]/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[+d])}`, this.colX(lane), this.ch - 4);
+    }
+    void x0;
   }
 
   private drawChain(ctx: CanvasRenderingContext2D, ax: number, ay: number, bx: number, by: number) {
